@@ -1,0 +1,23 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="mall:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/mall_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="mall/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="mall" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: tomcat:jsp-api:5.5.23" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-annotations-api:9.0.52" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat.embed:tomcat-embed-core:9.0.52" />
+          <element id="library" level="project" name="Maven: javax.servlet:servlet-api:2.5" />
+          <element id="library" level="project" name="Maven: com.google.protobuf:protobuf-java:3.11.4" />
+          <element id="library" level="project" name="Maven: mysql:mysql-connector-java:8.0.21" />
+          <element id="library" level="project" name="Maven: com.sun.mail:javax.mail:1.6.2" />
+          <element id="library" level="project" name="Maven: javax.activation:activation:1.1" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
