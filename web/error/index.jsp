@@ -1,6 +1,6 @@
 
 
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" isErrorPage="true" %>
 
 <jsp:include page="/common/header.jsp"/>
 
@@ -18,6 +18,7 @@
         }else{
             msg = "500 INTERNAL SERVER ERROR";
             detail = "服务器内部出现了问题，请您尝试访问其他页面";
+            System.err.println(exception.getMessage());
         }
     %>
 

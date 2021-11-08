@@ -6,7 +6,45 @@
 <%@ page import="com.mysql.cj.util.StringUtils" %>
 <%@ page import="cn.enncy.mall.pojo.Role" %>
 <%@ page import="java.io.IOException" %>
+<%@ page import="cn.enncy.mall.pojo.MallSession" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<%
+    String msg = null;
+    String error = null;
+
+    String account = request.getParameter("account");
+    String password = request.getParameter("password");
+
+    if(session.getAttribute("user")!=null){
+        request.getRequestDispatcher("/").forward(request, response);
+
+    }else{
+        if (request.getMethod().equals("POST")) {
+            if (StringUtils.isNullOrEmpty(account) || StringUtils.isNullOrEmpty(password)) {
+                error = "不能留空!";
+            } else {
+                UserMapper mapper = SqlSession.getMapper(UserMapper.class);
+
+                User user = mapper.findByAccount(account);
+                if(user!=null && user.getPassword().equals(password)){
+                    session.setAttribute("user", user);
+                    msg = "登录成功!";
+                    User from = MallSession.from(request.getSession(), User.class);
+
+                    response.sendRedirect("/");
+                }else{
+                    error = "登录失败，账号或者密码错误!";
+                }
+            }
+        }
+
+    }
+
+
+%>
+
+
 
 <html lang="zh-CN">
 <head>
@@ -96,38 +134,6 @@
 </head>
 <body class="text-center">
 
-<%
-    String msg = null;
-    String error = null;
-
-    String account = request.getParameter("account");
-    String password = request.getParameter("password");
-
-    if(session.getAttribute("user")!=null){
-        request.getRequestDispatcher("/").forward(request, response);
-
-    }else{
-        if (request.getMethod().equals("POST")) {
-            if (StringUtils.isNullOrEmpty(account) || StringUtils.isNullOrEmpty(password)) {
-                error = "不能留空!";
-            } else {
-                UserMapper mapper = SqlSession.getMapper(UserMapper.class);
-
-                User user = mapper.findByAccount(account);
-                if(user!=null && user.getPassword().equals(password)){
-                    session.setAttribute("user", user);
-                    msg = "登录成功!";
-                    response.sendRedirect("/");
-                }else{
-                    error = "登录失败，账号或者密码错误!";
-                }
-            }
-        }
-
-    }
-
-
-%>
 
 <form class="form-signin" method="post">
 

@@ -1,7 +1,33 @@
 <%@ page import="cn.enncy.mall.pojo.User" %>
+
+<%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload" %>
+<%@ page import="org.apache.commons.fileupload.FileItemFactory" %>
+<%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
+<%@ page import="org.apache.commons.fileupload.FileItem" %>
+<%@ page import="java.util.stream.Stream" %>
+<%@ page import="java.util.stream.Collectors" %>
+<%@ page import="java.io.UnsupportedEncodingException" %>
+<%@ page import="org.apache.commons.fileupload.FileItemHeaders" %>
+<%@ page import="java.util.*" %>
+<%@ page import="java.nio.charset.StandardCharsets" %>
+<%@ page import="java.io.File" %>
+<%@ page import="java.io.FileWriter" %>
+<%@ page import="cn.enncy.mall.utils.Security" %>
+<%@ page import="cn.enncy.mybatis.core.SqlSession" %>
+<%@ page import="cn.enncy.mall.mapper.UserMapper" %>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <jsp:include page="/common/header.jsp"/>
+
+<style>
+
+    .nav,.nav-item{
+
+        white-space: nowrap;
+    }
+</style>
+
 
 <jsp:include page="/common/navigation.jsp"/>
 
@@ -9,12 +35,52 @@
 
     User user = (User) session.getAttribute("user");
 
+    // 是否为表单提交
+    if (request.getMethod().equals("POST")) {
+        FileItemFactory factory = new DiskFileItemFactory();
+        ServletFileUpload upload = new ServletFileUpload(factory);
+        try {
+            List<FileItem> items = upload.parseRequest(request);
+            Map<String, FileItem> map = items.stream().collect(Collectors.toMap(FileItem::getFieldName,fileItem -> fileItem));
+            String password = map.remove("password").getString("utf-8");
+            String email = map.remove("email").getString("utf-8");
+            String nickname = map.remove("nickname").getString("utf-8");
+            String profile = map.remove("profile").getString("utf-8");
+            FileItem avatarItem = map.remove("avatar");
+
+            // 获取文件路径
+            String avatarPath = "/assets/img/avatar" + Security.stringToMD5(user.getAccount()) + ".png";
+            String filePath = request.getServletContext().getRealPath(avatarPath);
+            // 保存文件，如果存在则删除
+            File file = new File(filePath);
+            if((file.exists() && file.delete()) || !file.exists()){
+                avatarItem.write(file);
+            }
+
+            user.setPassword(password);
+            user.setEmail(email);
+            user.setNickname(nickname);
+            user.setProfile(profile);
+            user.setAvatar(avatarPath);
+            UserMapper mapper = SqlSession.getMapper(UserMapper.class);
+            mapper.update(user);
+            // 刷新缓存
+            user.setAvatar(avatarPath+"?t="+System.currentTimeMillis());
+        } catch (Exception fue) {
+            fue.printStackTrace();
+        }
+    }
+
 %>
 
-<div class="p-5 mt-5 mb-5 d-flex justify-content-center">
+<div class="p-lg-5 mt-lg-5 mb-lg-5 d-flex justify-content-center  flex-lg-nowrap flex-wrap">
 
-    <div class="d-flex" style="width: 10%;">
+    <div class="d-flex col-12 col-lg-1">
         <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="/address">收货地址</a>
+            </li>
+
             <li class="nav-item">
                 <a class="nav-link" href="/orders">订单</a>
             </li>
@@ -25,40 +91,47 @@
             <li class="nav-item">
                 <a class="nav-link" href="/favor">收藏夹</a>
             </li>
+
         </ul>
     </div>
 
-    <div class="d-flex flex-wrap" style="width: 40%;">
-        <div class="card" style="width: 100%;">
-            <div class="card-body">
-                <% if (user.getAvatar() == null) { %>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     class="bi bi-person-fill"
-                     viewBox="0 0 16 16">
-                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                </svg>
+    <div class="d-flex flex-wrap   col-lg-6 col-md-8 col-12">
+        <div class="card col-12">
+            <div class="card-body d-flex ">
+                <div  >
+                    <% if (user.getAvatar() == null) { %>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         class="bi bi-person-fill"
+                         viewBox="0 0 16 16">
+                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                    </svg>
 
-                <% } else { %>
-                <img src="<%=user.getAvatar()%>" class="rounded mx-auto d-block" alt="<%=user.getAvatar()%>">
-                <% } %>
+                    <% } else { %>
+                    <img src="<%=user.getAvatar()%>" width="64" height="64" class="rounded mx-auto d-block" alt="<%=user.getAvatar()%>">
+                    <% } %>
+                </div>
+                <div  class="ml-2">
+                    <h5 class="card-title"><%=user.getNickname() == null ? "无昵称" : user.getAccount()%>
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted"><%=user.getProfile() == null ? "无简介" : user.getProfile()%>
+                    </h6>
+
+                </div>
 
 
-                <h5 class="card-title"><%=user.getNickname() == null ? "无昵称" : user.getAccount()%>
-                </h5>
-                <h6 class="card-subtitle mb-2 text-muted"><%=user.getProfile() == null ? "无简介" : user.getProfile()%>
-                </h6>
+
 
             </div>
         </div>
 
-        <div class="card mt-5" style="width: 100%;">
+        <div class="card mt-5 col-12">
 
             <div class="card-body">
                 <h5 class="card-title">个人信息设置</h5>
             </div>
 
             <div class="p-4">
-                <form  method="POST">
+                <form method="POST" enctype="multipart/form-data">
                     <div class="form-group col-12">
                         <label for="inputAccount">账号</label>
                         <input disabled name="account" type="text" class="form-control" id="inputAccount"
@@ -89,11 +162,11 @@
                         <label for="inputAvatar" style="width: 100%;">
                             <div class="card" style="border: 3px dotted rgba(0,0,0,.125);">
                                 <div class="card-body">
-                                    <div class="p-4">点击上传头像 +</div>
+                                    <div class="p-4" id="filename">点击上传头像 +</div>
                                 </div>
                             </div>
                         </label>
-                        <input name="avatar" type="file" class="form-control" id="inputAvatar" style="display:none;">
+                        <input name="avatar" accept=".png,.jpg" type="file" class="form-control" id="inputAvatar" style="display:none;">
 
                     </div>
 
@@ -112,3 +185,10 @@
 
 
 <jsp:include page="/common/footer.jsp"/>
+
+<script>
+    document.querySelector('[type="file"]').onchange = function (e){
+        console.log(e.target.value)
+        document.querySelector('#filename').innerHTML = e.target.value.split('\\').pop()
+    }
+</script>
