@@ -44,7 +44,9 @@ public class ResultSetHandler {
         if(double.class.equals(t)){
             return Double.parseDouble(string);
         }
-        else if(int.class.equals(t)){
+        if(long.class.equals(t)){
+            return Long.parseLong(string);
+        }else if(int.class.equals(t)){
 
             return Integer.parseInt(string);
         }

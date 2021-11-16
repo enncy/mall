@@ -30,20 +30,18 @@ public class SqlInvokeHandler implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         SQL sql = resolveSql(method, args);
-        if(sql!=null){
+        if (sql != null) {
             long l = System.currentTimeMillis();
             System.out.println("============[ sql execute ]============");
-            System.out.println("\t"+sql.getValue());
+            System.out.println("\t" + sql.getValue());
 
             Object execute = execute(method, sql.getValue(), sql.isExecuteQuery());
-            System.out.println("\t"+execute);
-            System.out.println("============[ takes "+(System.currentTimeMillis() - l)+"/ms]============");
+            System.out.println("\t" + execute);
+            System.out.println("============[ takes " + (System.currentTimeMillis() - l) + "/ms]============");
             return execute;
         }
 
-
-
-        return method.invoke(proxy,args);
+        return null;
     }
 
     public Object execute(Method method, String sql, boolean execQuery) throws ClassNotFoundException {
@@ -53,7 +51,8 @@ public class SqlInvokeHandler implements InvocationHandler {
 
             return DBUtils.connect(statement -> {
                 ResultSet resultSet = statement.executeQuery(sql);
-                if (returnType.isInstance(List.class) || returnType.equals(List.class)) {
+
+                if (returnType.equals(List.class)) {
                     // 目标转换类型根据 resultType 字段 sql 注解的优先级最高，其次 到mapper 的注解
                     List<Object> list = new ArrayList<>();
                     while (resultSet.next()) {
@@ -63,7 +62,7 @@ public class SqlInvokeHandler implements InvocationHandler {
                     return list;
                 } else {
                     if (resultSet.next()) {
-                        return ResultSetHandler.createResultTarget(resultSet, returnType);
+                        return ResultSetHandler.createResultTarget(resultSet, mapper.target());
                     }
                 }
                 return null;
@@ -110,7 +109,7 @@ public class SqlInvokeHandler implements InvocationHandler {
                 }
             }
 
-            return new SQL(sql,execQuery);
+            return new SQL(sql, execQuery);
         }
 
         return null;

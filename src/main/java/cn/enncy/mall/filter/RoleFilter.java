@@ -41,7 +41,7 @@ public class RoleFilter implements Filter {
 
         // 后台权限验证
         if(adminRolePaths.stream().anyMatch(path->request.getServletPath().startsWith(path))){
-            User user = (User) request.getSession().getAttribute("user");
+            User user = MallSession.from(request.getSession(), User.class);
             if(user!=null && user.getRole().equals(Role.ADMIN.value)){
                 filterChain.doFilter(servletRequest,servletResponse);
             }else{
@@ -51,7 +51,8 @@ public class RoleFilter implements Filter {
         }else
         // 用户权限验证，如果未登录，则跳转到登录界面
         if(userRolePaths.stream().anyMatch(path->request.getServletPath().startsWith(path))){
-            Object user = request.getSession().getAttribute("user");
+            User user = MallSession.from(request.getSession(), User.class);
+
             if(user!=null){
                 filterChain.doFilter(servletRequest,servletResponse);
             }else{

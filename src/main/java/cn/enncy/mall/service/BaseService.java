@@ -29,12 +29,12 @@ public class BaseService<T extends BaseObject> implements BaseMapper<T> {
     }
 
     @Override
-    public boolean deleteById(int id) {
+    public boolean deleteById(long id) {
         return mapper.deleteById(id);
     }
 
     @Override
-    public T findOneById(int id) {
+    public T findOneById(long id) {
         return mapper.findOneById(id);
     }
 

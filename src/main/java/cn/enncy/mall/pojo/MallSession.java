@@ -35,10 +35,10 @@ public enum MallSession {
         return null;
     }
 
-    public static Object from(HttpSession session, String key){
+    public static Object from(HttpSession session, MallSession mallSession){
         MallSession[] values = MallSession.values();
         for (MallSession value : values) {
-            if(value.key.equals(key)){
+            if(value.key.equals(mallSession.key)){
                 return   session.getAttribute(value.key);
             }
         }

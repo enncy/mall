@@ -20,10 +20,10 @@ public interface BaseMapper<T> {
     boolean insert(@Body() T baseObject);
 
     @Delete("DELETE FROM #{TABLE_NAME} WHERE id=#{id};")
-    boolean deleteById(@Param("id") int id);
+    boolean deleteById(@Param("id") long id);
 
     @Select("SELECT * FROM #{TABLE_NAME} WHERE id=#{id};")
-    T findOneById(@Param("id") int id);
+    T findOneById(@Param("id") long id);
 
     @Select("SELECT * FROM #{TABLE_NAME} LIMIT #{skip},#{size};")
     List<T> findByPages(@Param("skip") int skip, @Param("size") int size);

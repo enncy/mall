@@ -5,6 +5,7 @@ import cn.enncy.mybatis.annotation.Delete;
 import cn.enncy.mybatis.annotation.Mapper;
 import cn.enncy.mybatis.annotation.Param;
 import cn.enncy.mybatis.annotation.Select;
+import static cn.enncy.mybatis.core.SqlConstant.*;
 
 import java.util.List;
 
@@ -24,8 +25,8 @@ public interface UserMapper extends BaseMapper<User> {
      * @param account  账号
      * @return cn.enncy.mall.pojo.User
      */
-    @Select("select * from #{TABLE_NAME} where account = '#{account}'")
-    User findByAccount(@Param("account") String account);
+    @Select("select * from #{"+TABLE_NAME+"} where account = '#{account}'")
+    User findOneByAccount(@Param("account") String account);
 
 
     /**
@@ -34,8 +35,8 @@ public interface UserMapper extends BaseMapper<User> {
      * @param email  邮箱
      * @return cn.enncy.mall.pojo.User
      */
-    @Select("select * from #{TABLE_NAME} where email = '#{email}'")
-    User findByEmail(@Param("email") String email);
+    @Select("select * from #{"+TABLE_NAME+"} where email = '#{email}'")
+    User findOneByEmail(@Param("email") String email);
 
 
     /**
@@ -44,7 +45,7 @@ public interface UserMapper extends BaseMapper<User> {
      * @param nickname  昵称
      * @return cn.enncy.mall.pojo.User
      */
-    @Select("select * from #{TABLE_NAME} where nickname like '%#{nickname}%'")
+    @Select("select * from #{"+ TABLE_NAME +"} where nickname like '%#{nickname}%'")
     List<User> findByNickname(@Param("nickname") String nickname);
 
 
@@ -52,6 +53,6 @@ public interface UserMapper extends BaseMapper<User> {
      *  删除不活跃的用户
      * @return boolean
      */
-    @Delete("delete from #{TABLE_NAME} where active=0")
+    @Delete("delete from #{"+TABLE_NAME+"} where active=0")
     boolean deleteInactiveUser();
 }

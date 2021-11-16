@@ -25,7 +25,10 @@ public class BodyHandler implements Handler {
         Map<String, Object> objectsValueMap = ReflectUtils.getObjectsValueMap(value);
 
         Object active = objectsValueMap.get("active");
-        objectsValueMap.replace("active", (Boolean.parseBoolean(active.toString()) ? "1" : "0"));
+        if(active!=null){
+            objectsValueMap.replace("active", (Boolean.parseBoolean(active.toString()) ? "1" : "0"));
+        }
+
 
         if (sql.toUpperCase().startsWith(SqlConstant.INSERT)) {
             objectsValueMap.remove("id");

@@ -9,7 +9,7 @@ package cn.enncy.mall.pojo;
  */
 public class Address extends BaseObject {
 
-    private int userId;
+    private long userId;
     private String phone;
     private String detail;
     private String receiver;
@@ -17,11 +17,11 @@ public class Address extends BaseObject {
     private String zipCode;
 
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 

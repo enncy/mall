@@ -5,114 +5,36 @@
 <%@ page import="cn.enncy.mall.utils.Security" %>
 <%@ page import="com.mysql.cj.util.StringUtils" %>
 <%@ page import="cn.enncy.mall.pojo.Role" %>
+<%@ page import="cn.enncy.mall.utils.RequestUtils" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
-<html lang="zh-CN">
-<head>
-    <meta charset="utf-8">
-
-    <title>Mall 注册</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="https://v4.bootcss.com/docs/4.6/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        .bd-placeholder-img {
-            font-size: 1.125rem;
-            text-anchor: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        @media (min-width: 768px) {
-            .bd-placeholder-img-lg {
-                font-size: 3.5rem;
-            }
-        }
-    </style>
-
-
-    <!-- Custom styles for this template -->
-    <style>
-        html,
-        body {
-            height: 100%;
-        }
-
-        body {
-            display: -ms-flexbox;
-            display: flex;
-            -ms-flex-align: center;
-            align-items: center;
-            padding-top: 40px;
-            padding-bottom: 40px;
-            background-color: #f5f5f5;
-        }
-
-        .form-signin {
-            width: 100%;
-            max-width: 330px;
-            padding: 15px;
-            margin: auto;
-        }
-
-        .form-signin .checkbox {
-            font-weight: 400;
-        }
-
-        .form-signin .form-control {
-            position: relative;
-            box-sizing: border-box;
-            height: auto;
-            padding: 10px;
-            font-size: 16px;
-        }
-
-        .form-signin .form-control:focus {
-            z-index: 2;
-        }
-
-        .form-signin input[type="email"] {
-            margin-bottom: -1px;
-            border-bottom-right-radius: 0;
-            border-bottom-left-radius: 0;
-        }
-
-        .form-signin input[type="password"] {
-            margin-bottom: 10px;
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
-        }
-
-        .alert{
-            line-height: 1 !important;
-        }
-
-    </style>
-</head>
-<body class="text-center">
 
 <%
 
     String account = request.getParameter("account");
     String password = request.getParameter("password");
+    String confirmPassword = request.getParameter("confirmPassword");
     String email = request.getParameter("email");
     String token = request.getParameter("token");
+
+
+
 
     String msg = null;
     String error = null;
 
     if (request.getMethod().equals("POST")) {
-        if (StringUtils.isNullOrEmpty(account) || StringUtils.isNullOrEmpty(password) || StringUtils.isNullOrEmpty(email)) {
+        if (  StringUtils.isNullOrEmpty(account) || StringUtils.isNullOrEmpty(confirmPassword) || StringUtils.isNullOrEmpty(password) || StringUtils.isNullOrEmpty(email)) {
             error = "不能留空!";
-        } else {
+        }else if(!confirmPassword.equals(password)){
+            error = "2次输入的密码不一致!";
+        }
+        else {
+
             UserMapper mapper = SqlSession.getMapper(UserMapper.class);
 
-            if (mapper.findByAccount(account) != null) {
+            if (mapper.findOneByAccount(account) != null) {
                 error = "账号已被占用!";
-            } else if (mapper.findByEmail(email) != null) {
+            } else if (mapper.findOneByEmail(email) != null) {
                 error = "邮箱已被占用!";
             } else {
                 try {
@@ -142,20 +64,34 @@
             UserMapper mapper = SqlSession.getMapper(UserMapper.class);
             // 验证秘钥
             if (token.equals(Security.stringToMD5(account))) {
-                User user = mapper.findByAccount(account);
+                User user = mapper.findOneByAccount(account);
                 user.setActive(true);
                 mapper.update(user);
                 session.setAttribute("user",user);
                 response.sendRedirect("/");
-                msg = "账号验证成功！";
             } else {
-                error = "账号验证失败！";
+                response.sendRedirect("/error?code=400");
             }
         }
 
     }
 
 %>
+
+
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+
+    <title>Mall 注册</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://v4.bootcss.com/docs/4.6/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/common.css" rel="stylesheet">
+</head>
+<body class="text-center">
+
+
 
 <form class="form-signin" method="post">
 
@@ -175,6 +111,10 @@
 
     <label for="inputPassword" class="sr-only ">密码</label>
     <input name="password" type="password" id="inputPassword" class="form-control" placeholder="密码" required size="20"
+           value="<%=(password==null?"":password)%>">
+
+    <label for="inputConfirmPassword" class="sr-only ">重复密码</label>
+    <input name="confirmPassword" type="password" id="inputConfirmPassword" class="form-control" placeholder="重复密码" required size="20"
            value="<%=(password==null?"":password)%>">
 
     <label for="inputEmail" class="sr-only">邮箱</label>

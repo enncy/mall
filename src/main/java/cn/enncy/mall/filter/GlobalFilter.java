@@ -12,7 +12,7 @@ import java.io.IOException;
  * @author: enncy
  */
 
-@WebFilter
+@WebFilter(urlPatterns = "/*")
 public class GlobalFilter implements Filter {
 
 

@@ -18,18 +18,7 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<jsp:include page="/common/header.jsp"/>
 
-<style>
-
-    .nav,.nav-item{
-
-        white-space: nowrap;
-    }
-</style>
-
-
-<jsp:include page="/common/navigation.jsp"/>
 
 <%
 
@@ -49,7 +38,7 @@
             FileItem avatarItem = map.remove("avatar");
 
             // 获取文件路径
-            String avatarPath = "/assets/img/avatar" + Security.stringToMD5(user.getAccount()) + ".png";
+            String avatarPath = "/assets/img/avatar/" + Security.stringToMD5(user.getAccount()) + ".png";
             String filePath = request.getServletContext().getRealPath(avatarPath);
             // 保存文件，如果存在则删除
             File file = new File(filePath);
@@ -73,27 +62,15 @@
 
 %>
 
+<jsp:include page="/common/header.jsp"/>
+
+
+<jsp:include page="/common/navigation.jsp"/>
+
 <div class="p-lg-5 mt-lg-5 mb-lg-5 d-flex justify-content-center  flex-lg-nowrap flex-wrap">
 
-    <div class="d-flex col-12 col-lg-1">
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link" href="/address">收货地址</a>
-            </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="/orders">订单</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/cart">购物车</a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="/favor">收藏夹</a>
-            </li>
-
-        </ul>
-    </div>
+    <jsp:include page="navigation.jsp"/>
 
     <div class="d-flex flex-wrap   col-lg-6 col-md-8 col-12">
         <div class="card col-12">
@@ -111,7 +88,7 @@
                     <% } %>
                 </div>
                 <div  class="ml-2">
-                    <h5 class="card-title"><%=user.getNickname() == null ? "无昵称" : user.getAccount()%>
+                    <h5 class="card-title"><%=user.getNickname() == null ? user.getAccount() :  user.getNickname() %>
                     </h5>
                     <h6 class="card-subtitle mb-2 text-muted"><%=user.getProfile() == null ? "无简介" : user.getProfile()%>
                     </h6>
@@ -162,7 +139,7 @@
                         <label for="inputAvatar" style="width: 100%;">
                             <div class="card" style="border: 3px dotted rgba(0,0,0,.125);">
                                 <div class="card-body">
-                                    <div class="p-4" id="filename">点击上传头像 +</div>
+                                    <div class="p-4  text-center" id="filename">点击上传头像</div>
                                 </div>
                             </div>
                         </label>
