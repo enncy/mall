@@ -19,7 +19,7 @@ import java.util.List;
 public class BaseService<T extends BaseObject> implements BaseMapper<T> {
     BaseMapper<T> mapper;
 
-    public BaseService(Class<BaseMapper<T>> mapperClass ) {
+    public BaseService(Class<? extends BaseMapper<T>> mapperClass ) {
         this.mapper = SqlSession.getMapper(mapperClass);
     }
 

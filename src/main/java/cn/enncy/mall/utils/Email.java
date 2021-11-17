@@ -16,8 +16,8 @@ import java.util.Properties;
  */
 public class Email {
 
-    private static final String EMAIL_SENDER = "enncyfunnyblog@163.com";
-    private static final String EMAIL_PASSWORD = "RJMVNHFAKLLPHFEP";
+    private static final String EMAIL_SENDER = "enncymail@163.com";
+    private static final String EMAIL_PASSWORD = "MNELKRFHDGGAGKPJ";
 
 
     public static void reset(String receiver, String url) throws Exception {

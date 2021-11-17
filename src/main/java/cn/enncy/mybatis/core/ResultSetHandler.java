@@ -1,6 +1,10 @@
 package cn.enncy.mybatis.core;
 
 
+import com.mysql.cj.jdbc.result.ResultSetImpl;
+import com.mysql.cj.util.StringUtils;
+
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
@@ -29,38 +33,36 @@ public class ResultSetHandler {
                 field.setAccessible(true);
             }
             field.set(target,resultSet.getObject(SqlStringHandler.humpToUnderline(field.getName()), field.getType()));
+            
+
         }
 
         return target;
     }
 
-
-
-
-
-    public static   Object stringToTarget(String string, Class<?> t) throws  NumberFormatException{
-
-
-        if(double.class.equals(t)){
-            return Double.parseDouble(string);
-        }
-        if(long.class.equals(t)){
-            return Long.parseLong(string);
-        }else if(int.class.equals(t)){
-
-            return Integer.parseInt(string);
-        }
-        else if(float.class.equals(t)){
-            return Float.parseFloat(string);
-        }
-        else if(short.class.equals(t)){
-            return Short.parseShort(string);
-        }
-        else if(boolean.class.equals(t)){
-            return Boolean.parseBoolean(string);
-        }else{
-            return string;
-        }
+    public static   <T> T stringToTarget(String string, Class<T> t) throws Exception {
+        Constructor<?> constructor = t.getConstructor(String.class);
+        return (T) constructor.newInstance(string);
+        //if(double.class.equals(t)){
+        //    return Double.parseDouble(string);
+        //}
+        //if(long.class.equals(t)){
+        //    return Long.parseLong(string);
+        //}else if(int.class.equals(t)){
+        //
+        //    return Integer.parseInt(string);
+        //}
+        //else if(float.class.equals(t)){
+        //    return Float.parseFloat(string);
+        //}
+        //else if(short.class.equals(t)){
+        //    return Short.parseShort(string);
+        //}
+        //else if(boolean.class.equals(t)){
+        //    return Boolean.parseBoolean(string);
+        //}else{
+        //    return string;
+        //}
     }
 
 }

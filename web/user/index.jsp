@@ -15,6 +15,7 @@
 <%@ page import="cn.enncy.mall.utils.Security" %>
 <%@ page import="cn.enncy.mybatis.core.SqlSession" %>
 <%@ page import="cn.enncy.mall.mapper.UserMapper" %>
+<%@ page import="java.math.BigDecimal" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
@@ -74,25 +75,34 @@
 
     <div class="d-flex flex-wrap   col-lg-6 col-md-8 col-12">
         <div class="card col-12">
-            <div class="card-body d-flex ">
-                <div  >
+            <div class="card-body d-flex align-items-center" style="white-space: nowrap">
+                <div class="col-2">
                     <% if (user.getAvatar() == null) { %>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-person-fill"
                          viewBox="0 0 16 16">
-                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
                     </svg>
 
                     <% } else { %>
                     <img src="<%=user.getAvatar()%>" width="64" height="64" class="rounded mx-auto d-block" alt="<%=user.getAvatar()%>">
                     <% } %>
                 </div>
-                <div  class="ml-2">
+                <div  class="ml-2 col-4">
                     <h5 class="card-title"><%=user.getNickname() == null ? user.getAccount() :  user.getNickname() %>
                     </h5>
                     <h6 class="card-subtitle mb-2 text-muted"><%=user.getProfile() == null ? "无简介" : user.getProfile()%>
                     </h6>
 
+                </div>
+                <div class="ml-2 d-flex col-6 justify-content-end  align-items-baseline">
+                    <div style="color: #7abaff;font-size: xx-large;cursor:pointer;">
+                        <%=user.getBalance().setScale(2, BigDecimal.ROUND_HALF_UP)%>
+                    </div>
+                    <div class="ml-1" style="color: #7abaff;font-size: xx-large">
+                        $
+                    </div>
+                    <a class="ml-4" style="font-size: 12px" href="/user/balance">充值余额</a>
                 </div>
 
 

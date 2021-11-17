@@ -1,29 +1,51 @@
 package cn.enncy.mall.pojo;
 
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 /**
  * //TODO
  * <br/>Created in 17:35 2021/11/6
  *
  * @author enncy
  */
-public class User extends BaseObject{
-    /** 昵称 **/
+public class User extends BaseObject {
+    /**
+     * 昵称
+     **/
     private String nickname;
-    /** 账号 **/
+    /**
+     * 账号
+     **/
     private String account;
-    /** 密码 **/
+    /**
+     * 密码
+     **/
     private String password;
-    /** 权限 **/
+    /**
+     * 权限
+     **/
     private String role;
-    /** 邮箱 **/
+    /**
+     * 邮箱
+     **/
     private String email;
-    /** 头像 **/
+    /**
+     * 头像
+     **/
     private String avatar;
-    /** 简介 **/
+    /**
+     * 简介
+     **/
     private String profile;
-
-    /** 是否激活 **/
+    /**
+     * 余额
+     **/
+    private BigDecimal balance;
+    /**
+     * 是否激活
+     **/
     private boolean active;
 
     public String getNickname() {
@@ -82,6 +104,14 @@ public class User extends BaseObject{
         this.profile = profile;
     }
 
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
     public boolean isActive() {
         return active;
     }
@@ -100,6 +130,7 @@ public class User extends BaseObject{
                 ", email='" + email + '\'' +
                 ", avatar='" + avatar + '\'' +
                 ", profile='" + profile + '\'' +
+                ", balance=" + balance +
                 ", active=" + active +
                 '}';
     }
