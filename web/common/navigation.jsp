@@ -1,4 +1,5 @@
 <%@ page import="cn.enncy.mall.pojo.User" %>
+<%@ page import="cn.enncy.mall.constant.Role" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
@@ -9,9 +10,9 @@
     if (session.getAttribute("user") != null) {
         user = (User) session.getAttribute("user");
         user.setNickname(user.getNickname().isEmpty()?user.getAccount():user.getNickname());
-        favor = "favor";
-        cart = "cart";
-        orders = "orders";
+        favor = "/user/favor";
+        cart = "/user/cart";
+        orders = "/user/orders";
     }
 
 %>
@@ -29,7 +30,7 @@
         </a>
         <a class="py-2 d-none d-md-inline-block" href="/">首页</a>
         <a class="py-2 d-none d-md-inline-block" href="/goods">商品</a>
-        <a class="py-2 d-none d-md-inline-block" href="/<%=favor%>">收藏夹</a>
+        <%--<a class="py-2 d-none d-md-inline-block" href="/<%=favor%>">收藏夹</a>--%>
         <a class="py-2 d-none d-md-inline-block" href="/<%=cart%>">购物车</a>
         <a class="py-2 d-none d-md-inline-block" href="/<%=orders%>">订单列表</a>
 
@@ -42,6 +43,10 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <a class="dropdown-item" href="/user">个人首页</a>
+                <% if(user.getRole().equals(Role.ADMIN.value)){ %>
+                <a class="dropdown-item" href="/admin">后台系统</a>
+                <% } %>
+
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="/logout">退出</a>
             </div>

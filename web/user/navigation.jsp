@@ -13,6 +13,9 @@
             <a class="nav-link" href="/user">个人信息</a>
         </li>
         <li class="nav-item">
+            <a class="nav-link" href="/user/balance">余额充值</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" href="/user/address">收货地址</a>
         </li>
 
@@ -23,9 +26,9 @@
             <a class="nav-link" href="/user/cart">购物车</a>
         </li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="/user/favor">收藏夹</a>
-        </li>
+        <%--<li class="nav-item">--%>
+        <%--    <a class="nav-link" href="/user/favor">收藏夹</a>--%>
+        <%--</li>--%>
 
     </ul>
 </div>

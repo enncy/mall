@@ -1,16 +1,18 @@
 <%@ page import="cn.enncy.mybatis.core.SqlSession" %>
 <%@ page import="cn.enncy.mall.mapper.AddressMapper" %>
-<%@ page import="cn.enncy.mall.pojo.MallSession" %>
+<%@ page import="cn.enncy.mall.constant.MallSession" %>
 <%@ page import="cn.enncy.mall.pojo.User" %>
 <%@ page import="cn.enncy.mall.pojo.Address" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.mysql.cj.util.StringUtils" %>
+<%@ page import="cn.enncy.mall.service.AddressService" %>
+<%@ page import="cn.enncy.mall.service.ServiceFactory" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java"  %>
 
 
 <%
-    AddressMapper mapper = SqlSession.getMapper(AddressMapper.class);
 
+    AddressService addressService = ServiceFactory.resolve(AddressService.class);
 
 
     String id = request.getParameter("id");
@@ -19,14 +21,14 @@
     String mode = request.getParameter("mode");
     if(!StringUtils.isNullOrEmpty(id) && !StringUtils.isNullOrEmpty(mode)){
         if(mode.equals("delete")){
-            mapper.deleteById(Long.parseLong(id));
+            addressService.deleteById(Long.parseLong(id));
         }
     }
 
     // 遍历地址并显示
     User user = MallSession.from(session, User.class);
     assert user != null;
-    List<Address> addressList = mapper.findByUserId(user.getId());
+    List<Address> addressList = addressService.findByUserId(user.getId());
 
 
 %>

@@ -4,9 +4,11 @@
 <%@ page import="cn.enncy.mall.utils.Email" %>
 <%@ page import="cn.enncy.mall.utils.Security" %>
 <%@ page import="com.mysql.cj.util.StringUtils" %>
-<%@ page import="cn.enncy.mall.pojo.Role" %>
+<%@ page import="cn.enncy.mall.constant.Role" %>
 <%@ page import="java.io.IOException" %>
-<%@ page import="cn.enncy.mall.pojo.MallSession" %>
+<%@ page import="cn.enncy.mall.constant.MallSession" %>
+<%@ page import="cn.enncy.mall.service.UserService" %>
+<%@ page import="cn.enncy.mall.service.ServiceFactory" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
@@ -24,9 +26,9 @@
             if (StringUtils.isNullOrEmpty(account) || StringUtils.isNullOrEmpty(password)) {
                 error = "不能留空!";
             } else {
-                UserMapper mapper = SqlSession.getMapper(UserMapper.class);
 
-                User user = mapper.findOneByAccount(account);
+                UserService userService = ServiceFactory.resolve(UserService.class);
+                User user = userService.findOneByAccount(account);
                 if(user!=null && user.getPassword().equals(password)){
                     session.setAttribute("user", user);
                     msg = "登录成功!";

@@ -3,6 +3,8 @@
 <%@ page import="cn.enncy.mybatis.core.SqlSession" %>
 <%@ page import="cn.enncy.mall.utils.Security" %>
 <%@ page import="cn.enncy.mall.pojo.User" %>
+<%@ page import="cn.enncy.mall.service.UserService" %>
+<%@ page import="cn.enncy.mall.service.ServiceFactory" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
@@ -15,14 +17,14 @@
     String confirmPassword = request.getParameter("confirmPassword");
     String email = request.getParameter("email");
     String token = request.getParameter("token");
-    UserMapper mapper = SqlSession.getMapper(UserMapper.class);
 
+    UserService userService = ServiceFactory.resolve(UserService.class);
     // 控制是否显示重置密码表单
     if (!StringUtils.isNullOrEmpty(token) && !StringUtils.isNullOrEmpty(email)) {
 
         // 验证秘钥
         if (token.equals(Security.stringToMD5(email))) {
-            User user = mapper.findOneByEmail(email);
+            User user = userService.findOneByEmail(email);
             reset = true;
             msg = user.getNickname() == null ? user.getAccount() : user.getNickname() + " 请重置您的密码";
         } else {
@@ -38,9 +40,9 @@
             } else if (!confirmPassword.equals(password)) {
                 error = "2次输入的密码不一致!";
             } else {
-                User user = mapper.findOneByEmail(email);
+                User user = userService.findOneByEmail(email);
                 user.setPassword(password);
-                mapper.update(user);
+                userService.update(user);
                 msg = "重置密码成功";
                 response.sendRedirect("/login");
             }

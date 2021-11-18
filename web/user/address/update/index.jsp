@@ -3,14 +3,18 @@
 <%@ page import="com.mysql.cj.util.StringUtils" %>
 <%@ page import="cn.enncy.mall.pojo.Address" %>
 <%@ page import="cn.enncy.mall.utils.RequestUtils" %>
-<%@ page import="cn.enncy.mall.pojo.MallSession" %>
+<%@ page import="cn.enncy.mall.constant.MallSession" %>
 <%@ page import="cn.enncy.mall.pojo.User" %>
 <%@ page import="java.util.Optional" %>
+<%@ page import="cn.enncy.mall.service.AddressService" %>
+<%@ page import="cn.enncy.mall.service.ServiceFactory" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 
 <%
-    AddressMapper mapper = SqlSession.getMapper(AddressMapper.class);
+
+    AddressService addressService = ServiceFactory.resolve(AddressService.class);
+
     User user = MallSession.from(session, User.class);
     System.out.println("user " + user);
     String id = request.getParameter("id");
@@ -18,7 +22,7 @@
 
     // 如果存在 id ，则为修改订单
     if (!StringUtils.isNullOrEmpty(id)) {
-        address = mapper.findOneById(Long.parseLong(id));
+        address = addressService.findOneById(Long.parseLong(id));
     }
 
     if (request.getMethod().equals("POST")) {
@@ -28,9 +32,9 @@
 
             // 如果不是修改模式，则插入，否则更新
             if (address == null) {
-                mapper.insert(target);
+                addressService.insert(target);
             } else {
-                mapper.update(target);
+                addressService.update(target);
             }
             response.sendRedirect("/user/address");
         } catch (Exception e) {

@@ -1,12 +1,14 @@
-package cn.enncy.mall.pojo;
+package cn.enncy.mall.constant;
+
+import cn.enncy.mall.pojo.User;
 
 import javax.servlet.http.HttpSession;
 
 /**
- * //TODO
+ * 提供 session 的类型提示，类型判断
  * <br/>Created in 14:12 2021/11/8
  *
- * @author: enncy
+ * @author enncy
  */
 public enum MallSession {
     /** 用户 **/
@@ -21,10 +23,25 @@ public enum MallSession {
         this.key = key;
     }
 
+    /**
+     *  保存 session 对象
+     *
+     * @param session session
+     * @param mallSession 映射对象
+     * @param value 值
+     */
     public static void save(HttpSession session, MallSession mallSession, Object value){
         session.setAttribute(mallSession.key, value);
     }
 
+
+    /**
+     *  根据类型获取 session 中的指定 对象
+     *
+     * @param session session
+     * @param type 目标类型
+     * @return java.lang.Object
+     */
     public static <T> T from(HttpSession session, Class<T> type){
         MallSession[] values = MallSession.values();
         for (MallSession value : values) {
@@ -35,6 +52,13 @@ public enum MallSession {
         return null;
     }
 
+    /**
+     *  根据类获取 session 中的指定 对象
+     *
+     * @param session session
+     * @param mallSession 目标对象
+     * @return java.lang.Object
+     */
     public static Object from(HttpSession session, MallSession mallSession){
         MallSession[] values = MallSession.values();
         for (MallSession value : values) {

@@ -13,7 +13,7 @@ import java.util.List;
  * //TODO
  * <br/>Created in 10:34 2021/11/16
  *
- * @author: enncy
+ * @author enncy
  */
 
 @Mapper(table = "address",target = Address.class)
@@ -31,7 +31,7 @@ public interface AddressMapper extends BaseMapper<Address> {
     /**
      *  根据用户id查找地址
      *
-     * @param userId
+     * @param userId 用户id
      * @return cn.enncy.mall.pojo.Address
      */
     @Select("select * from #{"+ TABLE_NAME+"} where user_id = #{user_id}")

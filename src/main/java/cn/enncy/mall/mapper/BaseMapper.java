@@ -25,8 +25,8 @@ public interface BaseMapper<T> {
     @Select("SELECT * FROM #{TABLE_NAME} WHERE id=#{id};")
     T findOneById(@Param("id") long id);
 
-    @Select("SELECT * FROM #{TABLE_NAME} LIMIT #{skip},#{size};")
-    List<T> findByPages(@Param("skip") int skip, @Param("size") int size);
+    @Select("SELECT * FROM #{TABLE_NAME} LIMIT #{page},#{size};")
+    List<T> findByPages(@Param("page") int page, @Param("size") int size);
 
     @Select("SELECT * FROM #{TABLE_NAME};")
     List<T> findAll();

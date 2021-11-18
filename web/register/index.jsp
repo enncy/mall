@@ -4,8 +4,10 @@
 <%@ page import="cn.enncy.mall.utils.Email" %>
 <%@ page import="cn.enncy.mall.utils.Security" %>
 <%@ page import="com.mysql.cj.util.StringUtils" %>
-<%@ page import="cn.enncy.mall.pojo.Role" %>
+<%@ page import="cn.enncy.mall.constant.Role" %>
 <%@ page import="cn.enncy.mall.utils.RequestUtils" %>
+<%@ page import="cn.enncy.mall.service.UserService" %>
+<%@ page import="cn.enncy.mall.service.ServiceFactory" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
@@ -30,11 +32,11 @@
         }
         else {
 
-            UserMapper mapper = SqlSession.getMapper(UserMapper.class);
 
-            if (mapper.findOneByAccount(account) != null) {
+            UserService userService = ServiceFactory.resolve(UserService.class);
+            if (userService.findOneByAccount(account) != null) {
                 error = "账号已被占用!";
-            } else if (mapper.findOneByEmail(email) != null) {
+            } else if (userService.findOneByEmail(email) != null) {
                 error = "邮箱已被占用!";
             } else {
                 try {
@@ -49,7 +51,7 @@
                     user.setPassword(password);
                     user.setRole(Role.USER.value);
                     user.setEmail(email);
-                    mapper.insert(user);
+                    userService.insert(user);
                     msg = "邮箱已发送，请在邮箱中验证您的账号!";
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -61,12 +63,13 @@
     } else {
 
         if (!StringUtils.isNullOrEmpty(token) && !StringUtils.isNullOrEmpty(account)) {
-            UserMapper mapper = SqlSession.getMapper(UserMapper.class);
+
+            UserService userService = ServiceFactory.resolve(UserService.class);
             // 验证秘钥
             if (token.equals(Security.stringToMD5(account))) {
-                User user = mapper.findOneByAccount(account);
+                User user = userService.findOneByAccount(account);
                 user.setActive(true);
-                mapper.update(user);
+                userService.update(user);
                 session.setAttribute("user",user);
                 response.sendRedirect("/");
             } else {

@@ -7,7 +7,7 @@ import java.math.BigDecimal;
  * //TODO
  * <br/>Created in 23:21 2021/11/17
  *
- * @author: enncy
+ * @author enncy
  */
 public class Goods extends BaseObject{
 

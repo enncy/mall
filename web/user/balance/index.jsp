@@ -2,8 +2,10 @@
 <%@ page import="cn.enncy.mybatis.core.SqlSession" %>
 <%@ page import="cn.enncy.mall.pojo.User" %>
 <%@ page import="cn.enncy.mall.mapper.UserMapper" %>
-<%@ page import="cn.enncy.mall.pojo.MallSession" %>
+<%@ page import="cn.enncy.mall.constant.MallSession" %>
 <%@ page import="java.math.BigDecimal" %>
+<%@ page import="cn.enncy.mall.service.UserService" %>
+<%@ page import="cn.enncy.mall.service.ServiceFactory" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
@@ -11,12 +13,12 @@
     String balance = request.getParameter("balance");
 
     if (request.getMethod().equals("POST") && !StringUtils.isNullOrEmpty(balance)) {
-        UserMapper mapper = SqlSession.getMapper(UserMapper.class);
+        UserService userService = ServiceFactory.resolve(UserService.class);
         User user = MallSession.from(session, User.class);
         if (user != null) {
             BigDecimal origin = user.getBalance();
             user.setBalance(origin.add(BigDecimal.valueOf(Double.parseDouble(balance))));
-            mapper.update(user);
+            userService.update(user);
             response.sendRedirect("/user");
         }
 

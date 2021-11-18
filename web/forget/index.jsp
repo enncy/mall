@@ -4,9 +4,9 @@
 <%@ page import="cn.enncy.mall.utils.Email" %>
 <%@ page import="cn.enncy.mall.utils.Security" %>
 <%@ page import="com.mysql.cj.util.StringUtils" %>
-<%@ page import="cn.enncy.mall.pojo.Role" %>
+<%@ page import="cn.enncy.mall.constant.Role" %>
 <%@ page import="java.io.IOException" %>
-<%@ page import="cn.enncy.mall.pojo.MallSession" %>
+<%@ page import="cn.enncy.mall.constant.MallSession" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 

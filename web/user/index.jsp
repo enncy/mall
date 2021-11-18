@@ -4,24 +4,22 @@
 <%@ page import="org.apache.commons.fileupload.FileItemFactory" %>
 <%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory" %>
 <%@ page import="org.apache.commons.fileupload.FileItem" %>
-<%@ page import="java.util.stream.Stream" %>
 <%@ page import="java.util.stream.Collectors" %>
-<%@ page import="java.io.UnsupportedEncodingException" %>
-<%@ page import="org.apache.commons.fileupload.FileItemHeaders" %>
 <%@ page import="java.util.*" %>
-<%@ page import="java.nio.charset.StandardCharsets" %>
 <%@ page import="java.io.File" %>
-<%@ page import="java.io.FileWriter" %>
 <%@ page import="cn.enncy.mall.utils.Security" %>
 <%@ page import="cn.enncy.mybatis.core.SqlSession" %>
 <%@ page import="cn.enncy.mall.mapper.UserMapper" %>
 <%@ page import="java.math.BigDecimal" %>
+<%@ page import="cn.enncy.mall.service.UserService" %>
+<%@ page import="cn.enncy.mall.service.ServiceFactory" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 
 
 <%
+
 
     User user = (User) session.getAttribute("user");
 
@@ -52,8 +50,8 @@
             user.setNickname(nickname);
             user.setProfile(profile);
             user.setAvatar(avatarPath);
-            UserMapper mapper = SqlSession.getMapper(UserMapper.class);
-            mapper.update(user);
+            UserService userService = ServiceFactory.resolve(UserService.class);
+            userService.update(user);
             // 刷新缓存
             user.setAvatar(avatarPath+"?t="+System.currentTimeMillis());
         } catch (Exception fue) {

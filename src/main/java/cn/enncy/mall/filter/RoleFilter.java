@@ -1,8 +1,8 @@
 package cn.enncy.mall.filter;
 
 
-import cn.enncy.mall.pojo.MallSession;
-import cn.enncy.mall.pojo.Role;
+import cn.enncy.mall.constant.MallSession;
+import cn.enncy.mall.constant.Role;
 import cn.enncy.mall.pojo.User;
 
 import javax.servlet.*;

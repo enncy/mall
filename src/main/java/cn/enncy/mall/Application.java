@@ -2,6 +2,8 @@ package cn.enncy.mall;
 
 
 import cn.enncy.mall.mapper.UserMapper;
+import cn.enncy.mall.service.ServiceFactory;
+import cn.enncy.mall.service.UserService;
 import cn.enncy.mybatis.core.SqlSession;
 
 import javax.servlet.ServletContextEvent;
@@ -36,12 +38,11 @@ public class Application implements ServletContextListener {
     public void startRegisterTask() {
         // 定时任务，清理超时的注册验证
 
-        UserMapper mapper = SqlSession.getMapper(UserMapper.class);
-
+        UserService userService = ServiceFactory.resolve(UserService.class);
 
         ScheduledExecutorService service = Executors
                 .newSingleThreadScheduledExecutor();
         // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间
-        service.scheduleAtFixedRate(mapper::deleteInactiveUser, 3, 3, TimeUnit.MINUTES);
+        service.scheduleAtFixedRate(userService::deleteInactiveUser, 3, 3, TimeUnit.MINUTES);
     }
 }
