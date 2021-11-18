@@ -1,6 +1,8 @@
 package cn.enncy.mall.pojo;
 
 
+import cn.enncy.mall.annotaion.Info;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -14,38 +16,47 @@ public class User extends BaseObject {
     /**
      * 昵称
      **/
+    @Info("标签")
     private String nickname;
     /**
      * 账号
      **/
+    @Info("账号")
     private String account;
     /**
      * 密码
      **/
+    @Info("密码")
     private String password;
     /**
      * 权限
      **/
+    @Info("权限")
     private String role;
     /**
      * 邮箱
      **/
+    @Info("邮箱")
     private String email;
     /**
      * 头像
      **/
+    @Info("头像路径")
     private String avatar;
     /**
      * 简介
      **/
+    @Info("简介")
     private String profile;
     /**
      * 余额
      **/
+    @Info("余额")
     private BigDecimal balance;
     /**
      * 是否激活
      **/
+    @Info("是否激活")
     private boolean active;
 
     public String getNickname() {

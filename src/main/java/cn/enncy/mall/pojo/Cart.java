@@ -1,6 +1,8 @@
 package cn.enncy.mall.pojo;
 
 
+import cn.enncy.mall.annotaion.Info;
+
 /**
  * //TODO
  * <br/>Created in 14:20 2021/11/18
@@ -8,9 +10,11 @@ package cn.enncy.mall.pojo;
  * @author  enncy
  */
 public class Cart extends BaseObject {
-
+    @Info("用户id")
     private long userId;
+    @Info("商品id")
     private long goodsId;
+    @Info("数量")
     private int count;
 
     public long getUserId() {

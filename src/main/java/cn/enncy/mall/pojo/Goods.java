@@ -1,6 +1,8 @@
 package cn.enncy.mall.pojo;
 
 
+import cn.enncy.mall.annotaion.Info;
+
 import java.math.BigDecimal;
 
 /**
@@ -11,15 +13,19 @@ import java.math.BigDecimal;
  */
 public class Goods extends BaseObject{
 
+    @Info("名字")
     private String name;
+    @Info("价格")
     private BigDecimal price;
+    @Info("描述")
     private String description;
+    @Info("图片路径")
     private String img;
-    /** 是否上架 **/
+    @Info("是否上架")
     private boolean selling;
-    /** 库存 **/
+    @Info("库存")
     private int count;
-    /** 标签 **/
+    @Info("标签")
     private String tag;
 
     public String getName() {

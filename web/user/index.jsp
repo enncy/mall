@@ -12,7 +12,8 @@
 <%@ page import="cn.enncy.mall.mapper.UserMapper" %>
 <%@ page import="java.math.BigDecimal" %>
 <%@ page import="cn.enncy.mall.service.UserService" %>
-<%@ page import="cn.enncy.mall.service.ServiceFactory" %>
+<%@ page import="cn.enncy.mall.utils.ServiceFactory" %>
+<%@ page import="java.text.DecimalFormat" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
@@ -95,7 +96,7 @@
                 </div>
                 <div class="ml-2 d-flex col-6 justify-content-end  align-items-baseline">
                     <div style="color: #7abaff;font-size: xx-large;cursor:pointer;">
-                        <%=user.getBalance().setScale(2, BigDecimal.ROUND_HALF_UP)%>
+                        <%=new DecimalFormat("#,###.00").format(user.getBalance().setScale(2, BigDecimal.ROUND_HALF_UP))%>
                     </div>
                     <div class="ml-1" style="color: #7abaff;font-size: xx-large">
                         $

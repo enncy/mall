@@ -37,6 +37,11 @@ public class BaseService<T extends BaseObject, M extends BaseMapper<T>> implemen
 
 
     @Override
+    public int count() {
+        return mapper.count();
+    }
+
+    @Override
     public boolean insert(T baseObject) {
         return mapper.insert(baseObject);
     }

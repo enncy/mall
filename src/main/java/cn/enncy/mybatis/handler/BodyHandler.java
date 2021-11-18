@@ -32,6 +32,7 @@ public class BodyHandler implements Handler {
 
         if (sql.toUpperCase().startsWith(SqlConstant.INSERT)) {
             objectsValueMap.remove("id");
+
             result = SqlStringHandler.replaceInsertFields(result, objectsValueMap);
         } else {
             if (sql.toUpperCase().startsWith(SqlConstant.UPDATE)) {

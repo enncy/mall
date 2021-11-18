@@ -1,16 +1,12 @@
 package cn.enncy.mall;
 
 
-import cn.enncy.mall.mapper.UserMapper;
-import cn.enncy.mall.service.ServiceFactory;
+import cn.enncy.mall.utils.ServiceFactory;
 import cn.enncy.mall.service.UserService;
-import cn.enncy.mybatis.core.SqlSession;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.*;
 
 /**

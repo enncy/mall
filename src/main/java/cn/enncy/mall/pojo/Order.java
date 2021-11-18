@@ -1,6 +1,8 @@
 package cn.enncy.mall.pojo;
 
 
+import cn.enncy.mall.annotaion.Info;
+
 /**
  * //TODO
  * <br/>Created in 14:20 2021/11/18
@@ -9,10 +11,15 @@ package cn.enncy.mall.pojo;
  */
 public class Order extends BaseObject{
 
+    @Info("用户id")
     private long userId;
+    @Info("地址id")
     private long addressId;
+    @Info("商品id")
     private long goodsId;
+    @Info("数量")
     private int count;
+    @Info("状态")
     private String status;
 
     public long getUserId() {

@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">Mall 电商后台系统</a>
+    <a class="navbar-brand col-md-3 col-lg-1 mr-0 px-3" href="#">Mall 电商后台系统</a>
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse"
             data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -17,8 +17,8 @@
 <div class="container-fluid">
     <div class="row">
 
-        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-            <div class="sidebar-sticky pt-3">
+        <nav id="sidebarMenu" class="col-md-3 col-lg-1 d-md-block bg-light sidebar collapse"  >
+            <div class="sidebar-sticky pt-3"  >
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link active" href="/admin" id="index">
@@ -78,4 +78,4 @@
 
             </div>
         </nav>
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4 p-lg-5 pt-sm-4">
+        <main role="main" class="col-md-10 ml-sm-auto col-lg-11 px-md-4 p-lg-5 pt-4  ">

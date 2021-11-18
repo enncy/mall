@@ -1,17 +1,10 @@
 package cn.enncy.mall.utils;
 
 
-import cn.enncy.mybatis.core.ResultSetHandler;
-import cn.enncy.mybatis.core.SqlStringHandler;
-import org.apache.catalina.connector.Request;
-import org.apache.catalina.connector.RequestFacade;
+import cn.enncy.mybatis.core.result.ObjectResultHandler;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * //TODO
@@ -47,7 +40,7 @@ public class RequestUtils {
                 field.setAccessible(true);
             }
 
-            Object value = ResultSetHandler.stringToTarget(request.getParameter(field.getName()), field.getType());
+            Object value = ObjectResultHandler.stringToTarget(request.getParameter(field.getName()), field.getType());
             field.set(target,value);
         }
         return target;

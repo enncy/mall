@@ -61,8 +61,11 @@ public class ReflectUtils {
                 break;
             }
         }
-        list.remove(id);
-        list.addFirst(id);
+        if(id!=null){
+            list.remove(id);
+            list.addFirst(id);
+        }
+
         return list.toArray(new Field[]{});
     }
 

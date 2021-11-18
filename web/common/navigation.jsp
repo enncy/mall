@@ -31,8 +31,8 @@
         <a class="py-2 d-none d-md-inline-block" href="/">首页</a>
         <a class="py-2 d-none d-md-inline-block" href="/goods">商品</a>
         <%--<a class="py-2 d-none d-md-inline-block" href="/<%=favor%>">收藏夹</a>--%>
-        <a class="py-2 d-none d-md-inline-block" href="/<%=cart%>">购物车</a>
-        <a class="py-2 d-none d-md-inline-block" href="/<%=orders%>">订单列表</a>
+        <a class="py-2 d-none d-md-inline-block" href="<%=cart%>">购物车</a>
+        <a class="py-2 d-none d-md-inline-block" href="<%=orders%>">订单列表</a>
 
 
         <% if (user  != null) { %>

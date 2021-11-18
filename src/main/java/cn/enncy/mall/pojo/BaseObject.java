@@ -1,6 +1,9 @@
 package cn.enncy.mall.pojo;
 
 
+import cn.enncy.mall.annotaion.Info;
+
+
 /**
  * //TODO
  * <br/>Created in 17:35 2021/11/6
@@ -8,8 +11,11 @@ package cn.enncy.mall.pojo;
  * @author enncy
  */
 public class BaseObject {
+    @Info("id")
     private long id;
+    @Info("创建时间")
     private long createTime;
+    @Info("更新时间")
     private long updateTime;
 
 
@@ -51,4 +57,5 @@ public class BaseObject {
                 ", updateTime=" + updateTime +
                 '}';
     }
+
 }

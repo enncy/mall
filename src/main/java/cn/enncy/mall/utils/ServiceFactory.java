@@ -1,8 +1,9 @@
-package cn.enncy.mall.service;
+package cn.enncy.mall.utils;
 
 
 import cn.enncy.mall.mapper.BaseMapper;
 import cn.enncy.mall.pojo.BaseObject;
+import cn.enncy.mall.service.BaseService;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -19,7 +20,7 @@ public class ServiceFactory {
 
     private static final Map<Class<?>, Object> services = new HashMap<>();
 
-    public static <T extends  BaseService<?,?>> T resolve(Class<T> type) {
+    public static <T extends BaseService<?,?>> T resolve(Class<T> type) {
         Object service = services.get(type);
         if (service == null) {
             try {

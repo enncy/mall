@@ -2,14 +2,18 @@ package cn.enncy.mybatis.core;
 
 
 import cn.enncy.mybatis.annotation.*;
+import cn.enncy.mybatis.annotation.Executable;
+import cn.enncy.mybatis.core.result.ListResultHandler;
+import cn.enncy.mybatis.core.result.ObjectResultHandler;
+import cn.enncy.mybatis.core.result.ResultSetHandler;
 import cn.enncy.mybatis.entity.SQL;
 import cn.enncy.mybatis.handler.BodyHandler;
 import cn.enncy.mybatis.handler.ParamHandler;
 
 import java.lang.reflect.*;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * //TODO
@@ -51,21 +55,34 @@ public class SqlInvokeHandler implements InvocationHandler {
 
             return DBUtils.connect(statement -> {
                 ResultSet resultSet = statement.executeQuery(sql);
+                // 1. 获取需要转换的类型，如果没有 Executable 注解，则获取 Mapper 注解上的类型
+                Class<?> target;
+                // 2. 获取结果映射表, 如果没有 Executable 注解，则 根据返回类型判断
+                Map<String, Class<?>> resultMap;
+                // 3. 分配给处理器处理结果集
+                ResultSetHandler handler;
 
-                if (returnType.equals(List.class)) {
-                    // 目标转换类型根据 resultType 字段 sql 注解的优先级最高，其次 到mapper 的注解
-                    List<Object> list = new ArrayList<>();
-                    while (resultSet.next()) {
-                        Object resultTarget = ResultSetHandler.createResultTarget(resultSet, mapper.target());
-                        list.add(resultTarget);
+                // 4. 如何方法多加了 Executable 属性，则按照 Executable 方法去执行
+                if (method.isAnnotationPresent(Executable.class)) {
+                    Executable executable = method.getAnnotation(Executable.class);
+                    resultMap = new LinkedHashMap<>();
+                    target = executable.target();
+                    handler = executable.handler().getConstructor().newInstance();
+                    Result[] results = executable.resultMaps();
+                    for (Result result : results) {
+                        resultMap.put(result.key(), result.target());
                     }
-                    return list;
                 } else {
-                    if (resultSet.next()) {
-                        return ResultSetHandler.createResultTarget(resultSet, mapper.target());
+                    target = mapper.target();
+                    resultMap = Arrays.stream(target.getDeclaredFields()).collect(Collectors.toMap(Field::getName, Field::getType));
+                    if (returnType.equals(List.class)) {
+                        handler = new ListResultHandler();
+                    } else {
+                        handler = new ObjectResultHandler();
                     }
                 }
-                return null;
+
+                return handler.handle(resultSet, resultMap, target);
             });
         } else {
             return DBUtils.connect(statement -> statement.execute(sql));

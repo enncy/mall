@@ -8,7 +8,7 @@
 <%@ page import="java.io.IOException" %>
 <%@ page import="cn.enncy.mall.constant.MallSession" %>
 <%@ page import="cn.enncy.mall.service.UserService" %>
-<%@ page import="cn.enncy.mall.service.ServiceFactory" %>
+<%@ page import="cn.enncy.mall.utils.ServiceFactory" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%

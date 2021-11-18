@@ -1,6 +1,8 @@
-package cn.enncy.mybatis.core;
+package cn.enncy.mybatis.core.result;
 
 
+import cn.enncy.mybatis.core.ReflectUtils;
+import cn.enncy.mybatis.core.SqlStringHandler;
 import com.mysql.cj.jdbc.result.ResultSetImpl;
 import com.mysql.cj.util.StringUtils;
 
@@ -9,6 +11,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * //TODO
@@ -16,7 +19,7 @@ import java.sql.SQLException;
  *
  * @author enncy
  */
-public class ResultSetHandler {
+public class ObjectResultHandler implements ResultSetHandler {
 
     /**
      * 处理查询的返回值，并根据返回类型，创建新的目标返回值对象
@@ -25,7 +28,7 @@ public class ResultSetHandler {
      * @return: java.lang.Object
      */
     public static  Object createResultTarget(ResultSet resultSet,Class<?>  resultType) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-
+        System.out.println("createResultTarget "+resultType);
         Object target = resultType.getConstructor().newInstance();
         Field[] fields = ReflectUtils.getObjectFields(target.getClass());
         for (Field field : fields) {
@@ -33,7 +36,6 @@ public class ResultSetHandler {
                 field.setAccessible(true);
             }
             field.set(target,resultSet.getObject(SqlStringHandler.humpToUnderline(field.getName()), field.getType()));
-            
 
         }
 
@@ -65,4 +67,11 @@ public class ResultSetHandler {
         //}
     }
 
+    @Override
+    public Object handle(ResultSet resultSet, Map<String, Class<?>> resultMap, Class<?>  resultType) throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        if (resultSet.next()) {
+            return ObjectResultHandler.createResultTarget(resultSet, resultType);
+        }
+        return null;
+    }
 }

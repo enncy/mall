@@ -1,6 +1,8 @@
 package cn.enncy.mall.pojo;
 
 
+import cn.enncy.mall.annotaion.Info;
+
 /**
  * //TODO
  * <br/>Created in 22:59 2021/11/7
@@ -9,11 +11,17 @@ package cn.enncy.mall.pojo;
  */
 public class Address extends BaseObject {
 
+    @Info("用户id")
     private long userId;
+    @Info("手机")
     private String phone;
+    @Info("详情")
     private String detail;
+    @Info("收件人")
     private String receiver;
+    @Info("备注")
     private String alias;
+    @Info("邮编")
     private String zipCode;
 
 
