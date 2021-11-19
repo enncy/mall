@@ -1409,8 +1409,8 @@ name</ColNames>
     <column id="378" parent="298" name="balance">
       <Position>12</Position>
       <Comment>余额</Comment>
-      <DataType>decimal(20)|0s</DataType>
-      <DefaultExpression>0</DefaultExpression>
+      <DataType>decimal(20,2 digit)|0s</DataType>
+      <DefaultExpression>0.00</DefaultExpression>
     </column>
     <index id="379" parent="298" name="user_account_uindex">
       <ColNames>account</ColNames>

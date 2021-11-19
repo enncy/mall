@@ -2,9 +2,9 @@ package cn.enncy.mall.mapper;
 
 
 import cn.enncy.mall.pojo.Cart;
-import cn.enncy.mybatis.annotation.Mapper;
-import cn.enncy.mybatis.annotation.Param;
-import cn.enncy.mybatis.annotation.Select;
+import cn.enncy.mybatis.annotation.type.Mapper;
+import cn.enncy.mybatis.annotation.param.Param;
+import cn.enncy.mybatis.annotation.method.Select;
 
 import java.util.List;
 

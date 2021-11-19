@@ -1,10 +1,10 @@
 package cn.enncy.mall.mapper;
 
 import cn.enncy.mall.pojo.User;
-import cn.enncy.mybatis.annotation.Delete;
-import cn.enncy.mybatis.annotation.Mapper;
-import cn.enncy.mybatis.annotation.Param;
-import cn.enncy.mybatis.annotation.Select;
+import cn.enncy.mybatis.annotation.method.Delete;
+import cn.enncy.mybatis.annotation.type.Mapper;
+import cn.enncy.mybatis.annotation.param.Param;
+import cn.enncy.mybatis.annotation.method.Select;
 import static cn.enncy.mybatis.core.SqlConstant.*;
 
 import java.util.List;

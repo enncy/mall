@@ -1,7 +1,7 @@
-package cn.enncy.mybatis.handler;
+package cn.enncy.mybatis.handler.param;
 
 
-import cn.enncy.mybatis.annotation.Param;
+import cn.enncy.mybatis.annotation.param.Param;
 import cn.enncy.mybatis.core.SqlStringHandler;
 
 import java.lang.reflect.Parameter;

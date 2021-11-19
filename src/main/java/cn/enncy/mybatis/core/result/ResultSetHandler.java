@@ -12,13 +12,6 @@ import java.util.Map;
  * @author enncy
  */
 public interface ResultSetHandler {
-    /**
-     *  结果集处理器
-     *
-     * @param resultSet 查询结果集
-     * @param resultMap 字段类型映射表
-     * @param resultType 返回类型
-     * @return java.lang.Object
-     */
-    Object handle(ResultSet resultSet, Map<String, Class<?>> resultMap, Class<?>  resultType) throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
+
+    Object handle() throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
 }

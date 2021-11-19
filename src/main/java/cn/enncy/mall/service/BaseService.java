@@ -2,14 +2,10 @@ package cn.enncy.mall.service;
 
 
 import cn.enncy.mall.mapper.BaseMapper;
-import cn.enncy.mall.mapper.UserMapper;
 import cn.enncy.mall.pojo.BaseObject;
-import cn.enncy.mall.pojo.User;
-import cn.enncy.mybatis.annotation.Mapper;
 import cn.enncy.mybatis.core.SqlSession;
+import cn.enncy.mybatis.utils.ParameterizedTypeUtils;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -25,14 +21,8 @@ public class BaseService<T extends BaseObject, M extends BaseMapper<T>> implemen
 
     public BaseService() {
         // 获取第2个泛型，并且实例化
-        ParameterizedType aClass = (ParameterizedType) this.getClass().getGenericSuperclass();
-        Type[] actualTypes = aClass.getActualTypeArguments();
-        for (Type actualType : actualTypes) {
-            Class<?> type = ((Class<?>) actualType);
-            if (BaseMapper.class.isAssignableFrom(type)) {
-                this.mapper = (M) SqlSession.getMapper(type);
-            }
-        }
+        Class<?> type = ParameterizedTypeUtils.getByType(this.getClass(), BaseMapper.class);
+        this.mapper = (M) SqlSession.getMapper(type);
     }
 
 

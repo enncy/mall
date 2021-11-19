@@ -14,17 +14,28 @@ import java.util.Map;
  *
  * @author enncy
  */
-public class MapResultHandler implements ResultSetHandler{
+public class MapResultHandler implements ResultSetHandler {
+    ResultSet resultSet;
+    Map<String, Class<?>> resultMap;
 
+    public MapResultHandler(ResultSet resultSet, Map<String, Class<?>> resultMap) {
+        this.resultSet = resultSet;
+        this.resultMap = resultMap;
+    }
 
-    @Override
-    public Object handle(ResultSet resultSet, Map<String, Class<?>> resultMap, Class<?>  resultType) throws SQLException {
+    public Map<String, Object> handleMap() throws SQLException {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         for (Map.Entry<String, Class<?>> entry : resultMap.entrySet()) {
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 map.put(entry.getKey(), resultSet.getObject(entry.getKey(), entry.getValue()));
             }
         }
+
         return map;
+    }
+
+    @Override
+    public Object handle() throws SQLException {
+        return handleMap();
     }
 }

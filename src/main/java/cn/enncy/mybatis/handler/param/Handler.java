@@ -1,4 +1,4 @@
-package cn.enncy.mybatis.handler;
+package cn.enncy.mybatis.handler.param;
 
 
 import cn.enncy.mybatis.entity.MybatisSqlError;

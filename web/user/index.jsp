@@ -18,7 +18,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 
-
 <%
 
 
@@ -30,21 +29,26 @@
         ServletFileUpload upload = new ServletFileUpload(factory);
         try {
             List<FileItem> items = upload.parseRequest(request);
-            Map<String, FileItem> map = items.stream().collect(Collectors.toMap(FileItem::getFieldName,fileItem -> fileItem));
+            Map<String, FileItem> map = items.stream().collect(Collectors.toMap(FileItem::getFieldName, fileItem -> fileItem));
             String password = map.remove("password").getString("utf-8");
             String email = map.remove("email").getString("utf-8");
             String nickname = map.remove("nickname").getString("utf-8");
             String profile = map.remove("profile").getString("utf-8");
             FileItem avatarItem = map.remove("avatar");
-
-            // 获取文件路径
             String avatarPath = "/assets/img/avatar/" + Security.stringToMD5(user.getAccount()) + ".png";
-            String filePath = request.getServletContext().getRealPath(avatarPath);
-            // 保存文件，如果存在则删除
-            File file = new File(filePath);
-            if((file.exists() && file.delete()) || !file.exists()){
-                avatarItem.write(file);
+            long size = avatarItem.getSize();
+            if (size > 0) {
+                // 获取文件路径
+
+                String filePath = request.getServletContext().getRealPath(avatarPath);
+                // 保存文件，如果存在则删除
+                File file = new File(filePath);
+                if ((file.exists() && file.delete()) || !file.exists()) {
+                    avatarItem.write(file);
+                }
+
             }
+
 
             user.setPassword(password);
             user.setEmail(email);
@@ -54,7 +58,7 @@
             UserService userService = ServiceFactory.resolve(UserService.class);
             userService.update(user);
             // 刷新缓存
-            user.setAvatar(avatarPath+"?t="+System.currentTimeMillis());
+            user.setAvatar(avatarPath + "?t=" + System.currentTimeMillis());
         } catch (Exception fue) {
             fue.printStackTrace();
         }
@@ -84,27 +88,26 @@
                     </svg>
 
                     <% } else { %>
-                    <img src="<%=user.getAvatar()%>" width="64" height="64" class="rounded mx-auto d-block" alt="<%=user.getAvatar()%>">
+                    <img src="<%=user.getAvatar()%>" width="64" height="64" class="rounded mx-auto d-block"
+                         alt="<%=user.getAvatar()%>">
                     <% } %>
                 </div>
-                <div  class="ml-2 col-4">
-                    <h5 class="card-title"><%=user.getNickname() == null ? user.getAccount() :  user.getNickname() %>
+                <div class="ml-2 col-4">
+                    <h5 class="card-title"><%=user.getNickname() %>
                     </h5>
-                    <h6 class="card-subtitle mb-2 text-muted"><%=user.getProfile() == null ? "无简介" : user.getProfile()%>
+                    <h6 class="card-subtitle mb-2 text-muted"><%= user.getProfile()%>
                     </h6>
 
                 </div>
                 <div class="ml-2 d-flex col-6 justify-content-end  align-items-baseline">
                     <div style="color: #7abaff;font-size: xx-large;cursor:pointer;">
-                        <%=new DecimalFormat("#,###.00").format(user.getBalance().setScale(2, BigDecimal.ROUND_HALF_UP))%>
+                        <%=user.getBalance().toString().equals("0")?"0":new DecimalFormat("#,##0.00").format(user.getBalance().setScale(2, BigDecimal.ROUND_HALF_UP))%>
                     </div>
                     <div class="ml-1" style="color: #7abaff;font-size: xx-large">
                         $
                     </div>
                     <a class="ml-4" style="font-size: 12px" href="/user/balance">充值余额</a>
                 </div>
-
-
 
 
             </div>
@@ -152,7 +155,8 @@
                                 </div>
                             </div>
                         </label>
-                        <input name="avatar" accept=".png,.jpg" type="file" class="form-control" id="inputAvatar" style="display:none;">
+                        <input name="avatar" accept=".png,.jpg" type="file" class="form-control" id="inputAvatar"
+                               style="display:none;">
 
                     </div>
 
@@ -173,7 +177,7 @@
 <jsp:include page="/common/footer.jsp"/>
 
 <script>
-    document.querySelector('[type="file"]').onchange = function (e){
+    document.querySelector('[type="file"]').onchange = function (e) {
         console.log(e.target.value)
         document.querySelector('#filename').innerHTML = e.target.value.split('\\').pop()
     }

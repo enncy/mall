@@ -1,4 +1,4 @@
-package cn.enncy.mybatis.annotation;
+package cn.enncy.mybatis.annotation.type;
 
 import java.lang.annotation.*;
 

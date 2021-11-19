@@ -1,4 +1,4 @@
-package cn.enncy.mybatis.handler;
+package cn.enncy.mybatis.handler.param;
 
 
 import cn.enncy.mybatis.core.ReflectUtils;
@@ -32,7 +32,7 @@ public class BodyHandler implements Handler {
 
         if (sql.toUpperCase().startsWith(SqlConstant.INSERT)) {
             objectsValueMap.remove("id");
-
+            System.out.println(objectsValueMap);
             result = SqlStringHandler.replaceInsertFields(result, objectsValueMap);
         } else {
             if (sql.toUpperCase().startsWith(SqlConstant.UPDATE)) {

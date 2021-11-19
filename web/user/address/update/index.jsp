@@ -8,6 +8,7 @@
 <%@ page import="java.util.Optional" %>
 <%@ page import="cn.enncy.mall.service.AddressService" %>
 <%@ page import="cn.enncy.mall.utils.ServiceFactory" %>
+<%@ page import="cn.enncy.mall.utils.Logger" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 
@@ -16,7 +17,7 @@
     AddressService addressService = ServiceFactory.resolve(AddressService.class);
 
     User user = MallSession.from(session, User.class);
-    System.out.println("user " + user);
+    Logger.log("user " + user);
     String id = request.getParameter("id");
     Address address = null;
 

@@ -1,6 +1,8 @@
 package cn.enncy.mybatis.core;
 
 
+import cn.enncy.mybatis.entity.MybatisSqlError;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,13 +79,18 @@ public class SqlStringHandler {
      * @return: java.lang.String
      */
     public static String replaceInsertFields(String sqlString, Map<String, Object> paramsMap) {
+        // 过滤掉为 null 的空值
+        paramsMap = paramsMap.entrySet().stream().filter(entry->entry.getValue()!=null).collect(Collectors.toMap(Map.Entry::getKey,Map.Entry::getValue));
         String result = sqlString;
+        // 处理 键
         result = replaceParam(result, SqlConstant.KEY_ARRAY,
                 Arrays.stream(paramsMap.keySet().toArray())
                         .map(Object::toString)
                         // 驼峰转下划线
                         .map(SqlStringHandler::humpToUnderline)
+                        .map(s->"`"+s+"`")
                         .collect(Collectors.joining(",")));
+        // 处理 值
         result = replaceParam(result, SqlConstant.VALUE_ARRAY,
                 paramsMap.values().stream()
                         .map(v->"\""+v.toString()+"\"")
@@ -112,9 +119,9 @@ public class SqlStringHandler {
      * @param tableName 表名
      * @return: java.lang.String
      */
-    public static String replaceTableName(String sqlString, String tableName) throws SQLException {
+    public static String replaceTableName(String sqlString, String tableName) throws MybatisSqlError {
         if (!sqlString.contains(SqlConstant.TABLE_NAME)) {
-            throw new SQLException(SqlConstant.TABLE_NAME + " param is not found");
+            throw new MybatisSqlError("param is not found : "+SqlConstant.TABLE_NAME + " ,  in sql string : "+sqlString);
         }
         sqlString = replaceParam(sqlString, SqlConstant.TABLE_NAME, tableName);
         return sqlString;

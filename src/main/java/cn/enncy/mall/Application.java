@@ -1,6 +1,7 @@
 package cn.enncy.mall;
 
 
+import cn.enncy.mall.utils.Logger;
 import cn.enncy.mall.utils.ServiceFactory;
 import cn.enncy.mall.service.UserService;
 
@@ -22,7 +23,7 @@ public class Application implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        System.out.println("tomcat 启动");
+        Logger.log("tomcat 启动");
         startRegisterTask();
     }
 
@@ -33,9 +34,7 @@ public class Application implements ServletContextListener {
 
     public void startRegisterTask() {
         // 定时任务，清理超时的注册验证
-
         UserService userService = ServiceFactory.resolve(UserService.class);
-
         ScheduledExecutorService service = Executors
                 .newSingleThreadScheduledExecutor();
         // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间

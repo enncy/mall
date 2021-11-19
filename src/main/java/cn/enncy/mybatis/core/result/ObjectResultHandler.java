@@ -21,57 +21,64 @@ import java.util.Map;
  */
 public class ObjectResultHandler implements ResultSetHandler {
 
+    ResultSet resultSet;
+    Class<?> resultType;
+
+    public ObjectResultHandler(ResultSet resultSet, Class<?> resultType) {
+        this.resultSet = resultSet;
+        this.resultType = resultType;
+    }
+
+    @Override
+    public Object handle() throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        if (resultSet.next()) {
+            return ObjectResultHandler.createResultTarget(resultSet, resultType);
+        }
+        return null;
+    }
+
+
     /**
      * 处理查询的返回值，并根据返回类型，创建新的目标返回值对象
-     * @param resultSet 查询返回集
-     * @param resultType    函数的返回值类型
+     *
+     * @param resultSet  查询返回集
+     * @param resultType 函数的返回值类型
      * @return: java.lang.Object
      */
-    public static  Object createResultTarget(ResultSet resultSet,Class<?>  resultType) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        System.out.println("createResultTarget "+resultType);
+    public static Object createResultTarget(ResultSet resultSet, Class<?> resultType) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+
         Object target = resultType.getConstructor().newInstance();
         Field[] fields = ReflectUtils.getObjectFields(target.getClass());
         for (Field field : fields) {
-            if(!field.isAccessible()){
+            if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
-            field.set(target,resultSet.getObject(SqlStringHandler.humpToUnderline(field.getName()), field.getType()));
+            field.set(target, resultSet.getObject(SqlStringHandler.humpToUnderline(field.getName()), field.getType()));
 
         }
 
         return target;
     }
 
-    public static   <T> T stringToTarget(String string, Class<T> t) throws Exception {
-        Constructor<?> constructor = t.getConstructor(String.class);
-        return (T) constructor.newInstance(string);
-        //if(double.class.equals(t)){
-        //    return Double.parseDouble(string);
-        //}
-        //if(long.class.equals(t)){
-        //    return Long.parseLong(string);
-        //}else if(int.class.equals(t)){
-        //
-        //    return Integer.parseInt(string);
-        //}
-        //else if(float.class.equals(t)){
-        //    return Float.parseFloat(string);
-        //}
-        //else if(short.class.equals(t)){
-        //    return Short.parseShort(string);
-        //}
-        //else if(boolean.class.equals(t)){
-        //    return Boolean.parseBoolean(string);
-        //}else{
-        //    return string;
-        //}
-    }
+    public static <T> T stringToTarget(String string, Class<T> t) throws Exception {
 
-    @Override
-    public Object handle(ResultSet resultSet, Map<String, Class<?>> resultMap, Class<?>  resultType) throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        if (resultSet.next()) {
-            return ObjectResultHandler.createResultTarget(resultSet, resultType);
+        Class<T> type;
+        if (double.class.equals(t)) {
+            type = (Class<T>) Double.class;
+        } else if (long.class.equals(t)) {
+            type = (Class<T>) Long.class;
+        } else if (int.class.equals(t)) {
+            type = (Class<T>) Integer.class;
+        } else if (float.class.equals(t)) {
+            type = (Class<T>) Float.class;
+        } else if (short.class.equals(t)) {
+            type = (Class<T>) Short.class;
+        } else if (boolean.class.equals(t)) {
+            type = (Class<T>) Boolean.class;
+        } else {
+            type = t;
         }
-        return null;
+        Constructor<?> constructor = type.getConstructor(String.class);
+        return (T) constructor.newInstance(string);
     }
 }

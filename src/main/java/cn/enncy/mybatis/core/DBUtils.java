@@ -20,21 +20,18 @@ public class DBUtils {
 
 
     static Object connect(Connector connector) throws ClassNotFoundException {
-
         Class.forName(DATA_SOURCE.getDriver());
-
         try(
                 Connection connection = DriverManager.getConnection(DATA_SOURCE.getUrl(), DATA_SOURCE.getUsername(), DATA_SOURCE.getPassword());
                 Statement statement = connection.createStatement()
-
         ){
            return connector.run(statement);
         }catch(Throwable throwable){
             throwable.printStackTrace();
         }
-
         return null;
-
     }
+
+
 
 }

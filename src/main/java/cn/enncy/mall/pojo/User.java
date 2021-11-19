@@ -52,7 +52,7 @@ public class User extends BaseObject {
      * 余额
      **/
     @Info("余额")
-    private BigDecimal balance;
+    private BigDecimal balance = new BigDecimal("0");
     /**
      * 是否激活
      **/

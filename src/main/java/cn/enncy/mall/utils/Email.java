@@ -46,7 +46,7 @@ public class Email {
 
     public static String template(String content) {
         return "<div style='text-align: center;\n" +
-                "    width: 30%;\n" +
+                "    max-width: 400px;\n" +
                 "    margin: 0 auto;\n" +
                 "    padding: 48px;\n" +
                 "    border: 1px solid rgb(236, 236, 236);\n" +

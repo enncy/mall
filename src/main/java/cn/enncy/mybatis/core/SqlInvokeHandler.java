@@ -1,14 +1,18 @@
 package cn.enncy.mybatis.core;
 
 
-import cn.enncy.mybatis.annotation.*;
-import cn.enncy.mybatis.annotation.Executable;
+import cn.enncy.mall.utils.Logger;
+import cn.enncy.mybatis.annotation.method.Executable;
+import cn.enncy.mybatis.annotation.type.Mapper;
+import cn.enncy.mybatis.annotation.type.Result;
 import cn.enncy.mybatis.core.result.ListResultHandler;
 import cn.enncy.mybatis.core.result.ObjectResultHandler;
 import cn.enncy.mybatis.core.result.ResultSetHandler;
 import cn.enncy.mybatis.entity.SQL;
-import cn.enncy.mybatis.handler.BodyHandler;
-import cn.enncy.mybatis.handler.ParamHandler;
+import cn.enncy.mybatis.handler.param.BodyHandler;
+import cn.enncy.mybatis.handler.param.ParamHandler;
+import cn.enncy.mybatis.handler.sql.DefaultSqlHandler;
+import cn.enncy.mybatis.utils.ParameterizedTypeUtils;
 
 import java.lang.reflect.*;
 import java.sql.ResultSet;
@@ -33,103 +37,120 @@ public class SqlInvokeHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        SQL sql = resolveSql(method, args);
+        Logger.log("-------------[ sql execute ]--------------");
+        // 1. 获取需要转换的类型
+        Class<?> targetType = resolveTargetType(proxy, method);
+        // 2. 处理语句
+        SQL sql = new DefaultSqlHandler(method, target, args).handle();
+
         if (sql != null) {
+            long time = 0;
+            Object value;
+            // 3. 执行语句
+            if (sql.isExecuteQuery()) {
+                value = executeQuery(method, targetType, sql.getValue());
+            } else {
+                long l = System.currentTimeMillis();
+                value = execute(sql.getValue());
+                time = System.currentTimeMillis() - l;
+            }
+
+            Logger.log(
+                    "\tsql\t: " + sql.getValue(),
+                    "\tresult\t: " + value,
+                    (time == 0 ? "" : "\ttakes\t: " + time + "/ms")
+            );
+            return value;
+        }
+
+        return null;
+    }
+
+    // 执行 sql
+    public Object execute(String sql) throws ClassNotFoundException {
+        return DBUtils.connect(statement -> {
+            String[] split = sql.split("\n");
+            if (split.length != 0) {
+                for (String s : split) {
+                    statement.execute(s);
+                }
+                return true;
+            } else {
+                return statement.execute(sql);
+            }
+
+        });
+    }
+
+    // 执行查询语句
+    public Object executeQuery(Method method, Class<?> targetType, String sql) throws ClassNotFoundException {
+        return DBUtils.connect(statement -> {
             long l = System.currentTimeMillis();
-            System.out.println("============[ sql execute ]============");
-            System.out.println("\t" + sql.getValue());
-
-            Object execute = execute(method, sql.getValue(), sql.isExecuteQuery());
-            System.out.println("\t" + execute);
-            System.out.println("============[ takes " + (System.currentTimeMillis() - l) + "/ms]============");
-            return execute;
-        }
-
-        return null;
+            // 结果集
+            ResultSet resultSet = statement.executeQuery(sql);
+            Logger.log("\ttakes\t: " + (System.currentTimeMillis() - l) + "/ms");
+            //  处理器处理结果集
+            ResultSetHandler handler = resolveResultSetHandler(method, resultSet, targetType);
+            // 处理返回结果
+            return handler.handle();
+        });
     }
 
-    public Object execute(Method method, String sql, boolean execQuery) throws ClassNotFoundException {
-        Class<?> returnType = method.getReturnType();
-        Mapper mapper = target.getAnnotation(Mapper.class);
-        if (execQuery) {
-
-            return DBUtils.connect(statement -> {
-                ResultSet resultSet = statement.executeQuery(sql);
-                // 1. 获取需要转换的类型，如果没有 Executable 注解，则获取 Mapper 注解上的类型
-                Class<?> target;
-                // 2. 获取结果映射表, 如果没有 Executable 注解，则 根据返回类型判断
-                Map<String, Class<?>> resultMap;
-                // 3. 分配给处理器处理结果集
-                ResultSetHandler handler;
-
-                // 4. 如何方法多加了 Executable 属性，则按照 Executable 方法去执行
-                if (method.isAnnotationPresent(Executable.class)) {
-                    Executable executable = method.getAnnotation(Executable.class);
-                    resultMap = new LinkedHashMap<>();
-                    target = executable.target();
-                    handler = executable.handler().getConstructor().newInstance();
-                    Result[] results = executable.resultMaps();
-                    for (Result result : results) {
-                        resultMap.put(result.key(), result.target());
-                    }
-                } else {
-                    target = mapper.target();
-                    resultMap = Arrays.stream(target.getDeclaredFields()).collect(Collectors.toMap(Field::getName, Field::getType));
-                    if (returnType.equals(List.class)) {
-                        handler = new ListResultHandler();
-                    } else {
-                        handler = new ObjectResultHandler();
-                    }
-                }
-
-                return handler.handle(resultSet, resultMap, target);
-            });
+    /**
+     * 获取处理器
+     *
+     * @param method     代理方法
+     * @param resultSet  sql结果集
+     * @param targetType 目标类型
+     * @return cn.enncy.mybatis.core.result.ResultSetHandler
+     */
+    public ResultSetHandler resolveResultSetHandler(Method method, ResultSet resultSet, Class<?> targetType) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        // 如何方法多加了 Executable 属性，则按照 Executable 方法去执行
+        if (method.isAnnotationPresent(Executable.class)) {
+            Executable executable = method.getAnnotation(Executable.class);
+            //  获取结果映射表
+            Map<String, Class<?>> resultMap = Arrays.stream(executable.resultMaps()).collect(Collectors.toMap(Result::key, Result::target));
+            // map 映射处理器
+            return executable.handler().getConstructor(ResultSet.class, Map.class).newInstance(resultSet, resultMap);
         } else {
-            return DBUtils.connect(statement -> statement.execute(sql));
+            // 如果返回值为 list 对象
+            if (method.getReturnType().equals(List.class)) {
+                // 集合处理器
+                return new ListResultHandler(resultSet, targetType);
+            } else {
+                // 对象处理器
+                return new ObjectResultHandler(resultSet, targetType);
+            }
         }
     }
 
-    public SQL resolveSql(Method method, Object[] args) throws Exception {
-        if (target.isAnnotationPresent(Mapper.class)) {
+
+    /**
+     * 获取执行的目标模型类型，例如 User.class
+     *
+     * @param proxy  代理对象
+     * @param method 代理的对象方法
+     * @return java.lang.Class<?>
+     */
+    public Class<?> resolveTargetType(Object proxy, Method method) {
+        Class<?> targetType;
+        Class<?> returnType = method.getReturnType();
+        // 如果是列表
+        if (returnType.equals(List.class)) {
             Mapper mapper = target.getAnnotation(Mapper.class);
-            boolean execQuery = false;
-
-            String sql = "";
-            if (method.isAnnotationPresent(Insert.class)) {
-                sql = method.getAnnotation(Insert.class).value();
-            } else if (method.isAnnotationPresent(Update.class)) {
-                sql = method.getAnnotation(Update.class).value();
-            } else if (method.isAnnotationPresent(Delete.class)) {
-                sql = method.getAnnotation(Delete.class).value();
-            } else if (method.isAnnotationPresent(Select.class)) {
-                execQuery = true;
-                sql = method.getAnnotation(Select.class).value();
+            // 获取列表中的泛型
+            targetType = mapper.target();
+        } else {
+            // 如何返回值是泛型
+            if (ParameterizedType.class.isAssignableFrom(returnType)) {
+                // 获取类的泛型作为目标类型
+                targetType = ParameterizedTypeUtils.get(proxy.getClass(), 0);
+            } else {
+                // 获取返回值作为目标类型
+                targetType = returnType;
             }
-
-            // 处理表名
-            sql = SqlStringHandler.replaceTableName(sql, mapper.table());
-
-            Parameter[] parameters = method.getParameters();
-            for (int i = 0; i < parameters.length; i++) {
-                Parameter parameter = parameters[i];
-                // 通过 Body注解  处理
-                if (parameter.isAnnotationPresent(Body.class)) {
-                    sql = bodyHandler.handle(sql, parameter, args[i]);
-                }
-                // 通过 Param注解  处理
-                else if (parameter.isAnnotationPresent(Param.class)) {
-                    sql = paramHandler.handle(sql, parameter, args[i]);
-                }
-                //如果参数都没有以上的注解，则抛出异常
-                else {
-                    throw new Exception("The method's parameters  is not match  those annotation:(Body|Param)");
-                }
-            }
-
-            return new SQL(sql, execQuery);
         }
-
-        return null;
+        return targetType;
     }
 
 }

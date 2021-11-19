@@ -41,7 +41,9 @@
     <title>Mall 找回密码</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="https://v4.bootcss.com/docs/4.6/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://v5.bootcss.com/docs/5.1/dist/css/bootstrap.min.css" rel="stylesheet" >
+    <!-- Custom styles for this template -->
+    <link href="https://v5.bootcss.com/docs/examples/sign-in/signin.css" rel="stylesheet">
     <link href="/assets/css/common.css" rel="stylesheet">
 </head>
 <body class="text-center">

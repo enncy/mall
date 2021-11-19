@@ -15,9 +15,16 @@ import java.util.Map;
  * @author enncy
  */
 public class ListResultHandler  implements ResultSetHandler{
+    ResultSet resultSet;
+    Class<?> resultType;
+
+    public ListResultHandler(ResultSet resultSet, Class<?> resultType) {
+        this.resultSet = resultSet;
+        this.resultType = resultType;
+    }
 
     @Override
-    public Object handle(ResultSet resultSet, Map<String, Class<?>> resultMap, Class<?>  resultType) throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public Object handle() throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         // 目标转换类型根据 resultType 字段 sql 注解的优先级最高，其次 到mapper 的注解
         List<Object> list = new ArrayList<>();
         while (resultSet.next()) {
