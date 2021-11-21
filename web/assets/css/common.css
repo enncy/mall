@@ -1,6 +1,7 @@
 
 .alert{
     line-height: 1 !important;
+    padding: 8px;
 }
 
 form.form-signin input[type]{

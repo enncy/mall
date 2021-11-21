@@ -60,25 +60,4 @@ public class ObjectResultHandler implements ResultSetHandler {
         return target;
     }
 
-    public static <T> T stringToTarget(String string, Class<T> t) throws Exception {
-
-        Class<T> type;
-        if (double.class.equals(t)) {
-            type = (Class<T>) Double.class;
-        } else if (long.class.equals(t)) {
-            type = (Class<T>) Long.class;
-        } else if (int.class.equals(t)) {
-            type = (Class<T>) Integer.class;
-        } else if (float.class.equals(t)) {
-            type = (Class<T>) Float.class;
-        } else if (short.class.equals(t)) {
-            type = (Class<T>) Short.class;
-        } else if (boolean.class.equals(t)) {
-            type = (Class<T>) Boolean.class;
-        } else {
-            type = t;
-        }
-        Constructor<?> constructor = type.getConstructor(String.class);
-        return (T) constructor.newInstance(string);
-    }
 }

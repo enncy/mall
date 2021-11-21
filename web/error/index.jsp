@@ -7,6 +7,9 @@
 <div class="p-5 d-flex justify-content-center">
 
     <%
+
+        exception.printStackTrace();
+
         String code = request.getParameter("code");
         String msg;
         String detail;
@@ -28,7 +31,6 @@
 
         }
 
-        exception.printStackTrace();
     %>
 
     <div class="jumbotron col-lg-6 col-sm-12">

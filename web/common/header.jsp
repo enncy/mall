@@ -6,25 +6,10 @@
     <title>Mall 电商系统</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="https://v4.bootcss.com/docs/4.6/dist/css/bootstrap.min.css" rel="stylesheet"  >
 
+    <link href="https://v5.bootcss.com/docs/5.1/dist/css/bootstrap.min.css" rel="stylesheet"  >
 
     <style>
-        .bd-placeholder-img {
-            font-size: 1.125rem;
-            text-anchor: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        @media (min-width: 768px) {
-            .bd-placeholder-img-lg {
-                font-size: 3.5rem;
-            }
-        }
-
         .container {
             max-width: 960px;
         }
@@ -39,8 +24,8 @@
             backdrop-filter: saturate(180%) blur(20px);
         }
         .site-header a {
-            color: #999;
-            transition: ease-in-out color .15s;
+            color: #8e8e8e;
+            transition: color .15s ease-in-out;
         }
         .site-header a:hover {
             color: #fff;
@@ -59,7 +44,6 @@
             height: 540px;
             background-color: #333;
             border-radius: 21px;
-            -webkit-transform: rotate(30deg);
             transform: rotate(30deg);
         }
 
@@ -88,15 +72,14 @@
          */
 
         .flex-equal > * {
-            -ms-flex: 1;
             flex: 1;
         }
         @media (min-width: 768px) {
             .flex-md-equal > * {
-                -ms-flex: 1;
                 flex: 1;
             }
         }
+
 
         .alert{
             line-height: 1 !important;

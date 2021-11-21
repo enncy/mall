@@ -1,6 +1,7 @@
 package cn.enncy.mall.utils;
 
 
+import cn.enncy.common.type.TypeUtils;
 import cn.enncy.mybatis.core.result.ObjectResultHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +23,6 @@ public class RequestUtils {
      * @return T
      */
     public static <T> T parseObject(HttpServletRequest request, Class<T> target) throws Exception {
-
         return (T) RequestUtils.replaceObject(request, target.getConstructor().newInstance());
     }
 
@@ -39,9 +39,11 @@ public class RequestUtils {
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
-
-            Object value = ObjectResultHandler.stringToTarget(request.getParameter(field.getName()), field.getType());
-            field.set(target,value);
+            String parameter = request.getParameter(field.getName());
+            if(parameter!=null){
+                Object value = TypeUtils.stringToTarget(parameter, field.getType());
+                field.set(target,value);
+            }
         }
         return target;
     }

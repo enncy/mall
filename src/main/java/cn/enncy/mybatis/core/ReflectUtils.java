@@ -50,6 +50,7 @@ public class ReflectUtils {
      * @return: java.lang.reflect.Field[]
      */
     public static Field[] getObjectFields(Class<?> clazz) {
+
         LinkedList<Field> list = new LinkedList<>(Arrays.asList(clazz.getDeclaredFields()));
 
         list.addAll(Arrays.asList(clazz.getSuperclass().getDeclaredFields()));

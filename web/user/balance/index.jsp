@@ -1,31 +1,6 @@
-<%@ page import="com.mysql.cj.util.StringUtils" %>
-<%@ page import="cn.enncy.mybatis.core.SqlSession" %>
-<%@ page import="cn.enncy.mall.pojo.User" %>
-<%@ page import="cn.enncy.mall.mapper.UserMapper" %>
-<%@ page import="cn.enncy.mall.constant.MallSession" %>
-<%@ page import="java.math.BigDecimal" %>
-<%@ page import="cn.enncy.mall.service.UserService" %>
-<%@ page import="cn.enncy.mall.utils.ServiceFactory" %>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<%
-
-    String balance = request.getParameter("balance");
-
-    if (request.getMethod().equals("POST") && !StringUtils.isNullOrEmpty(balance)) {
-        UserService userService = ServiceFactory.resolve(UserService.class);
-        User user = MallSession.from(session, User.class);
-        if (user != null) {
-            BigDecimal origin = user.getBalance();
-            user.setBalance(origin.add(BigDecimal.valueOf(Double.parseDouble(balance))));
-            userService.update(user);
-            response.sendRedirect("/user");
-        }
-
-
-    }
-
-%>
 
 <jsp:include page="/common/header.jsp"/>
 
@@ -39,7 +14,7 @@
 
     <div class="d-flex flex-wrap   col-lg-6 col-md-8 col-12">
 
-        <div class="card col-12 mt-2" style="width: 18rem;">
+        <div class="card col-12 w-100 mt-2" style="width: 18rem;">
             <div class="card-body">
 
                 <form method="POST">

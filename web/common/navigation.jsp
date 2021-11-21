@@ -34,23 +34,27 @@
         <a class="py-2 d-none d-md-inline-block" href="<%=cart%>">购物车</a>
         <a class="py-2 d-none d-md-inline-block" href="<%=orders%>">订单列表</a>
 
-
         <% if (user  != null) { %>
-        <div class="dropdown">
-            <a class=" dropdown-toggle py-2 d-none d-md-inline-block" href="#" role="button" id="dropdownMenuLink"
-               data-toggle="dropdown" aria-expanded="false">
-                <%=user.getNickname()%>
-            </a>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <a class="dropdown-item" href="/user">个人首页</a>
-                <% if(user.getRole().equals(Role.ADMIN.value)){ %>
-                <a class="dropdown-item" href="/admin">后台系统</a>
-                <% } %>
+        <div class="collapse show  " id="navbarNavDarkDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <%=user.getNickname()%>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                        <li><a class="dropdown-item" href="/user">个人首页</a></li>
+                        <% if(user.getRole().equals(Role.ADMIN.value)){ %>
+                        <li><a class="dropdown-item" href="/admin">后台系统</a></li>
+                        <% } %>
 
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/logout">退出</a>
-            </div>
+                        <div class="dropdown-divider"></div>
+                        <li><a class="dropdown-item" href="/logout">退出</a></li>
+
+                    </ul>
+                </li>
+            </ul>
         </div>
+
         <% } else { %>
         <a class="py-2 d-none d-md-inline-block" href="/login">未登录</a>
         <% } %>

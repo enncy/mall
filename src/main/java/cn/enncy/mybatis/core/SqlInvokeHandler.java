@@ -28,8 +28,6 @@ import java.util.stream.Collectors;
 public class SqlInvokeHandler implements InvocationHandler {
 
     public Class<?> target;
-    BodyHandler bodyHandler = new BodyHandler();
-    ParamHandler paramHandler = new ParamHandler();
 
     public SqlInvokeHandler(Class<?> target) {
         this.target = target;
@@ -39,7 +37,8 @@ public class SqlInvokeHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Logger.log("-------------[ sql execute ]--------------");
         // 1. 获取需要转换的类型
-        Class<?> targetType = resolveTargetType(proxy, method);
+        Class<?> targetType = resolveTargetType(method);
+
         // 2. 处理语句
         SQL sql = new DefaultSqlHandler(method, target, args).handle();
 
@@ -128,27 +127,21 @@ public class SqlInvokeHandler implements InvocationHandler {
     /**
      * 获取执行的目标模型类型，例如 User.class
      *
-     * @param proxy  代理对象
      * @param method 代理的对象方法
      * @return java.lang.Class<?>
      */
-    public Class<?> resolveTargetType(Object proxy, Method method) {
+    public Class<?> resolveTargetType(Method method) {
         Class<?> targetType;
         Class<?> returnType = method.getReturnType();
+
+        Mapper mapper = target.getAnnotation(Mapper.class);
         // 如果是列表
-        if (returnType.equals(List.class)) {
-            Mapper mapper = target.getAnnotation(Mapper.class);
+        if (returnType.equals(List.class) || returnType.equals(Object.class)) {
             // 获取列表中的泛型
             targetType = mapper.target();
         } else {
-            // 如何返回值是泛型
-            if (ParameterizedType.class.isAssignableFrom(returnType)) {
-                // 获取类的泛型作为目标类型
-                targetType = ParameterizedTypeUtils.get(proxy.getClass(), 0);
-            } else {
-                // 获取返回值作为目标类型
-                targetType = returnType;
-            }
+            // 获取返回值作为目标类型
+            targetType = returnType;
         }
         return targetType;
     }
