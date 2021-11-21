@@ -5,9 +5,8 @@ import cn.enncy.mall.annotaion.Info;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,7 +39,10 @@ public class BaseObjectUtils {
     }
 
     public static <T extends BaseObject> Stream<Field> getInfoFields(Class<T> obj) {
-        return Arrays.stream(obj.getDeclaredFields()).filter(field -> field.isAnnotationPresent(Info.class));
+        return Stream.of(obj.getDeclaredFields(), obj.getSuperclass().getDeclaredFields()).flatMap(Arrays::stream).filter(field -> field.isAnnotationPresent(Info.class));
+    }
 
+    public static List<Field> getAllFields(Class<? extends BaseObject> obj){
+        return Stream.of(obj.getDeclaredFields(), obj.getSuperclass().getDeclaredFields()).flatMap(Arrays::stream).collect(Collectors.toList());
     }
 }

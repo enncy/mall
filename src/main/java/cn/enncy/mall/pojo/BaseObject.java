@@ -15,6 +15,7 @@ public class BaseObject {
     private long id;
     @Info("创建时间")
     private long createTime;
+
     @Info("更新时间")
     private long updateTime;
 

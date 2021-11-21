@@ -16,7 +16,7 @@ public class User extends BaseObject {
     /**
      * 昵称
      **/
-    @Info("标签")
+    @Info("昵称")
     private String nickname;
     /**
      * 账号

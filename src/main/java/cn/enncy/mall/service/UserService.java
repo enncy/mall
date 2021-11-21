@@ -26,9 +26,10 @@ public class UserService extends  BaseService<User,UserMapper> implements UserMa
     }
 
     @Override
-    public List<User> findByNickname(String nickname) {
-        return mapper.findByNickname(nickname);
+    public List<User> findAccountOrNicknameLike(String name, int page, int size) {
+        return mapper.findAccountOrNicknameLike(name,page,size);
     }
+
 
     @Override
     public boolean deleteInactiveUser() {

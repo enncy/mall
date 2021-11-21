@@ -40,13 +40,12 @@ public interface UserMapper extends BaseMapper<User> {
 
 
     /**
-     *  根据 昵称 查找用户
-     *
-     * @param nickname  昵称
+     *  根据 昵称 或 账号 查找用户
+
      * @return cn.enncy.mall.pojo.User
      */
-    @Select("select * from #{"+ TABLE_NAME +"} where nickname like '%#{nickname}%'")
-    List<User> findByNickname(@Param("nickname") String nickname);
+    @Select("select * from #{"+ TABLE_NAME +"} where account like '%#{name}%'  or  nickname like '%#{name}%'  limit #{page},#{size};")
+    List<User> findAccountOrNicknameLike(@Param("name") String name,@Param("page") int page, @Param("size") int size);
 
 
     /**

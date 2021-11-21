@@ -123,7 +123,7 @@ public class SqlStringHandler {
         if (!sqlString.contains(SqlConstant.TABLE_NAME)) {
             throw new MybatisSqlError("param is not found : "+SqlConstant.TABLE_NAME + " ,  in sql string : "+sqlString);
         }
-        sqlString = replaceParam(sqlString, SqlConstant.TABLE_NAME, tableName);
+        sqlString = replaceParam(sqlString, SqlConstant.TABLE_NAME, "`"+tableName+"`");
         return sqlString;
     }
 
