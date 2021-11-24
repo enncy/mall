@@ -2,6 +2,7 @@ package cn.enncy.mall.pojo;
 
 
 import cn.enncy.mall.annotaion.Info;
+import cn.enncy.mall.constant.InputType;
 
 /**
  * //TODO
@@ -10,11 +11,11 @@ import cn.enncy.mall.annotaion.Info;
  * @author  enncy
  */
 public class Cart extends BaseObject {
-    @Info("用户id")
+    @Info(value = "用户id",type = InputType.NUMBER)
     private long userId;
-    @Info("商品id")
+    @Info(value = "商品id",type = InputType.NUMBER)
     private long goodsId;
-    @Info("数量")
+    @Info(value = "数量",type = InputType.NUMBER)
     private int count;
 
     public long getUserId() {

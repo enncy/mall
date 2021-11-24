@@ -63,6 +63,7 @@ public class SqlStringHandler {
 
         String result = sqlString;
         List<String> list = new ArrayList<>();
+
         for (Map.Entry<String, Object> entry : paramsMap.entrySet()) {
             list.add(" " + SqlStringHandler.humpToUnderline(entry.getKey()) + "=" + "\"" + entry.getValue() + "\" ");
         }

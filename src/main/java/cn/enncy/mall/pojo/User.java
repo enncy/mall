@@ -2,6 +2,11 @@ package cn.enncy.mall.pojo;
 
 
 import cn.enncy.mall.annotaion.Info;
+import cn.enncy.mall.annotaion.Option;
+import cn.enncy.mall.annotaion.Select;
+import cn.enncy.mall.constant.InputType;
+import cn.enncy.mall.constant.Role;
+import cn.enncy.mall.constant.Tag;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -26,17 +31,20 @@ public class User extends BaseObject {
     /**
      * 密码
      **/
-    @Info("密码")
+    @Info(value = "密码",type = InputType.PASSWORD)
     private String password;
     /**
      * 权限
      **/
-    @Info("权限")
+    @Info(value = "权限",tag = Tag.SELECT)
+    @Select(options = {
+            @Option(value = "user",description = "普通用户"),@Option(value = "admin",description = "管理员")
+    })
     private String role;
     /**
      * 邮箱
      **/
-    @Info("邮箱")
+    @Info(value = "邮箱",type = InputType.EMAIL)
     private String email;
     /**
      * 头像
@@ -51,12 +59,15 @@ public class User extends BaseObject {
     /**
      * 余额
      **/
-    @Info("余额")
+    @Info(value = "余额",type = InputType.NUMBER)
     private BigDecimal balance = new BigDecimal("0");
     /**
      * 是否激活
      **/
-    @Info("是否激活")
+    @Select(options = {
+            @Option(value = "true",description = "已激活"),@Option(value = "false",description = "未激活")
+    })
+    @Info(value = "是否激活",tag = Tag.SELECT)
     private boolean active;
 
     public String getNickname() {
@@ -131,10 +142,14 @@ public class User extends BaseObject {
         this.active = active;
     }
 
+
     @Override
     public String toString() {
         return "User{" +
-                "nickname='" + nickname + '\'' +
+                "id=" + id +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", nickname='" + nickname + '\'' +
                 ", account='" + account + '\'' +
                 ", password='" + password + '\'' +
                 ", role='" + role + '\'' +

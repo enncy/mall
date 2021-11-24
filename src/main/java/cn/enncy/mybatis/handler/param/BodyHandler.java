@@ -24,11 +24,6 @@ public class BodyHandler implements Handler {
         String result = sql;
         Map<String, Object> objectsValueMap = ReflectUtils.getObjectsValueMap(value);
 
-        Object active = objectsValueMap.get("active");
-        if(active!=null){
-            objectsValueMap.replace("active", (Boolean.parseBoolean(active.toString()) ? "1" : "0"));
-        }
-
 
         if (sql.toUpperCase().startsWith(SqlConstant.INSERT)) {
             objectsValueMap.remove("id");
@@ -36,9 +31,9 @@ public class BodyHandler implements Handler {
             result = SqlStringHandler.replaceInsertFields(result, objectsValueMap);
         } else {
             if (sql.toUpperCase().startsWith(SqlConstant.UPDATE)) {
-                // 设置更新时间
-                objectsValueMap.replace("createTime", System.currentTimeMillis());
+                Object id = objectsValueMap.remove("id");
                 result = SqlStringHandler.replaceUpdateFields(result, objectsValueMap);
+                objectsValueMap.put("id", id);
                 result = SqlStringHandler.replaceParams(result, objectsValueMap);
             } else if(sql.toUpperCase().startsWith(SqlConstant.DELETE)){
                 result = SqlStringHandler.replaceParams(result, objectsValueMap);

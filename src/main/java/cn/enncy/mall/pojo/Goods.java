@@ -2,6 +2,10 @@ package cn.enncy.mall.pojo;
 
 
 import cn.enncy.mall.annotaion.Info;
+import cn.enncy.mall.annotaion.Option;
+import cn.enncy.mall.annotaion.Select;
+import cn.enncy.mall.constant.InputType;
+import cn.enncy.mall.constant.Tag;
 
 import java.math.BigDecimal;
 
@@ -15,15 +19,21 @@ public class Goods extends BaseObject{
 
     @Info("名字")
     private String name;
-    @Info("价格")
+    @Info(value = "价格",type = InputType.NUMBER)
     private BigDecimal price;
     @Info("描述")
     private String description;
     @Info("图片路径")
     private String img;
-    @Info("是否上架")
+
+    @Info(value = "是否上架",tag = Tag.SELECT)
+    @Select(options = {
+            @Option(value = "true",description = "已上架"),@Option(value = "false",description = "已下架")
+    })
     private boolean selling;
-    @Info("库存")
+
+
+    @Info(value = "库存",type = InputType.NUMBER)
     private int count;
     @Info("标签")
     private String tag;

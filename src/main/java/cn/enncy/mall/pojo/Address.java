@@ -2,6 +2,7 @@ package cn.enncy.mall.pojo;
 
 
 import cn.enncy.mall.annotaion.Info;
+import cn.enncy.mall.constant.InputType;
 
 /**
  * //TODO
@@ -11,9 +12,9 @@ import cn.enncy.mall.annotaion.Info;
  */
 public class Address extends BaseObject {
 
-    @Info("用户id")
+    @Info(value = "用户id",type = InputType.NUMBER)
     private long userId;
-    @Info("手机")
+    @Info(value = "手机",type = InputType.TEL)
     private String phone;
     @Info("详情")
     private String detail;

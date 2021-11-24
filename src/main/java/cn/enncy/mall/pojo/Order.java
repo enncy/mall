@@ -2,6 +2,12 @@ package cn.enncy.mall.pojo;
 
 
 import cn.enncy.mall.annotaion.Info;
+import cn.enncy.mall.annotaion.Option;
+import cn.enncy.mall.annotaion.Select;
+import cn.enncy.mall.constant.InputType;
+
+import cn.enncy.mall.constant.OrderStatus;
+import cn.enncy.mall.constant.Tag;
 
 /**
  * //TODO
@@ -15,11 +21,17 @@ public class Order extends BaseObject{
     private long userId;
     @Info("地址id")
     private long addressId;
-    @Info("商品id")
+
+    @Info(value = "商品id",type = InputType.NUMBER)
     private long goodsId;
-    @Info("数量")
+
+    @Info(value = "数量",type = InputType.NUMBER)
     private int count;
-    @Info("状态")
+
+    @Info(value = "状态",tag = Tag.SELECT)
+    @Select(options = {
+            @Option(value = "payment",description = "待付款"),@Option(value = "receiving",description = "配送中"),@Option(value = "finished",description = "完成"),@Option(value = "cancel",description = "取消")
+    })
     private String status;
 
     public long getUserId() {

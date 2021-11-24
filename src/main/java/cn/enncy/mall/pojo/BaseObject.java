@@ -2,6 +2,8 @@ package cn.enncy.mall.pojo;
 
 
 import cn.enncy.mall.annotaion.Info;
+import cn.enncy.mall.constant.InputType;
+import cn.enncy.mall.utils.formatter.DateFormatter;
 
 
 /**
@@ -11,19 +13,13 @@ import cn.enncy.mall.annotaion.Info;
  * @author enncy
  */
 public class BaseObject {
-    @Info("id")
-    private long id;
-    @Info("创建时间")
-    private long createTime;
+    @Info(value = "id", type = InputType.NUMBER, disabled = true, rank = 1)
+    protected long id;
+    @Info(value = "创建时间", formatter = DateFormatter.class, disabled = true)
+    protected long createTime;
 
-    @Info("更新时间")
-    private long updateTime;
-
-
-    public BaseObject() {
-        this.createTime = System.currentTimeMillis();
-        this.updateTime = this.createTime;
-    }
+    @Info(value = "更新时间", formatter = DateFormatter.class, disabled = true)
+    protected long updateTime;
 
 
     public long getId() {

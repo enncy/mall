@@ -27,7 +27,12 @@ public class ReflectUtils {
                 if (!f.isAccessible()) {
                     f.setAccessible(true);
                 }
-                map.put(f.getName(), f.get(object));
+                if(f.getType().equals(boolean.class)){
+                    map.put(f.getName(), (Boolean.parseBoolean(f.get(object).toString()) ? "1" : "0"));
+                }else{
+                    map.put(f.getName(), f.get(object));
+                }
+
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }

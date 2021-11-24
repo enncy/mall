@@ -14,12 +14,13 @@ public enum OrderStatus {
     CANCEL("cancel","取消")
     ;
 
-    public String status;
+    public String value;
     public String description;
 
-    OrderStatus(String status, String desc) {
-        this.status = status;
+    OrderStatus(String value, String desc) {
+        this.value = value;
         this.description = desc;
     }
 
 }
+

@@ -17,7 +17,7 @@
     <div class="row justify-content-end">
 
         <nav id="sidebarMenu" class="col-md-3 col-lg-1 d-md-block bg-light sidebar collapse"  >
-            <div class="sidebar-sticky pt-3"  >
+            <div class="sidebar-sticky pt-3"  style="background:white" >
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link active" href="/admin" id="index">
@@ -87,4 +87,4 @@
 
             </div>
         </nav>
-        <main role="main" class="col-md-10 ml-sm-auto col-lg-11 px-md-4 p-lg-5 pt-4  ">
+        <main role="main" class="col-md-10 ml-sm-auto col-lg-11 px-md-4 p-lg-5 pt-4  " style="background-color: #fafafa">

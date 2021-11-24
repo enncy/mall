@@ -43,6 +43,7 @@
 
         body {
             font-size: .875rem;
+            background-color: #fafafa;
         }
 
         .feather {

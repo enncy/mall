@@ -6,6 +6,7 @@ import cn.enncy.mall.pojo.BaseObject;
 import cn.enncy.mybatis.core.SqlSession;
 import cn.enncy.mybatis.utils.ParameterizedTypeUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -25,7 +26,6 @@ public class BaseService<T extends BaseObject, M extends BaseMapper<T>> implemen
         this.mapper = (M) SqlSession.getMapper(type);
     }
 
-
     @Override
     public int count() {
         return mapper.count();
@@ -33,6 +33,9 @@ public class BaseService<T extends BaseObject, M extends BaseMapper<T>> implemen
 
     @Override
     public boolean insert(T baseObject) {
+        long l = System.currentTimeMillis();
+        baseObject.setCreateTime(l);
+        baseObject.setUpdateTime(l);
         return mapper.insert(baseObject);
     }
 
@@ -58,6 +61,9 @@ public class BaseService<T extends BaseObject, M extends BaseMapper<T>> implemen
 
     @Override
     public boolean update(T baseObject) {
+        System.out.println("update "+baseObject);
+        baseObject.setUpdateTime(System.currentTimeMillis());
+        baseObject.setCreateTime(baseObject.getCreateTime());
         return mapper.update(baseObject);
     }
 }
