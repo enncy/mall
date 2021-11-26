@@ -4,6 +4,7 @@ package cn.enncy.spring.mvc.core;
 import cn.enncy.mall.utils.TypeUtils;
 import cn.enncy.mall.utils.RequestUtils;
 import cn.enncy.reflect.AnnotationUtils;
+import cn.enncy.spring.mvc.PathUtils;
 import cn.enncy.spring.mvc.annotation.Controller;
 import cn.enncy.spring.mvc.annotation.Get;
 import cn.enncy.spring.mvc.annotation.RestController;
@@ -104,15 +105,6 @@ public class DispatcherServlet implements Filter {
 
     }
 
-    /**
-     * 转换路径
-     *
-     * @param str
-     * @return java.util.List<java.lang.String>
-     */
-    private List<String> validPath(String str) {
-        return Arrays.stream(str.split("/")).filter(s -> !"".equals(s)).collect(Collectors.toList());
-    }
 
     /**
      * 转换请求体，传递到方法参数体中
@@ -186,9 +178,9 @@ public class DispatcherServlet implements Filter {
                             } else if ("GET".equalsIgnoreCase(req.getMethod())) {
                                 path = prefix + ((Get) annotation).value();
                             }
-                            String validPath = String.join("/", validPath(path));
+                            String validPath = String.join("/",PathUtils.  splitPath(path));
 
-                            String validTargetPath = String.join("/", validPath(req.getRequestURI()));
+                            String validTargetPath = String.join("/", PathUtils. splitPath(req.getRequestURI()));
                             // 如果路径匹配
                             if (validPath.equalsIgnoreCase(validTargetPath)) {
 

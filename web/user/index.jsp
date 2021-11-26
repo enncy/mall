@@ -104,7 +104,7 @@
                 <div class="mb-3 col-12" style="display: <%=info.disabled()?"none":"display"%>">
                     <label for="input<%=name%>"><%=info.value()%>
                     </label>
-                    <input <%=info.disabled()?"disabled":""%> name="<%=name%>" type="<%=info.type().value%>"
+                    <input  name="<%=name%>" type="<%=info.type().value%>"
                                                               class="form-control" id="input<%=name%>"
                                                               value="<%=value%>">
                 </div>

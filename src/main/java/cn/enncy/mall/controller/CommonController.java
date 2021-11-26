@@ -209,4 +209,10 @@ public class CommonController {
         return "/forget/reset/index";
     }
 
+    @Get("/logout")
+    public void logout() throws IOException {
+        session.removeAttribute("user");
+        response.sendRedirect("/");
+    }
+
 }

@@ -20,10 +20,13 @@ import java.util.concurrent.*;
 @WebListener
 public class Application implements ServletContextListener {
 
+    public static  String  REAL_PATH = "";
+
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        System.out.println(Application.class .getResource(""));
+        Application.REAL_PATH = servletContextEvent.getServletContext().getRealPath("");
+        System.out.println(Application.class.getClassLoader().getResource("/"));
         Logger.log("tomcat 启动");
         startRegisterTask();
     }
