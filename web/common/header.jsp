@@ -9,6 +9,8 @@
 
     <link href="https://v5.bootcss.com/docs/5.1/dist/css/bootstrap.min.css" rel="stylesheet"  >
 
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"
+    ></script>
     <style>
         .container {
             max-width: 960px;

@@ -52,44 +52,7 @@ public class UserController {
 
     @Post("/user")
     public String userPost(@Body User user) {
-        FileItemFactory factory = new DiskFileItemFactory();
-        ServletFileUpload upload = new ServletFileUpload(factory);
-        try {
-            List<FileItem> items = upload.parseRequest(request);
-            Map<String, FileItem> map = items.stream().collect(Collectors.toMap(FileItem::getFieldName, fileItem -> fileItem));
-            String password = map.remove("password").getString("utf-8");
-            String email = map.remove("email").getString("utf-8");
-            String nickname = map.remove("nickname").getString("utf-8");
-            String profile = map.remove("profile").getString("utf-8");
-            FileItem avatarItem = map.remove("avatar");
-            String avatarPath = "/assets/img/avatar/" + Security.stringToMD5(user.getAccount()) + ".png";
-            long size = avatarItem.getSize();
-            if (size > 0) {
-                // 获取文件路径
-
-                String filePath = request.getServletContext().getRealPath(avatarPath);
-                // 保存文件，如果存在则删除
-                File file = new File(filePath);
-                if (file.exists()) {
-                    if (file.delete()) {
-                        avatarItem.write(file);
-                    }
-                } else {
-                    avatarItem.write(file);
-                }
-            }
-            user.setPassword(password);
-            user.setEmail(email);
-            user.setNickname(nickname);
-            user.setProfile(profile);
-            user.setAvatar(avatarPath);
-            userService.update(user);
-            // 刷新缓存
-            user.setAvatar(avatarPath + "?t=" + System.currentTimeMillis());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        userService.update(user);
         session.setAttribute("user",user);
         return "/user/index";
     }

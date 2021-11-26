@@ -51,7 +51,7 @@ public class BaseService<T extends BaseObject, M extends BaseMapper<T>> implemen
 
     @Override
     public List<T> findByPages(int page, int size) {
-        return mapper.findByPages(page * size, size);
+        return mapper.findByPages(page * size, size==0?10:0);
     }
 
     @Override

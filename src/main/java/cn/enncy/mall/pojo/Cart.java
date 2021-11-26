@@ -18,9 +18,13 @@ public class Cart extends BaseObject {
     @Reference(ServiceMapping.USER)
     @Info(value = "用户id", tag = Tag.REFERENCE)
     private long userId;
+
+
     @Reference(ServiceMapping.GOODS)
     @Info(value = "商品id", tag = Tag.REFERENCE)
     private long goodsId;
+
+
     @Info(value = "数量", type = InputType.NUMBER)
     private int count;
 

@@ -106,7 +106,7 @@
 
                     <div class="d-flex w-100 input-group">
                         <input name="<%=name%>" type="text" class="form-control" id="input<%=name%>" disabled
-                               value="点击按钮添加用户">
+                               value="点击按钮添加<%=mapping.desc%>">
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-primary " style="white-space: nowrap"
                                 onclick="search('<%=name%>','<%=mapping.name%>')"
@@ -135,10 +135,8 @@
                                         </button>
                                     </div>
                                     <div>
-                                        <div class="list-group" id="searchList">
+                                        <div class="list-group" id="<%=name%>SearchList">
                                             <label class="list-group-item">
-                                                <input class="form-check-input me-1  search-checkbox" type="checkbox"
-                                                       value="">
                                                 暂无数据
                                             </label>
 
@@ -178,9 +176,6 @@
 <jsp:include page="/admin/common/footer.jsp"/>
 
 <script>
-    var page = 0;
-    var size = 10;
-
 
     function search(fieldName, serviceName) {
         $.ajax({
@@ -197,11 +192,14 @@
                         html += `
                         <label class="list-group-item">
                             <input name="\${fieldName}" class="form-check-input me-1  search-radio" type="radio" value="\${i.id}">
-                            \${Reflect.ownKeys(i).map(k=>i[k]).filter(s=>typeof(s) === 'string').join("-")}
+                            \${Reflect.ownKeys(i).map(k=>i[k]).join("-")}
                         </label>
                         `
                     }
-                    $("#searchList").html(html)
+                    if(html!==""){
+                        $("#"+fieldName+"SearchList").html(html)
+                    }
+
                 }
 
             },

@@ -45,8 +45,6 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"  ></script>
-
 <script src="https://v5.bootcss.com/docs/5.1/dist/js/bootstrap.bundle.min.js"  ></script>
 
 </body>

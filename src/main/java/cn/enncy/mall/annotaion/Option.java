@@ -3,7 +3,7 @@ package cn.enncy.mall.annotaion;
 import java.lang.annotation.*;
 
 /**
- * //TODO
+ * 选项，搭配 @Select 注解使用
  * <br/>Created in 21:04 2021/11/23
  *
  * @author enncy

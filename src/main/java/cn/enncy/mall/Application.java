@@ -23,6 +23,7 @@ public class Application implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
+        System.out.println(Application.class .getResource(""));
         Logger.log("tomcat 启动");
         startRegisterTask();
     }

@@ -14,6 +14,9 @@
 <%@ page import="cn.enncy.mall.service.UserService" %>
 <%@ page import="cn.enncy.mall.utils.ServiceFactory" %>
 <%@ page import="java.text.DecimalFormat" %>
+<%@ page import="cn.enncy.mall.pojo.BaseObjectUtils" %>
+<%@ page import="java.lang.reflect.Field" %>
+<%@ page import="cn.enncy.mall.annotaion.Info" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
@@ -29,15 +32,17 @@
 
 <div class="p-lg-5 mt-lg-5 mb-lg-5 d-flex justify-content-center  flex-lg-nowrap flex-wrap">
 
-
     <jsp:include page="navigation.jsp"/>
 
-    <div class="d-flex flex-wrap   col-lg-6 col-md-8 col-12">
+    <form method="POST" class="d-flex flex-wrap   col-lg-6 col-md-8 col-12">
+
         <div class="card col-12">
             <div class="card-body d-flex align-items-center" style="white-space: nowrap">
-                <div class="col-2 text-center">
+                <div class="col-2 text-center" data-bs-toggle="modal" data-bs-target="#upload"
+                     style="cursor: pointer">
                     <% if (user.getAvatar() == null) { %>
-                    <svg style="width: 40px;height: 40px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    <svg style="width: 40px;height: 40px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                         fill="currentColor"
                          class="bi bi-person-fill"
                          viewBox="0 0 16 16">
                         <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
@@ -58,7 +63,7 @@
                 <div class="ml-2 d-flex col-6 justify-content-end  align-items-baseline">
                     <div style="color: #7abaff;font-size: xx-large;cursor:pointer;">
 
-                        <%=user.getBalance().toString().equals("0")?"0":new DecimalFormat("#,##0.00").format(user.getBalance().setScale(2, BigDecimal.ROUND_HALF_UP))%>
+                        <%=user.getBalance().toString().equals("0") ? "0" : new DecimalFormat("#,##0.00").format(user.getBalance().setScale(2, BigDecimal.ROUND_HALF_UP))%>
                     </div>
                     <div class="ml-1" style="color: #7abaff;font-size: xx-large">
                         $
@@ -77,56 +82,69 @@
             </div>
 
             <div class="p-4">
-                <form method="POST" enctype="multipart/form-data">
-                    <div class="mb-3 col-12">
-                        <label for="inputAccount">账号</label>
-                        <input disabled name="account" type="text" class="form-control" id="inputAccount"
-                               value="${sessionScope.user.account}">
-                    </div>
-                    <div class="mb-3 col-12">
-                        <label for="inputPassword">密码</label>
-                        <input name="password" type="password" class="form-control" id="inputPassword"
-                               value="${sessionScope.user.password}">
-                    </div>
-                    <div class="mb-3 col-12">
-                        <label for="inputEmail">邮箱</label>
-                        <input name="email" type="email" class="form-control" id="inputEmail"
-                               value="${sessionScope.user.email}">
-                    </div>
-                    <div class="mb-3 col-12">
-                        <label for="inputNickname">昵称</label>
-                        <input name="nickname" type="text" class="form-control" id="inputNickname"
-                               value="${sessionScope.user.nickname}">
-                    </div>
-                    <div class="mb-3 col-12">
-                        <label for="inputProfile">简介</label>
-                        <textarea name="profile" class="form-control" id="inputProfile"
-                                  rows="3">${sessionScope.user.profile}</textarea>
-                    </div>
-                    <div class="mb-3 col-12">
 
-                        <label for="inputAvatar" style="width: 100%;">
-                            <div class="card" style="border: 3px dotted rgba(0,0,0,.125);">
-                                <div class="card-body">
-                                    <div class="p-4  text-center" id="filename">点击上传头像</div>
-                                </div>
-                            </div>
-                        </label>
-                        <input name="avatar" accept=".png,.jpg" type="file" class="form-control" id="inputAvatar"
-                               style="display:none;">
+                <%
+                    List<Field> allFields = BaseObjectUtils.getAllFields(user.getClass());
+                    Map<String, Object> valuesMap = BaseObjectUtils.getValuesMap(user);
+                %>
 
-                    </div>
+                <%
+                    // 去掉禁止的属性
+                    for (Field field : allFields) {
+                        // 属性名
+                        String name = field.getName();
+                        // 属性值
+                        Object value = valuesMap.get(field.getName());
 
-                    <div class=" col-12">
-                        <button type="submit" class="btn btn-primary w-25 float-end">修改</button>
-                    </div>
+                        Info info = field.getAnnotation(Info.class);
 
-                </form>
+
+                %>
+
+                <div class="mb-3 col-12" style="display: <%=info.disabled()?"none":"display"%>">
+                    <label for="input<%=name%>"><%=info.value()%>
+                    </label>
+                    <input <%=info.disabled()?"disabled":""%> name="<%=name%>" type="<%=info.type().value%>"
+                                                              class="form-control" id="input<%=name%>"
+                                                              value="<%=value%>">
+                </div>
+
+                <% } %>
+
+                <div class=" col-12">
+                    <button type="submit" class="btn btn-primary w-25 float-end">修改</button>
+                </div>
+
+
             </div>
 
         </div>
-    </div>
 
+
+        <!-- Modal -->
+        <div class="modal fade" id="upload" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">上传头像</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="text-align: center">
+                            <input class="form-control" type="file" accept=".png,.jpg" onchange="upload(this)">
+                            <img id="uploadImage" style="max-width: 400px" class="m-2" src="<%=user.getAvatar()%>">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary">上传</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </form>
 
 </div>
 
@@ -134,8 +152,34 @@
 <jsp:include page="/common/footer.jsp"/>
 
 <script>
-    document.querySelector('[type="file"]').onchange = function (e) {
-        console.log(e.target.value)
-        document.querySelector('#filename').innerHTML = e.target.value.split('\\').pop()
+    // document.querySelector('[type="file"]').onchange = function (e) {
+    //     console.log(e.target.value)
+    //     document.querySelector('#filename').innerHTML = e.target.value.split('\\').pop()
+    // }
+
+    function upload(el) {
+
+        let formData = new FormData();
+        let file = el.files.item(0)
+        console.log("upload", file)
+        formData.append('image', file); //添加图片信息的参数
+        $.ajax({
+            url: '/image/upload?name=' + file.name,
+            data: formData,
+            method: 'post',
+            processData: false, // 告诉jQuery不要去处理发送的数据
+            contentType: false, // 告诉jQuery不要去设置Content-Type请求头
+            dataType: "json",
+            success(r) {
+                console.log(r)
+                if (r.status) {
+                    $("#inputavatar").val(r.data);
+                    $("#uploadImage").attr("src", r.data)
+                }
+            },
+            error() {
+                alert("上传失败!")
+            }
+        })
     }
 </script>

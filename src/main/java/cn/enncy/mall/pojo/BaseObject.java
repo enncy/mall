@@ -2,6 +2,7 @@ package cn.enncy.mall.pojo;
 
 
 import cn.enncy.mall.annotaion.Info;
+import cn.enncy.mall.annotaion.Showable;
 import cn.enncy.mall.constant.InputType;
 import cn.enncy.mall.utils.formatter.DateFormatter;
 
@@ -13,6 +14,7 @@ import cn.enncy.mall.utils.formatter.DateFormatter;
  * @author enncy
  */
 public class BaseObject {
+    @Showable
     @Info(value = "id", type = InputType.NUMBER, disabled = true, rank = 1)
     protected long id;
     @Info(value = "创建时间", formatter = DateFormatter.class, disabled = true)

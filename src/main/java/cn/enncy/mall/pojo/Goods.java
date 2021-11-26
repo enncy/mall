@@ -4,6 +4,7 @@ package cn.enncy.mall.pojo;
 import cn.enncy.mall.annotaion.Info;
 import cn.enncy.mall.annotaion.Option;
 import cn.enncy.mall.annotaion.Select;
+import cn.enncy.mall.annotaion.Showable;
 import cn.enncy.mall.constant.InputType;
 import cn.enncy.mall.constant.Tag;
 
@@ -16,25 +17,31 @@ import java.math.BigDecimal;
  * @author enncy
  */
 public class Goods extends BaseObject{
-
+    @Showable
     @Info("名字")
     private String name;
+
+    @Showable
     @Info(value = "价格",type = InputType.NUMBER)
     private BigDecimal price;
+
+
     @Info("描述")
     private String description;
+
+
     @Info("图片路径")
     private String img;
 
+    @Showable
     @Info(value = "是否上架",tag = Tag.SELECT)
     @Select(options = {
             @Option(value = "true",description = "已上架"),@Option(value = "false",description = "已下架")
     })
     private boolean selling;
 
-
     @Info(value = "库存",type = InputType.NUMBER)
-    private int count;
+    private int stock;
     @Info("标签")
     private String tag;
 
@@ -78,12 +85,12 @@ public class Goods extends BaseObject{
         this.selling = selling;
     }
 
-    public int getCount() {
-        return count;
+    public int getStock() {
+        return stock;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 
     public String getTag() {
@@ -97,12 +104,15 @@ public class Goods extends BaseObject{
     @Override
     public String toString() {
         return "Goods{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", name='" + name + '\'' +
                 ", price=" + price +
                 ", description='" + description + '\'' +
                 ", img='" + img + '\'' +
                 ", selling=" + selling +
-                ", count=" + count +
+                ", stock=" + stock +
                 ", tag='" + tag + '\'' +
                 '}';
     }

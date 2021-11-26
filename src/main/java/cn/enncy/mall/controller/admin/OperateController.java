@@ -26,9 +26,10 @@ import java.io.IOException;
 @Controller
 public class OperateController {
 
-    HttpServletResponse response;
     HttpServletRequest request;
+    HttpServletResponse response;
     HttpSession session;
+
 
     @Get("/admin/common/operate/user")
     public String operateUser(@Param("targetId") long targetId) throws IOException, InstantiationException, IllegalAccessException {

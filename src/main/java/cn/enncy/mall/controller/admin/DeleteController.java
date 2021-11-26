@@ -8,7 +8,9 @@ import cn.enncy.spring.mvc.annotation.Controller;
 import cn.enncy.spring.mvc.annotation.Get;
 import cn.enncy.spring.mvc.annotation.params.Param;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -21,8 +23,10 @@ import java.io.IOException;
 @Controller
 public class DeleteController {
 
-
+    HttpServletRequest request;
     HttpServletResponse response;
+    HttpSession session;
+
 
     @Get("/admin/common/delete/user")
     public void deleteUser(@Param("targetId") long targetId) throws IOException {

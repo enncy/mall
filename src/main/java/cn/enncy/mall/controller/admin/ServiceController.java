@@ -36,8 +36,8 @@ public class ServiceController {
     OrderService orderService = ServiceFactory.resolve(OrderService.class);
     GoodsService goodsService = ServiceFactory.resolve(GoodsService.class);
 
-    HttpServletResponse response;
     HttpServletRequest request;
+    HttpServletResponse response;
     HttpSession session;
 
 

@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class UserService extends  BaseService<User,UserMapper> implements UserMapper {
 
+
     @Override
     public User findOneByAccount(String account) {
         return mapper.findOneByAccount(account);

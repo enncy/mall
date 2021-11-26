@@ -30,6 +30,7 @@ public class CommonRestController {
 
     HttpServletRequest request;
 
+
     @Post("image/upload")
     public ResultBody imageUpload(@Param("name") String name){
         FileItemFactory factory = new DiskFileItemFactory();

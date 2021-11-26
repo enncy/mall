@@ -22,8 +22,7 @@ import java.util.Map;
 public class ControllerFactory {
     private static final Map<Class<?>, Object> controllers = new HashMap<>();
 
-
-    public static <T> T resolve(Class<T> type, HttpServletRequest req,HttpServletResponse resp ) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
+    public static <T> T resolve(Class<T> type, HttpServletRequest req, HttpServletResponse resp) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
         Object controller = controllers.get(type);
         if (controller == null) {
             controller = type.getConstructor().newInstance();
@@ -32,23 +31,24 @@ public class ControllerFactory {
 
         Field[] fields = type.getDeclaredFields();
         for (Field field : fields) {
-            if(!field.isAccessible()){
+            if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
 
-            if(ServletRequest.class.isAssignableFrom(field.getType())){
+            if (ServletRequest.class.isAssignableFrom(field.getType())) {
 
-                field.set(controller,req);
+                field.set(controller, req);
             }
-            if(ServletResponse.class.isAssignableFrom(field.getType())){
-                field.set(controller,resp);
+            if (ServletResponse.class.isAssignableFrom(field.getType())) {
+                field.set(controller, resp);
             }
-            if(HttpSession.class.isAssignableFrom(field.getType())){
-                field.set(controller,req.getSession());
+            if (HttpSession.class.isAssignableFrom(field.getType())) {
+                field.set(controller, req.getSession());
             }
         }
 
         return (T) controller;
     }
+
 
 }

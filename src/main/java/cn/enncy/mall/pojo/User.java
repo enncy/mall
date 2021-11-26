@@ -4,6 +4,7 @@ package cn.enncy.mall.pojo;
 import cn.enncy.mall.annotaion.Info;
 import cn.enncy.mall.annotaion.Option;
 import cn.enncy.mall.annotaion.Select;
+import cn.enncy.mall.annotaion.Showable;
 import cn.enncy.mall.constant.InputType;
 import cn.enncy.mall.constant.Role;
 import cn.enncy.mall.constant.Tag;
@@ -21,11 +22,13 @@ public class User extends BaseObject {
     /**
      * 昵称
      **/
+    @Showable
     @Info("昵称")
     private String nickname;
     /**
      * 账号
      **/
+    @Showable
     @Info("账号")
     private String account;
     /**
@@ -36,6 +39,7 @@ public class User extends BaseObject {
     /**
      * 权限
      **/
+    @Showable
     @Info(value = "权限",tag = Tag.SELECT)
 
     @Select(options = {
@@ -61,7 +65,7 @@ public class User extends BaseObject {
     /**
      * 余额
      **/
-    @Info(value = "余额",type = InputType.NUMBER)
+    @Info(value = "余额",type = InputType.NUMBER, disabled = true)
     private BigDecimal balance = new BigDecimal("0");
     /**
      * 是否激活
@@ -69,7 +73,7 @@ public class User extends BaseObject {
     @Select(options = {
             @Option(value = "true",description = "已激活"),@Option(value = "false",description = "未激活")
     })
-    @Info(value = "是否激活",tag = Tag.SELECT)
+    @Info(value = "是否激活",tag = Tag.SELECT, disabled = true)
     private boolean active;
 
     public String getNickname() {

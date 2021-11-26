@@ -5,7 +5,7 @@ import cn.enncy.mall.constant.ServiceMapping;
 import java.lang.annotation.*;
 
 /**
- * //TODO
+ * 需要引用功能的属性
  * <br/>Created in 22:16 2021/11/25
  *
  * @author enncy

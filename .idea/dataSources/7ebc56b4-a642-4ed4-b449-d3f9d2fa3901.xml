@@ -1247,13 +1247,13 @@ name</ColNames>
     <column id="350" parent="296" name="description">
       <Position>4</Position>
       <Comment>商品描述</Comment>
-      <DataType>varchar(255)|0s</DataType>
+      <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
     </column>
     <column id="351" parent="296" name="img">
       <Position>5</Position>
       <Comment>图片</Comment>
-      <DataType>varchar(255)|0s</DataType>
+      <DataType>text|0s</DataType>
     </column>
     <column id="352" parent="296" name="selling">
       <Position>6</Position>
