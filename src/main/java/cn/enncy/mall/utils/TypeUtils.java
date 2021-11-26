@@ -1,9 +1,7 @@
-package cn.enncy.common.type;
+package cn.enncy.mall.utils;
 
 
 import com.mysql.cj.util.StringUtils;
-
-import java.lang.reflect.Constructor;
 
 /**
  * //TODO
@@ -20,9 +18,6 @@ public class TypeUtils {
 
     public static Object stringToTarget(String string, Class<?> t) throws Exception {
         boolean nullOrEmpty = StringUtils.isNullOrEmpty(string);
-        if (String.class.equals(t)) {
-            return string;
-        }
 
         if (double.class.equals(t)) {
             return nullOrEmpty ? 0 : Double.parseDouble(string);
@@ -37,7 +32,7 @@ public class TypeUtils {
         } else if (boolean.class.equals(t)) {
             return nullOrEmpty ? 0 : Boolean.parseBoolean(string);
         } else {
-            return nullOrEmpty ? null : t.getConstructor(String.class).newInstance(string);
+            return nullOrEmpty ? "" : t.getConstructor(String.class).newInstance(string);
         }
 
     }

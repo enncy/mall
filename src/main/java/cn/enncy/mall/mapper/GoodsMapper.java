@@ -19,9 +19,12 @@ import static cn.enncy.mybatis.core.SqlConstant.TABLE_NAME;
  */
 
 @Mapper(table = "goods",target = Goods.class)
-public interface GoodsMapper extends BaseMapper<Goods> {
+public interface GoodsMapper extends BaseMapper<Goods> , Searchable<Goods> {
 
     @Select("select * from #{"+ TABLE_NAME+"} where name like '%#{name}%'")
     List<Goods> findByNameLike(@Param("name") String name);
 
+    @Override
+    @Select("select * from #{"+ TABLE_NAME+"} where name like '%#{str}%'  or  description like '%#{str}%'  LIMIT #{page},#{size}; ")
+    List<Goods> search(@Param("str") String str,@Param("page") int page,@Param("size") int size);
 }

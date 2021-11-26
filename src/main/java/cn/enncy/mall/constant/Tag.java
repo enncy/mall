@@ -7,8 +7,8 @@ package cn.enncy.mall.constant;
  * @author enncy
  */
 public enum Tag {
-    // 元素标签
-    INPUT("input"),SELECT("select"),TEXTAREA("textarea");
+    // 属性标签
+    INPUT("input"),SELECT("select"),TEXTAREA("textarea"),REFERENCE("reference"),IMAGE("image");
     public String value;
 
     Tag(String value){

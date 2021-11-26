@@ -1,20 +1,17 @@
 package cn.enncy.spring.mvc.core;
 
 
-import cn.enncy.common.type.TypeUtils;
+import cn.enncy.mall.utils.TypeUtils;
 import cn.enncy.mall.utils.RequestUtils;
 import cn.enncy.reflect.AnnotationUtils;
 import cn.enncy.spring.mvc.annotation.Controller;
 import cn.enncy.spring.mvc.annotation.Get;
-import cn.enncy.spring.mvc.annotation.RequestMapping;
+import cn.enncy.spring.mvc.annotation.RestController;
 import cn.enncy.spring.mvc.annotation.params.*;
 import cn.enncy.spring.mvc.annotation.Post;
-import cn.enncy.spring.mvc.entity.RequestMethod;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -27,7 +24,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -40,14 +36,16 @@ import java.util.stream.Collectors;
 @WebFilter(urlPatterns = "/*")
 public class DispatcherServlet implements Filter {
 
-    List<Class<?>> controllers;
+    List<Class<?>> controllers = new ArrayList<>();
+
     AnnotationUtils annotationUtils = new AnnotationUtils();
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         try {
             String path = Arrays.stream(DispatcherServlet.class.getName().split("\\.")).findAny().get();
-            controllers = annotationUtils.getAnnotationClasses(path, Controller.class);
+            controllers.addAll(annotationUtils.getAnnotationClasses(path, Controller.class));
+            controllers.addAll(annotationUtils.getAnnotationClasses(path, RestController.class));
         } catch (URISyntaxException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -62,31 +60,46 @@ public class DispatcherServlet implements Filter {
      * @param resp
      * @return boolean
      */
-    private void handleRequest(Method method, Object controller, HttpServletRequest req, HttpServletResponse resp) {
+    private void handleRequest(Method method, Object controller, HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 
         try {
             List<Object> objects = parseParameters(method, req, resp);
+
             Object invoke = method.invoke(controller, objects.toArray());
 
             // 如果请求未被处理
             if (!resp.isCommitted()) {
-                if (invoke instanceof String) {
-                    String servletPath = (String) invoke;
-                    if (!servletPath.endsWith(".jsp")) {
-                        servletPath += ".jsp";
+                // 如果是视图控制器
+                if (controller.getClass().isAnnotationPresent(Controller.class)) {
+                    if (invoke instanceof String) {
+                        String servletPath = (String) invoke;
+                        if (!servletPath.endsWith(".jsp")) {
+                            servletPath += ".jsp";
+                        }
+                        req.getRequestDispatcher(servletPath).forward(req, resp);
+                    } else {
+                        req.setAttribute("code", "500");
+                        req.getRequestDispatcher("/error/index.jsp").forward(req, resp);
+                        throw new Exception("controller method return value is not string : " + method);
                     }
-                    req.getRequestDispatcher(servletPath).forward(req, resp);
                 } else {
-                    req.setAttribute("code", "500");
-                    req.getRequestDispatcher("/error/index.jsp").forward(req, resp);
-                    throw new Exception("controller method return value is not string : " + method);
+
+                    // 如果是 restful 风格的控制器
+                    try {
+                        resp.getWriter().write(invoke.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        resp.sendError(404);
+                    }
                 }
 
+
             }
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | ServletException | IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+            req.setAttribute("code",500);
+            req.getRequestDispatcher("/error/index.jsp").forward(req,resp);
+
         }
 
     }
@@ -113,9 +126,7 @@ public class DispatcherServlet implements Filter {
         List<Object> args = new ArrayList<>();
         Parameter[] parameters = method.getParameters();
         for (Parameter parameter : parameters) {
-
             if (parameter.isAnnotationPresent(Param.class)) {
-
                 Param annotation = parameter.getAnnotation(Param.class);
                 // 获取请求参数 并转换为相应的类型
                 Object target = TypeUtils.stringToTarget(req.getParameter(annotation.value()), parameter.getType());
@@ -142,7 +153,12 @@ public class DispatcherServlet implements Filter {
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
 
         for (Class<?> controller : controllers) {
-
+            String prefix = "";
+            if (controller.isAnnotationPresent(Controller.class)) {
+                prefix = controller.getAnnotation(Controller.class).value();
+            } else if (controller.isAnnotationPresent(RestController.class)) {
+                prefix = controller.getAnnotation(RestController.class).value();
+            }
             try {
                 Object obj = ControllerFactory.resolve(controller, req, resp);
 
@@ -166,11 +182,12 @@ public class DispatcherServlet implements Filter {
                         if (annotation.annotationType().equals(target)) {
                             String path = "";
                             if ("POST".equalsIgnoreCase(req.getMethod())) {
-                                path = ((Post) annotation).value();
+                                path = prefix + ((Post) annotation).value();
                             } else if ("GET".equalsIgnoreCase(req.getMethod())) {
-                                path = ((Get) annotation).value();
+                                path = prefix + ((Get) annotation).value();
                             }
                             String validPath = String.join("/", validPath(path));
+
                             String validTargetPath = String.join("/", validPath(req.getRequestURI()));
                             // 如果路径匹配
                             if (validPath.equalsIgnoreCase(validTargetPath)) {
@@ -189,7 +206,7 @@ public class DispatcherServlet implements Filter {
 
         }
 
-        if(!resp.isCommitted()){
+        if (!resp.isCommitted()) {
             filterChain.doFilter(req, resp);
         }
     }

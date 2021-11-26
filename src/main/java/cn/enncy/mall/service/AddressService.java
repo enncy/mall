@@ -24,4 +24,11 @@ public class AddressService extends BaseService<Address, AddressMapper> implemen
     public List<Address> findByUserId(long userId) {
         return mapper.findByUserId(userId);
     }
+
+    @Override
+    public List<Address> search(String str, int page, int size) {
+        return mapper.search(str,page,size == 0 ? 10 : size);
+    }
+
+
 }

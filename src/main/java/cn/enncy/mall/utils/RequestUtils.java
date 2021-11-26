@@ -1,14 +1,11 @@
 package cn.enncy.mall.utils;
 
 
-import cn.enncy.common.type.TypeUtils;
 import cn.enncy.mall.pojo.BaseObject;
 import cn.enncy.mall.pojo.BaseObjectUtils;
-import cn.enncy.mybatis.core.result.ObjectResultHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.List;
 
 /**

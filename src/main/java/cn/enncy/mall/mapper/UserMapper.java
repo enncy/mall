@@ -17,7 +17,7 @@ import java.util.List;
  */
 
 @Mapper(table = "user",target = User.class)
-public interface UserMapper extends BaseMapper<User> {
+public interface UserMapper extends BaseMapper<User> , Searchable<User> {
 
     /**
      *  根据 账号 查找用户
@@ -44,8 +44,10 @@ public interface UserMapper extends BaseMapper<User> {
 
      * @return cn.enncy.mall.pojo.User
      */
-    @Select("select * from #{"+ TABLE_NAME +"} where account like '%#{name}%'  or  nickname like '%#{name}%'  limit #{page},#{size};")
-    List<User> findAccountOrNicknameLike(@Param("name") String name,@Param("page") int page, @Param("size") int size);
+    @Override
+    @Select("select * from #{"+ TABLE_NAME +"} where account like '%#{str}%'  or  nickname like '%#{str}%'  limit #{page},#{size};")
+    List<User> search(@Param("str") String str,@Param("page") int page, @Param("size") int size);
+
 
 
     /**
@@ -54,4 +56,6 @@ public interface UserMapper extends BaseMapper<User> {
      */
     @Delete("delete from #{"+TABLE_NAME+"} where active=0")
     boolean deleteInactiveUser();
+
+
 }

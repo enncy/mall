@@ -46,4 +46,5 @@ public interface BaseMapper<T> {
     boolean update(@Body() T baseObject);
 
 
+
 }

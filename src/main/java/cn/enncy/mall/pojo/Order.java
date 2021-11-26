@@ -3,10 +3,12 @@ package cn.enncy.mall.pojo;
 
 import cn.enncy.mall.annotaion.Info;
 import cn.enncy.mall.annotaion.Option;
+import cn.enncy.mall.annotaion.Reference;
 import cn.enncy.mall.annotaion.Select;
 import cn.enncy.mall.constant.InputType;
 
 import cn.enncy.mall.constant.OrderStatus;
+import cn.enncy.mall.constant.ServiceMapping;
 import cn.enncy.mall.constant.Tag;
 
 /**
@@ -17,12 +19,18 @@ import cn.enncy.mall.constant.Tag;
  */
 public class Order extends BaseObject{
 
-    @Info("用户id")
+    @Reference( ServiceMapping.USER )
+    @Info(value = "用户id",tag = Tag.REFERENCE)
     private long userId;
-    @Info("地址id")
+
+
+    @Reference( ServiceMapping.ADDRESS )
+    @Info(value = "地址id",tag = Tag.REFERENCE)
     private long addressId;
 
-    @Info(value = "商品id",type = InputType.NUMBER)
+
+    @Reference( ServiceMapping.GOODS )
+    @Info(value = "商品id",tag = Tag.REFERENCE)
     private long goodsId;
 
     @Info(value = "数量",type = InputType.NUMBER)

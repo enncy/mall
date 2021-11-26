@@ -25,9 +25,9 @@ public class BaseObjectUtils {
                 field.setAccessible(true);
             }
             try {
-                linkedHashMap.put(field.getName(), field.get(obj));
+                linkedHashMap.put(field.getName(), Optional.ofNullable(field.get(obj)).orElse(""));
             } catch (IllegalAccessException e) {
-                linkedHashMap.put(field.getName(), "无");
+                linkedHashMap.put(field.getName(), "");
             }
         }
         return linkedHashMap;
@@ -46,5 +46,11 @@ public class BaseObjectUtils {
         return getInfoFields(obj)
                 .sorted(Comparator.comparing(c -> ((Field) c).getAnnotation(Info.class).rank()).reversed())
                 .collect(Collectors.toList());
+    }
+
+    public static <T extends BaseObject> String format(T obj){
+        Map<String, Object> valuesMap = getValuesMap(obj);
+        Optional<Object> reduce = valuesMap.values().stream().reduce((e1, e2) -> e1.toString() + "-" + e2.toString());
+        return (String) reduce.orElse(obj.toString());
     }
 }

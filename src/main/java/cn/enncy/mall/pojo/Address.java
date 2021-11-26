@@ -2,7 +2,11 @@ package cn.enncy.mall.pojo;
 
 
 import cn.enncy.mall.annotaion.Info;
+import cn.enncy.mall.annotaion.Reference;
+import cn.enncy.mall.annotaion.Select;
 import cn.enncy.mall.constant.InputType;
+import cn.enncy.mall.constant.ServiceMapping;
+import cn.enncy.mall.constant.Tag;
 
 /**
  * //TODO
@@ -12,16 +16,17 @@ import cn.enncy.mall.constant.InputType;
  */
 public class Address extends BaseObject {
 
-    @Info(value = "用户id",type = InputType.NUMBER)
+    @Reference(ServiceMapping.USER)
+    @Info(value = "用户id",tag = Tag.REFERENCE)
     private long userId;
-    @Info(value = "手机",type = InputType.TEL)
-    private String phone;
-    @Info("详情")
-    private String detail;
-    @Info("收件人")
-    private String receiver;
     @Info("备注")
     private String alias;
+    @Info("收件人名称")
+    private String receiver;
+    @Info(value = "手机号",type = InputType.TEL)
+    private String phone;
+    @Info("地址详情")
+    private String detail;
     @Info("邮编")
     private String zipCode;
 

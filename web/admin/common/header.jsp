@@ -21,6 +21,11 @@
             white-space: nowrap;
         }
 
+        table tr td {
+             height: 48px;
+        }
+
+
         .bd-placeholder-img {
             font-size: 1.125rem;
             text-anchor: middle;
@@ -192,5 +197,9 @@
         left: 0;
         top: 0
     }</style>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"
+    ></script>
 </head>
 <body>

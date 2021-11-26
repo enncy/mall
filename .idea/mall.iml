@@ -44,5 +44,6 @@
     <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-api:8.5.38" level="project" />
     <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-util-scan:8.5.38" level="project" />
     <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-util:8.5.38" level="project" />
+    <orderEntry type="library" exported="" name="Maven: com.alibaba:fastjson:1.2.78" level="project" />
   </component>
 </module>

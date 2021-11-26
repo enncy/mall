@@ -86,8 +86,8 @@ public class UserController {
             userService.update(user);
             // 刷新缓存
             user.setAvatar(avatarPath + "?t=" + System.currentTimeMillis());
-        } catch (Exception fue) {
-            fue.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         session.setAttribute("user",user);

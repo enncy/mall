@@ -2,6 +2,7 @@ package cn.enncy.mall.annotaion;
 
 
 import cn.enncy.mall.constant.InputType;
+import cn.enncy.mall.constant.ServiceMapping;
 import cn.enncy.mall.constant.Tag;
 import cn.enncy.mall.utils.formatter.DefaultFormatter;
 import cn.enncy.mall.utils.formatter.Formatter;
@@ -31,4 +32,5 @@ public @interface Info {
     boolean disabled() default  false;
     // 显示级别
     int rank() default 0;
+
 }

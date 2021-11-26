@@ -37,6 +37,7 @@ public class User extends BaseObject {
      * 权限
      **/
     @Info(value = "权限",tag = Tag.SELECT)
+
     @Select(options = {
             @Option(value = "user",description = "普通用户"),@Option(value = "admin",description = "管理员")
     })
@@ -49,7 +50,8 @@ public class User extends BaseObject {
     /**
      * 头像
      **/
-    @Info("头像路径")
+
+    @Info(value = "头像路径",tag = Tag.IMAGE)
     private String avatar;
     /**
      * 简介

@@ -19,4 +19,9 @@ public class GoodsService extends BaseService<Goods, GoodsMapper>  implements Go
     public List<Goods> findByNameLike(String name) {
         return mapper.findByNameLike(name);
     }
+
+    @Override
+    public List<Goods> search(String str, int page, int size) {
+        return mapper.search(str,page,size == 0 ? 10 : size);
+    }
 }

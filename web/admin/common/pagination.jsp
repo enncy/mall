@@ -8,9 +8,12 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+
+
 <%
     Pagination pagination = (Pagination) request.getAttribute("pagination");
 %>
+
 
 
 <%--分页--%>
@@ -61,14 +64,16 @@
         </ul>
     </nav>
 
-    <select class="form-select p-0  ms-2" style="height: 36px;width: 100px;" onchange="changeSize(this)">
-        <%
-            int[] sizes = new int[]{10, 20, 50, 100};
-            for (int i = 0; i < sizes.length; i++) { %>
-        <option  <%=sizes[i] == pagination.getSize() ? "selected" : ""%> value="<%=sizes[i]%>"><%=sizes[i]%>条/页
-        </option>
-        <% } %>
-    </select>
+    <label>
+        <select class="form-select p-0  ms-2" style="height: 36px;width: 100px;    padding-left: 4px !important;" onchange="changeSize(this)">
+            <%
+                int[] sizes = new int[]{10, 20, 50, 100};
+                for (int i = 0; i < sizes.length; i++) { %>
+            <option  <%=sizes[i] == pagination.getSize() ? "selected" : ""%> value="<%=sizes[i]%>"><%=sizes[i]%>条/页
+            </option>
+            <% } %>
+        </select>
+    </label>
 
 </div>
 

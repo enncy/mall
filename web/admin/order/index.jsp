@@ -10,52 +10,17 @@
 
 <jsp:include page="/admin/common/navigation.jsp"/>
 
-<%
-    List<Order> orders = (List<Order>) request.getAttribute("orders");
-%>
-
 <div>
-    <form method="POST">
+    <form method="GET" class="d-flex">
 
+        <div class="d-flex ms-3 ">
+            <a class="btn btn-primary " href="/admin/common/operate/order">添加订单</a>
+        </div>
 
     </form>
 
-    <div class="card">
-        <div class="card-body p-4">
-            <table data-toggle="table">
-                <thead>
-                <tr>
-                    <% for (Map.Entry<String, String> entry : BaseObjectUtils.getInfosMap(Order.class).entrySet()) { %>
-                    <th>
-                        <%=entry.getValue()%>
-                        <span style="font-size: 12px;color: #5e5e5e">(<%=entry.getKey()%>)</span>
-                    </th>
-                    <% } %>
-                </tr>
-                </thead>
-                <tbody>
-
-                <% for (Order order : orders) { %>
-                <tr>
-                    <% for (Map.Entry<String, Object> entry : BaseObjectUtils.getValuesMap(order).entrySet()) { %>
-                    <td><%=entry.getValue()%>
-                    </td>
-                    <% } %>
-                </tr>
-                <% } %>
-                </
-                >
-                </tbody>
-            </table>
-
-            <jsp:include page="/admin/common/pagination.jsp"/>
-        </div>
-
-    </div>
-
+    <jsp:include page="/admin/common/service/index.jsp"/>
 </div>
-<script>
-    var active = "order"
-</script>
+
 
 <jsp:include page="/admin/common/footer.jsp"/>

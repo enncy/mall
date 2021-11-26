@@ -1,12 +1,11 @@
 package cn.enncy.mall.annotaion;
 
-import cn.enncy.mall.constant.ServiceMapping;
 
 import java.lang.annotation.*;
 
 /**
  * //TODO
- * <br/>Created in 21:03 2021/11/23
+ * <br/>Created in 12:26 2021/11/26
  *
  * @author enncy
  */
@@ -14,7 +13,6 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Select {
-    Option[] options() default {};
+public @interface Image {
 
 }

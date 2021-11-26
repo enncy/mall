@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 
 /**
  * //TODO
- * <br/>Created in 21:03 2021/11/23
+ * <br/>Created in 22:16 2021/11/25
  *
  * @author enncy
  */
@@ -14,7 +14,7 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Select {
-    Option[] options() default {};
-
+public @interface Reference {
+    // 引用
+    ServiceMapping  value();
 }
