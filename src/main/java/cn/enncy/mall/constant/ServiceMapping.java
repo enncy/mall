@@ -1,6 +1,7 @@
 package cn.enncy.mall.constant;
 
 import cn.enncy.mall.pojo.*;
+import cn.enncy.mall.pojo.Tag;
 import cn.enncy.mall.service.*;
 
 /**
@@ -16,11 +17,11 @@ public enum ServiceMapping {
     GOODS("goods", "商品", Goods.class, GoodsService.class),
     CART("cart", "购物车", Cart.class, CartService.class),
     ORDER("order", "订单", Order.class, OrderService.class),
-    ;
+    TAG("tag", "标签", Tag.class, TagService.class);
     public String name;
     public String desc;
     public Class<? extends BaseObject> objectClass;
-    public Class<? extends BaseService<?,?>> serviceClass;
+    public Class<? extends BaseService<?, ?>> serviceClass;
 
     ServiceMapping(String name, String desc, Class<? extends BaseObject> objectClass, Class<? extends BaseService<?, ?>> serviceClass) {
         this.name = name;

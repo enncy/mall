@@ -26,7 +26,7 @@ public class SearchRestController {
     UserService userService = ServiceFactory.resolve(UserService.class);
     AddressService addressService = ServiceFactory.resolve(AddressService.class);
     GoodsService goodsService = ServiceFactory.resolve(GoodsService.class);
-
+    TagService tagService = ServiceFactory.resolve(TagService.class);
     @Get("/user")
     public Object user(@Param("key") String key, @Param("page") int page, @Param("size") int size) {
         return ResultBody.of(userService.search(key, page, size));
@@ -42,4 +42,8 @@ public class SearchRestController {
         return ResultBody.of(goodsService.search(key, page, size));
     }
 
+    @Get("/tag")
+    public Object tag(@Param("key") String key, @Param("page") int page, @Param("size") int size) {
+        return ResultBody.of(tagService.search(key, page, size));
+    }
 }

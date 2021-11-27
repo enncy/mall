@@ -53,7 +53,10 @@ public class DeleteController {
         delete(targetId, ServiceMapping.ORDER);
     }
 
-
+    @Get("/admin/common/delete/tag")
+    public void deleteTag(@Param("targetId") long targetId) throws IOException {
+        delete(targetId, ServiceMapping.TAG);
+    }
 
     public void delete(long targetId, ServiceMapping serviceMapping) throws IOException {
         BaseService<?, ?> resolve = ServiceFactory.resolve(serviceMapping.serviceClass);

@@ -10,7 +10,7 @@
 <div>
     <form method="GET" class="d-flex">
         <div class="input-group col-lg-4 p-0 w-25 ">
-            <input type="text" name="name" class="form-control" placeholder="账号或昵称搜索">
+            <input type="text" name="search" value="${param.search}" class="form-control" placeholder="账号或昵称搜索">
             <div class="input-group-append">
                 <button class="btn btn-outline-secondary" type="submit">搜索</button>
             </div>

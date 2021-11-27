@@ -1,11 +1,9 @@
 package cn.enncy.mall.pojo;
 
 
-import cn.enncy.mall.annotaion.Info;
-import cn.enncy.mall.annotaion.Option;
-import cn.enncy.mall.annotaion.Select;
-import cn.enncy.mall.annotaion.Showable;
+import cn.enncy.mall.annotaion.*;
 import cn.enncy.mall.constant.InputType;
+import cn.enncy.mall.constant.ServiceMapping;
 import cn.enncy.mall.constant.Tag;
 
 import java.math.BigDecimal;
@@ -20,6 +18,10 @@ public class Goods extends BaseObject{
     @Showable
     @Info("名字")
     private String name;
+
+    @Reference(ServiceMapping.TAG)
+    @Info(value = "标签",tag = Tag.REFERENCE)
+    private long tagId;
 
     @Showable
     @Info(value = "价格",type = InputType.NUMBER)
@@ -42,8 +44,7 @@ public class Goods extends BaseObject{
 
     @Info(value = "库存",type = InputType.NUMBER)
     private int stock;
-    @Info("标签")
-    private String tag;
+
 
     public String getName() {
         return name;
@@ -93,12 +94,12 @@ public class Goods extends BaseObject{
         this.stock = stock;
     }
 
-    public String getTag() {
-        return tag;
+    public long getTagId() {
+        return tagId;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setTagId(long tagId) {
+        this.tagId = tagId;
     }
 
     @Override
@@ -108,12 +109,12 @@ public class Goods extends BaseObject{
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", name='" + name + '\'' +
+                ", tagId=" + tagId +
                 ", price=" + price +
                 ", description='" + description + '\'' +
                 ", img='" + img + '\'' +
                 ", selling=" + selling +
                 ", stock=" + stock +
-                ", tag='" + tag + '\'' +
                 '}';
     }
 }

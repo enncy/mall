@@ -55,6 +55,11 @@ public class OperateController {
     public String operateOrder(@Param("targetId") long targetId) throws IOException, InstantiationException, IllegalAccessException {
         return operate(targetId, ServiceMapping.ORDER);
     }
+    @Get("/admin/common/operate/tag")
+    public String operateTag(@Param("targetId") long targetId) throws IOException, InstantiationException, IllegalAccessException {
+        return operate(targetId, ServiceMapping.TAG);
+    }
+
 
     @Post("/admin/common/operate/user")
     public void operateUserPost(@Param("targetId") long targetId, @Body User user) throws IOException, InstantiationException, IllegalAccessException {
@@ -80,6 +85,12 @@ public class OperateController {
     public void operateOrderPost(@Param("targetId") long targetId, @Body Order order) throws IOException, InstantiationException, IllegalAccessException {
         operatePost(targetId, order, ServiceMapping.ORDER);
     }
+
+    @Post("/admin/common/operate/tag")
+    public void operateTagPost(@Param("targetId") long targetId, @Body Tag tag) throws IOException, InstantiationException, IllegalAccessException {
+        operatePost(targetId, tag, ServiceMapping.TAG);
+    }
+
 
 
     // 公共操作方法，如果 targetId 为 0 ，则为添加操作，否则为更新操作

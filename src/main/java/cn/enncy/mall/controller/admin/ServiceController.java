@@ -35,6 +35,7 @@ public class ServiceController {
     CartService cartService = ServiceFactory.resolve(CartService.class);
     OrderService orderService = ServiceFactory.resolve(OrderService.class);
     GoodsService goodsService = ServiceFactory.resolve(GoodsService.class);
+    TagService  tagService =  ServiceFactory.resolve(TagService.class);
 
     HttpServletRequest request;
     HttpServletResponse response;
@@ -66,6 +67,10 @@ public class ServiceController {
         return service(ServiceMapping.ORDER, orderService.findByPages(page, size), page, size);
     }
 
+    @Get("/admin/tag")
+    public String tag(@Param("page") int page, @Param("size") int size,@Param("search") String search) {
+        return service(ServiceMapping.TAG, tagService.search(search,page, size), page, size);
+    }
 
     /**
      * 公共业务方法
