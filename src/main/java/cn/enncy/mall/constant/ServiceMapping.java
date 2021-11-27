@@ -3,6 +3,7 @@ package cn.enncy.mall.constant;
 import cn.enncy.mall.pojo.*;
 import cn.enncy.mall.pojo.Tag;
 import cn.enncy.mall.service.*;
+import cn.enncy.mall.service.goods.GoodsTagService;
 
 /**
  * //TODO
@@ -14,7 +15,7 @@ public enum ServiceMapping {
     // 业务映射
     USER("user", "用户", User.class, UserService.class),
     ADDRESS("address", "地址", Address.class, AddressService.class),
-    GOODS("goods", "商品", Goods.class, GoodsService.class),
+    GOODS("goods", "商品", Goods.class, GoodsTagService.class),
     CART("cart", "购物车", Cart.class, CartService.class),
     ORDER("order", "订单", Order.class, OrderService.class),
     TAG("tag", "标签", Tag.class, TagService.class);

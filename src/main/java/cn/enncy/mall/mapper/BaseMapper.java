@@ -26,7 +26,6 @@ public interface BaseMapper<T> {
     @Select("SELECT COUNT(*) as count FROM #{TABLE_NAME};")
     int count();
 
-    @Begin
     @Insert("INSERT IGNORE INTO #{TABLE_NAME}(#{" + KEY_ARRAY + "}) value(#{" + VALUE_ARRAY + "});")
     boolean insert(@Body() T baseObject);
 
@@ -36,8 +35,8 @@ public interface BaseMapper<T> {
     @Select("SELECT * FROM #{TABLE_NAME} WHERE id=#{id};")
     T findOneById(@Param("id") long id);
 
-    @Select("SELECT * FROM #{TABLE_NAME} LIMIT #{page},#{size};")
-    List<T> findByPages(@Param("page") int page, @Param("size") int size);
+    @Select("SELECT * FROM #{TABLE_NAME}  LIMIT #{skip} ,#{limit}; ")
+    List<T> findByPages(@Param("skip") int skip, @Param("limit") int limit);
 
     @Select("SELECT * FROM #{TABLE_NAME};")
     List<T> findAll();

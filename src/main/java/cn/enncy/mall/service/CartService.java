@@ -15,6 +15,10 @@ import java.util.List;
 public class CartService extends BaseService<Cart, CartMapper> implements  CartMapper{
 
 
+    public CartService( ) {
+        super(CartMapper.class);
+    }
+
     @Override
     public List<Cart> findByUserId(long userId) {
         return mapper.findByUserId(userId);

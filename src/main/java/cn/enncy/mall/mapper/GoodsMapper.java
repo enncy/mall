@@ -3,9 +3,12 @@ package cn.enncy.mall.mapper;
 
 import cn.enncy.mall.pojo.Goods;
 
+import cn.enncy.mybatis.annotation.method.Executable;
 import cn.enncy.mybatis.annotation.type.Mapper;
 import cn.enncy.mybatis.annotation.param.Param;
 import cn.enncy.mybatis.annotation.method.Select;
+import cn.enncy.mybatis.annotation.type.Result;
+import cn.enncy.mybatis.core.result.SingleResultHandler;
 
 import java.util.List;
 
@@ -25,6 +28,18 @@ public interface GoodsMapper extends BaseMapper<Goods> , Searchable<Goods> {
     List<Goods> findByNameLike(@Param("name") String name);
 
     @Override
-    @Select("select * from #{"+ TABLE_NAME+"} where name like '%#{str}%'  or  description like '%#{str}%'  LIMIT #{page},#{size}; ")
-    List<Goods> search(@Param("str") String str,@Param("page") int page,@Param("size") int size);
+    @Select("select * from #{"+ TABLE_NAME+"} where name like '%#{str}%'  or  description like '%#{str}%'  LIMIT #{skip} ,#{limit};")
+    List<Goods> search(@Param("str") String str,@Param("skip") int skip,@Param("limit") int limit);
+
+    @Select("select * from #{"+ TABLE_NAME+"} where name like '%#{str}%'  or  description like '%#{str}%' ")
+    List<Goods> searchAll(@Param("str") String str);
+
+    @Select("select goods.* from goods left join tag on goods.tag_id = tag.id where  tag.name =  '#{tag}'  LIMIT #{skip} ,#{limit}; ")
+    List<Goods> findByTagName(@Param("tag") String tag,@Param("skip") int skip,@Param("limit") int limit);
+
+    @Executable(handler = SingleResultHandler.class, resultMaps = {
+            @Result(key = "count", target = int.class)
+    })
+    @Select("select count(*) as count from goods left join tag on goods.tag_id = tag.id where  tag.name =  '#{tag}'")
+    int countByTagName(@Param("tag") String tag);
 }

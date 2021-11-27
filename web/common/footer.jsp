@@ -1,5 +1,15 @@
-
+<%@ page import="cn.enncy.mall.constant.ServiceMapping" %>
+<%@ page import="cn.enncy.mall.utils.ServiceFactory" %>
+<%@ page import="cn.enncy.mall.service.TagService" %>
+<%@ page import="cn.enncy.mall.pojo.Tag" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<%
+
+    TagService tagService = ServiceFactory.resolve(TagService.class);
+
+
+%>
 
 <div style="background-color: white">
     <footer class="container py-5" >
@@ -9,14 +19,12 @@
                 <small class="d-block mb-3 text-muted">© 2021 mall</small>
             </div>
             <div class="col-6 col-md">
-                <h5>商品分区</h5>
+                <h5>商品分类</h5>
                 <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="#">家用电器</a></li>
-                    <li><a class="text-muted" href="#">手机/数码</a></li>
-                    <li><a class="text-muted" href="#">电脑/办公</a></li>
-                    <li><a class="text-muted" href="#">家具/家装</a></li>
-                    <li><a class="text-muted" href="#">衣服/鞋子</a></li>
-                    <li><a class="text-muted" href="#">食品/零食</a></li>
+                    <% for( Tag tag :  tagService.findByPages(0,10)){ %>
+                    <li><a class="text-muted" href="/goods?tag=<%=tag.getName()%>"><%=tag.getName()%></a></li>
+                    <% } %>
+
                 </ul>
             </div>
             <div class="col-6 col-md">

@@ -18,6 +18,7 @@
 <%@ page import="cn.enncy.mall.utils.ServiceFactory" %>
 <%@ page import="cn.enncy.mall.annotaion.Reference" %>
 <%@ page import="java.util.stream.Collectors" %>
+<%@ page import="java.math.BigDecimal" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 
@@ -69,6 +70,7 @@
                     <input <%=info.disabled()?"disabled":""%> name="<%=name%>" type="<%=info.type().value%>"
                                                               class="form-control" id="input<%=name%>"
                                                               data-origin="<%=value%>"
+                                                              <%=BigDecimal.class.isAssignableFrom(field.getType())?"step=\"0.01\"":""%>
                                                               value="<%=format%>">
                     <% } else if (tag.equals(Tag.SELECT)) { %>
                     <select class="form-select  " id="input<%=name%>"
@@ -109,7 +111,7 @@
 
                     <div class="d-flex w-100 input-group">
                         <input name="<%=name%>" type="text" class="form-control" id="input<%=name%>" disabled
-                               value="点击按钮添加<%=mapping.desc%>">
+                               value="<%=Long.parseLong(value.toString())==0?"点击按钮添加"+mapping.desc:value%>">
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-primary " style="white-space: nowrap"
                                 onclick="search('<%=name%>','<%=mapping.name%>',[<%=showFields%>])"

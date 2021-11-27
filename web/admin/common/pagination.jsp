@@ -12,9 +12,11 @@
 
 <%
     Pagination pagination = (Pagination) request.getAttribute("pagination");
+
 %>
 
-
+<input type="hidden" value="<%=pagination.getIndex()%>" name="page" id="page">
+<input type="hidden" value="<%=pagination.getSize()%>" name="size" id="size">
 
 <%--分页--%>
 <div class="mt-4 d-flex justify-content-center">
@@ -23,9 +25,8 @@
             <li class="page-item">
                 <% if (pagination.getPre() == 0) { %>
                 <span class="page-link " style="cursor: not-allowed"><</span>
-
                 <% } else { %>
-                <a class="page-link" href="?page=<%=pagination.getPre()%>&size=<%=pagination.getSize()%>"
+                <a class="page-link" onclick="pre()"
                    aria-label="Previous">
                     <
                 </a>
@@ -40,7 +41,7 @@
                 <% if (i == pagination.getIndex()) { %>
                 <span class="page-link  link-secondary" style="cursor:not-allowed"><%=i + 1%></span>
                 <% } else { %>
-                <a class="page-link" href="?page=<%=i%>&size=<%=pagination.getSize()%>"><%=i + 1%>
+                <a class="page-link" onclick="index(<%=i%>)"><%=i + 1%>
                 </a>
                 <% } %>
             </li>
@@ -54,7 +55,7 @@
                 <span class="page-link" style="cursor: not-allowed">></span>
                 <% } else { %>
                 <a class="page-link"
-                   href="?page=<%=pagination.getNext()%>&size=<%=pagination.getSize()%>"
+                   onclick="next()"
                    aria-label="Next">
                     >
                 </a>
@@ -80,9 +81,70 @@
 
 <script>
     var active = "users"
+    var page = <%=pagination.getIndex()%>;
+    var size = <%=pagination.getSize()%>;
+
+    var searchLists =  window.location.search.split("&").filter(s=>!!s).map(s=>(
+        {
+            key:s.split("=")[0].replace("?",""),
+            value:s.split("=")[1] || ""
+        }
+    ))
+
+    function add(obj){
+        searchLists = searchLists.filter(s=>s.key!==obj.key)
+        searchLists.push(obj)
+    }
 
     function changeSize(e) {
-        let page = <%=pagination.getIndex()%>
-            window.location.href = "?page=" + page + "&size=" + e.value;
+        let page = <%=pagination.getIndex()%>;
+        add({
+            key:"page",
+            value: page
+        })
+        add({
+            key:"size",
+            value: e.value
+        })
+          window.location.href = "?"+ searchLists.map(s=>s.key+"="+s.value).join("&")
     }
+
+    function pre(){
+        add({
+            key:"page",
+            value: page-1
+        })
+        add({
+            key:"size",
+            value: size
+        })
+          window.location.href = "?"+ searchLists.map(s=>s.key+"="+s.value).join("&")
+
+    }
+
+    function next(){
+        add({
+            key:"page",
+            value: page+1
+        })
+        add({
+            key:"size",
+            value: size
+        })
+          window.location.href = "?"+ searchLists.map(s=>s.key+"="+s.value).join("&")
+    }
+
+    function index(p){
+        add({
+            key:"page",
+            value: p
+        })
+        add({
+            key:"size",
+            value: size
+        })
+
+         window.location.href = "?"+ searchLists.map(s=>s.key+"="+s.value).join("&")
+    }
+
 </script>

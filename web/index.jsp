@@ -11,7 +11,7 @@
     <div class="col-md-5 p-lg-5 mx-auto my-5">
       <h1 class="display-4 font-weight-normal">Mall</h1>
       <p class="lead font-weight-normal">欢迎来到 mall 电商系统，在这里开始您的购物之旅吧！</p>
-      <a class="btn btn-outline-secondary" href="#">开始购物</a>
+      <a class="btn btn-outline-secondary" href="/goods">开始购物</a>
     </div>
     <div class="product-device shadow-sm d-none d-md-block"></div>
     <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>

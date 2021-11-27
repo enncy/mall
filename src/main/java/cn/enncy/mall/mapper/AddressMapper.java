@@ -37,7 +37,8 @@ public interface AddressMapper extends BaseMapper<Address> , Searchable<Address>
     @Select("select * from #{"+ TABLE_NAME+"} where user_id = #{user_id}")
     List<Address> findByUserId(@Param("user_id") long userId);
 
-    @Select("select * from #{"+ TABLE_NAME+"} where alias like '%#{str}%' or receiver like '%#{str}%'  or detail like '%#{str}%'  LIMIT #{page},#{size}; ")
-    List<Address> search(@Param("str") String str,@Param("page") int page, @Param("size") int size);
+    @Override
+    @Select("select * from #{"+ TABLE_NAME+"} where alias like '%#{str}%' or receiver like '%#{str}%'  or detail like '%#{str}%'  LIMIT #{skip} ,#{limit}; ")
+    List<Address> search(@Param("str") String str,@Param("skip") int skip, @Param("limit") int limit);
 
 }

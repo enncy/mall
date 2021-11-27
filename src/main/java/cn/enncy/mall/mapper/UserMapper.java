@@ -45,8 +45,8 @@ public interface UserMapper extends BaseMapper<User> , Searchable<User> {
      * @return cn.enncy.mall.pojo.User
      */
     @Override
-    @Select("select * from #{"+ TABLE_NAME +"} where account like '%#{str}%'  or  nickname like '%#{str}%'  limit #{page},#{size};")
-    List<User> search(@Param("str") String str,@Param("page") int page, @Param("size") int size);
+    @Select("select * from #{"+ TABLE_NAME +"} where account like '%#{str}%'  or  nickname like '%#{str}%'  LIMIT #{skip} ,#{limit};")
+    List<User> search(@Param("str") String str,@Param("skip") int skip, @Param("limit") int limit);
 
 
 

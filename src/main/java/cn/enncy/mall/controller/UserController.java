@@ -2,8 +2,12 @@ package cn.enncy.mall.controller;
 
 
 import cn.enncy.mall.pojo.Address;
+import cn.enncy.mall.pojo.Cart;
+import cn.enncy.mall.pojo.Goods;
 import cn.enncy.mall.pojo.User;
 import cn.enncy.mall.service.AddressService;
+import cn.enncy.mall.service.CartService;
+import cn.enncy.mall.service.GoodsService;
 import cn.enncy.mall.service.UserService;
 import cn.enncy.mall.utils.RequestUtils;
 import cn.enncy.mall.utils.Security;
@@ -23,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -41,13 +46,34 @@ public class UserController {
 
     UserService userService = ServiceFactory.resolve(UserService.class);
     AddressService addressService = ServiceFactory.resolve(AddressService.class);
-
+    CartService cartService = ServiceFactory.resolve(CartService.class);
+    GoodsService goodsService = ServiceFactory.resolve(GoodsService.class);
     HttpServletRequest request;
+    HttpServletResponse response;
     HttpSession session;
 
     @Get("/user")
     public String userGet() {
         return "/user/index";
+    }
+
+    @Get("/user/address")
+    public String address() {
+        List<Address> all = addressService.findAll();
+        request.setAttribute("addresses",all);
+        return "/user/address/index";
+    }
+
+    @Get("/user/cart")
+    public String cart() {
+        List<Cart> all = cartService.findAll();
+        request.setAttribute("carts",all);
+        return "/user/cart/index";
+    }
+
+    @Get("/user/order")
+    public String order() {
+        return "/user/order/index";
     }
 
     @Post("/user")
@@ -56,6 +82,8 @@ public class UserController {
         session.setAttribute("user",user);
         return "/user/index";
     }
+
+
 
     @Get("/user/balance")
     public String balanceGet() {
@@ -109,20 +137,32 @@ public class UserController {
         return "/user/address/index";
     }
 
-    @Get("/user/address")
-    public String address() {
-        return "/user/address/index";
-    }
-
-    @Get("/user/address/delete")
-    public String addressDelete(@Param("id") String id) {
-        if (!StringUtils.isNullOrEmpty(id)) {
-            addressService.deleteById(Long.parseLong(id));
+    @Get("/user/cart/delete")
+    public void cartDelete(@Param("id") int id) throws IOException {
+        if (id!=0) {
+            //  增加库存
+            Cart cart = cartService.findOneById(id);
+            Goods goods = goodsService.findOneById(cart.getGoodsId());
+            goods.setStock(goods.getStock()+cart.getCount());
+            goodsService.update(goods);
+            cartService.deleteById(id);
             request.setAttribute("msg", "删除成功!");
         } else {
             request.setAttribute("error", "id不能为空!");
         }
-        return "/user/address/index";
+        response.sendRedirect("/user/cart");
+    }
+
+
+    @Get("/user/address/delete")
+    public void addressDelete(@Param("id") int id) throws IOException {
+        if (id!=0) {
+            addressService.deleteById(id);
+            request.setAttribute("msg", "删除成功!");
+        } else {
+            request.setAttribute("error", "id不能为空!");
+        }
+        response.sendRedirect("/user/address");
     }
 
 }

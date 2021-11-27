@@ -16,6 +16,7 @@ import cn.enncy.mybatis.utils.ParameterizedTypeUtils;
 
 import java.lang.reflect.*;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -66,7 +67,7 @@ public class SqlInvokeHandler implements InvocationHandler {
     }
 
     // 执行 sql
-    public Object execute(String sql) throws ClassNotFoundException {
+    public Object execute(String sql) throws ClassNotFoundException, SQLException {
         return DBUtils.connect(statement -> {
             String[] split = sql.split("\n");
             if (split.length != 0) {
@@ -82,7 +83,7 @@ public class SqlInvokeHandler implements InvocationHandler {
     }
 
     // 执行查询语句
-    public Object executeQuery(Method method, Class<?> targetType, String sql) throws ClassNotFoundException {
+    public Object executeQuery(Method method, Class<?> targetType, String sql) throws ClassNotFoundException, SQLException {
         return DBUtils.connect(statement -> {
             long l = System.currentTimeMillis();
             // 结果集

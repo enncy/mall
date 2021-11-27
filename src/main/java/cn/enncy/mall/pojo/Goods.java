@@ -28,12 +28,15 @@ public class Goods extends BaseObject{
     @Info(value = "价格",type = InputType.NUMBER)
     private BigDecimal price;
 
+    @Info(value = "折扣价",type = InputType.NUMBER)
+    private BigDecimal discountPrice;
+
 
     @Info("描述")
     private String description;
 
 
-    @Info("图片路径")
+    @Info(value = "图片路径",tag = Tag.IMAGE)
     private String img;
 
     @Show
@@ -45,6 +48,7 @@ public class Goods extends BaseObject{
 
     @Info(value = "库存",type = InputType.NUMBER)
     private int stock;
+
 
 
     public String getName() {
@@ -103,6 +107,14 @@ public class Goods extends BaseObject{
         this.tagId = tagId;
     }
 
+    public BigDecimal getDiscountPrice() {
+        return discountPrice;
+    }
+
+    public void setDiscountPrice(BigDecimal discountPrice) {
+        this.discountPrice = discountPrice;
+    }
+
     @Override
     public String toString() {
         return "Goods{" +
@@ -112,10 +124,15 @@ public class Goods extends BaseObject{
                 ", name='" + name + '\'' +
                 ", tagId=" + tagId +
                 ", price=" + price +
+                ", discountPrice=" + discountPrice +
                 ", description='" + description + '\'' +
                 ", img='" + img + '\'' +
                 ", selling=" + selling +
                 ", stock=" + stock +
                 '}';
+    }
+
+    public BigDecimal getRealPrice(){
+        return this.getDiscountPrice().intValue() == 0 ? this.getPrice() : this.getDiscountPrice();
     }
 }

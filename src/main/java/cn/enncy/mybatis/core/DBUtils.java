@@ -19,15 +19,22 @@ public class DBUtils {
     private static final DataSource DATA_SOURCE = new DataSource("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost:3306/mall?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&charsetEncoding=UTF-8", "root", "enncymysql");
 
 
-    static Object connect(Connector connector) throws ClassNotFoundException {
+    static Object connect(Connector connector) throws ClassNotFoundException, SQLException {
         Class.forName(DATA_SOURCE.getDriver());
+        Connection connection = DriverManager.getConnection(DATA_SOURCE.getUrl(), DATA_SOURCE.getUsername(), DATA_SOURCE.getPassword());
         try(
-                Connection connection = DriverManager.getConnection(DATA_SOURCE.getUrl(), DATA_SOURCE.getUsername(), DATA_SOURCE.getPassword());
                 Statement statement = connection.createStatement()
         ){
-           return connector.run(statement);
+            // 开启事务
+            connection.setAutoCommit(false);
+            Object run = connector.run(statement);
+            connection.commit();
+            return run;
         }catch(Throwable throwable){
+            connection.rollback();
             throwable.printStackTrace();
+        }finally {
+            connection.close();
         }
         return null;
     }

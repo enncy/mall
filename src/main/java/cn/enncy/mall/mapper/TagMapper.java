@@ -24,7 +24,11 @@ public interface TagMapper  extends BaseMapper<Tag> , Searchable<Tag>{
     @Select("select * from #{"+ TABLE_NAME +"}  where  name = '#{name}'")
     Tag findOneByName(@Param("name") String name);
 
+    @Select("select * from #{"+ TABLE_NAME +"}  order by `count` desc  LIMIT 0,10 ;")
+    List<Tag> findByCount();
+
+
     @Override
-    @Select("select * from #{"+  TABLE_NAME +"}  where  name like '%#{key}%'  LIMIT #{page},#{size} ;")
-    List<Tag> search(@Param("key") String key,@Param("page") int page,@Param("size") int size);
+    @Select("select * from #{"+  TABLE_NAME +"}  where  name like '%#{key}%'   LIMIT #{skip} ,#{limit};")
+    List<Tag> search(@Param("key") String key,@Param("skip") int skip,@Param("limit") int limit);
 }

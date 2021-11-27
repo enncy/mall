@@ -20,10 +20,9 @@ import java.util.List;
 public class BaseService<T extends BaseObject, M extends BaseMapper<T>> implements BaseMapper<T> {
     public M mapper;
 
-    public BaseService() {
+    public BaseService(Class<M> mapperClass) {
         // 获取第2个泛型，并且实例化
-        Class<?> type = ParameterizedTypeUtils.getByType(this.getClass(), BaseMapper.class);
-        this.mapper = (M) SqlSession.getMapper(type);
+        this.mapper = SqlSession.getMapper(mapperClass);
     }
 
     @Override
@@ -44,6 +43,10 @@ public class BaseService<T extends BaseObject, M extends BaseMapper<T>> implemen
         return mapper.deleteById(id);
     }
 
+    public boolean delete(T baseObject) {
+        return mapper.deleteById(baseObject.getId());
+    }
+
     @Override
     public T findOneById(long id) {
         return mapper.findOneById(id);
@@ -51,7 +54,8 @@ public class BaseService<T extends BaseObject, M extends BaseMapper<T>> implemen
 
     @Override
     public List<T> findByPages(int page, int size) {
-        return mapper.findByPages(page * size, size==0?10:0);
+        size = size == 0 ? 10 : size;
+        return mapper.findByPages(page * size, size);
     }
 
     @Override
@@ -61,7 +65,7 @@ public class BaseService<T extends BaseObject, M extends BaseMapper<T>> implemen
 
     @Override
     public boolean update(T baseObject) {
-        System.out.println("update "+baseObject);
+        System.out.println("update " + baseObject);
         baseObject.setUpdateTime(System.currentTimeMillis());
         baseObject.setCreateTime(baseObject.getCreateTime());
         return mapper.update(baseObject);

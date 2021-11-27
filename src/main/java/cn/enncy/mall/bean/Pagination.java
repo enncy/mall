@@ -56,6 +56,29 @@ public class Pagination {
     }
 
 
+
+    /**
+     * 分页插件
+     *
+     * @param page
+     * @param size
+     * @param allCount
+     * @return void
+     */
+    public static Pagination createPagination(int page, int size, int allCount) {
+        int allPage = (allCount + size - 1) / size;
+        int prePage = Math.max(page - 1, 0);
+        int nextPage = Math.min(page + 1, allPage);
+        Pagination pagination = new Pagination();
+        pagination.setIndex(page);
+        pagination.setSize(size);
+        pagination.setCount(allPage);
+        pagination.setNext(nextPage);
+        pagination.setPre(prePage);
+        return pagination;
+    }
+
+
     @Override
     public String toString() {
         return "Pagination{" +

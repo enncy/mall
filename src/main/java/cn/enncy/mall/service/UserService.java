@@ -19,6 +19,10 @@ import java.util.List;
  */
 public class UserService extends  BaseService<User,UserMapper> implements UserMapper {
 
+    public UserService() {
+        super(UserMapper.class);
+    }
+
     @Override
     public boolean update(User baseObject) {
         User old = mapper.findOneById(baseObject.getId());
@@ -49,7 +53,8 @@ public class UserService extends  BaseService<User,UserMapper> implements UserMa
 
     @Override
     public List<User> search(String str, int page, int size) {
-        return mapper.search(str,page,size == 0 ? 10 : size);
+        size = size == 0 ? 10 : size;
+        return mapper.search(str,page * size, size);
     }
 
     @Override

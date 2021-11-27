@@ -10,12 +10,10 @@
 
 <%
 
-    AddressService addressService = ServiceFactory.resolve(AddressService.class);
-
     // 遍历地址并显示
     User user = (User) session.getAttribute("user");
     assert user != null;
-    List<Address> addressList = addressService.findByUserId(user.getId());
+    List<Address> addressList = (List<Address>) request.getAttribute("addresses");
 
 %>
 

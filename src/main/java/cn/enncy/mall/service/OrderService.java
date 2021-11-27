@@ -15,6 +15,10 @@ import java.util.List;
 public class OrderService extends BaseService<Order, OrderMapper> implements OrderMapper{
 
 
+    public OrderService( ) {
+        super(OrderMapper.class);
+    }
+
     @Override
     public List<Order> findByUserId(long userId) {
         return mapper.findByUserId(userId);

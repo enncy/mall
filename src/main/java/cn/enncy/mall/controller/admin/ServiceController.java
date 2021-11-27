@@ -76,8 +76,10 @@ public class ServiceController {
      * 公共业务方法
      */
     public String service(ServiceMapping serviceMapping, List<? extends BaseObject> list, int page, int size) {
+        BaseService<?, ?> service = ServiceFactory.resolve(serviceMapping.serviceClass);
+
         size = size == 0 ? 10 : size;
-        Pagination pagination = createPagination(page, size, userService.count());
+        Pagination pagination = Pagination.createPagination(page, size, service.count());
         // 分页
         request.setAttribute("pagination", pagination);
         // 查询结果
@@ -85,28 +87,6 @@ public class ServiceController {
         // 传递业务映射对象
         request.setAttribute("service", serviceMapping);
         return "/admin/" + serviceMapping.name + "/index";
-    }
-
-
-    /**
-     * 分页插件
-     *
-     * @param page
-     * @param size
-     * @param allCount
-     * @return void
-     */
-    public Pagination createPagination(int page, int size, int allCount) {
-        int allPage = (allCount + size - 1) / size;
-        int prePage = Math.max(page - 1, 0);
-        int nextPage = Math.min(page + 1, allPage);
-        Pagination pagination = new Pagination();
-        pagination.setIndex(page);
-        pagination.setSize(size);
-        pagination.setCount(allPage);
-        pagination.setNext(nextPage);
-        pagination.setPre(prePage);
-        return pagination;
     }
 
 }

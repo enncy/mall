@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
  *
  * @author enncy
  */
-public class DefaultSqlHandler  extends TransactionSqlHandler{
+public class DefaultSqlHandler  extends ParamsSqlHandler{
 
 
     public DefaultSqlHandler(Method method, Class<?> target, Object[] methodArguments) {

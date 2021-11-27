@@ -66,7 +66,7 @@
                         <%=user.getBalance().toString().equals("0") ? "0" : new DecimalFormat("#,##0.00").format(user.getBalance().setScale(2, BigDecimal.ROUND_HALF_UP))%>
                     </div>
                     <div class="ml-1" style="color: #7abaff;font-size: xx-large">
-                        $
+                        ¥
                     </div>
                     <a class="ml-4" style="font-size: 12px" href="/user/balance">充值余额</a>
                 </div>

@@ -122,9 +122,11 @@ public class SqlStringHandler {
      */
     public static String replaceTableName(String sqlString, String tableName) throws MybatisSqlError {
         if (!sqlString.contains(SqlConstant.TABLE_NAME)) {
-            throw new MybatisSqlError("param is not found : "+SqlConstant.TABLE_NAME + " ,  in sql string : "+sqlString);
+            //throw new MybatisSqlError("param is not found : "+SqlConstant.TABLE_NAME + " ,  in sql string : "+sqlString);
+        }else{
+            sqlString = replaceParam(sqlString, SqlConstant.TABLE_NAME, "`"+tableName+"`");
         }
-        sqlString = replaceParam(sqlString, SqlConstant.TABLE_NAME, "`"+tableName+"`");
+
         return sqlString;
     }
 

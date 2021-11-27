@@ -14,6 +14,9 @@ import java.util.List;
  */
 public class AddressService extends BaseService<Address, AddressMapper> implements  AddressMapper{
 
+    public AddressService() {
+        super(AddressMapper.class);
+    }
 
     @Override
     public Address findOneByAlias(String alias) {
@@ -27,7 +30,8 @@ public class AddressService extends BaseService<Address, AddressMapper> implemen
 
     @Override
     public List<Address> search(String str, int page, int size) {
-        return mapper.search(str,page,size == 0 ? 10 : size);
+        size = size == 0 ? 10 : size;
+        return mapper.search(str,page*size, size);
     }
 
 
