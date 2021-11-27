@@ -4,13 +4,11 @@ package cn.enncy.mall.pojo;
 import cn.enncy.mall.annotaion.Info;
 import cn.enncy.mall.annotaion.Option;
 import cn.enncy.mall.annotaion.Select;
-import cn.enncy.mall.annotaion.Showable;
+import cn.enncy.mall.annotaion.Show;
 import cn.enncy.mall.constant.InputType;
-import cn.enncy.mall.constant.Role;
 import cn.enncy.mall.constant.Tag;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 /**
  * //TODO
@@ -22,13 +20,13 @@ public class User extends BaseObject {
     /**
      * 昵称
      **/
-    @Showable
+    @Show
     @Info("昵称")
     private String nickname;
     /**
      * 账号
      **/
-    @Showable
+    @Show
     @Info("账号")
     private String account;
     /**
@@ -39,9 +37,8 @@ public class User extends BaseObject {
     /**
      * 权限
      **/
-    @Showable
     @Info(value = "权限",tag = Tag.SELECT)
-
+    @Show
     @Select(options = {
             @Option(value = "user",description = "普通用户"),@Option(value = "admin",description = "管理员")
     })
@@ -60,11 +57,13 @@ public class User extends BaseObject {
     /**
      * 简介
      **/
+
     @Info("简介")
     private String profile;
     /**
      * 余额
      **/
+
     @Info(value = "余额",type = InputType.NUMBER, disabled = true)
     private BigDecimal balance = new BigDecimal("0");
     /**

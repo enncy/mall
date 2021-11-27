@@ -3,8 +3,7 @@ package cn.enncy.mall.pojo;
 
 import cn.enncy.mall.annotaion.Info;
 import cn.enncy.mall.annotaion.Reference;
-import cn.enncy.mall.annotaion.Select;
-import cn.enncy.mall.annotaion.Showable;
+import cn.enncy.mall.annotaion.Show;
 import cn.enncy.mall.constant.InputType;
 import cn.enncy.mall.constant.ServiceMapping;
 import cn.enncy.mall.constant.Tag;
@@ -16,26 +15,22 @@ import cn.enncy.mall.constant.Tag;
  * @author enncy
  */
 public class Address extends BaseObject {
-
+    @Show
     @Reference(ServiceMapping.USER)
     @Info(value = "用户id",tag = Tag.REFERENCE)
     private long userId;
 
-
-    @Showable
+    @Show
     @Info("备注")
     private String alias;
 
-
-    @Showable
+    @Show
     @Info("收件人名称")
     private String receiver;
 
-
-    @Showable
+    @Show
     @Info(value = "手机号",type = InputType.TEL)
     private String phone;
-
 
 
     @Info("地址详情")

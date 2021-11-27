@@ -15,15 +15,16 @@ import java.math.BigDecimal;
  * @author enncy
  */
 public class Goods extends BaseObject{
-    @Showable
+    @Show
     @Info("名字")
     private String name;
 
+    @Show
     @Reference(ServiceMapping.TAG)
     @Info(value = "标签",tag = Tag.REFERENCE)
     private long tagId;
 
-    @Showable
+    @Show
     @Info(value = "价格",type = InputType.NUMBER)
     private BigDecimal price;
 
@@ -35,7 +36,7 @@ public class Goods extends BaseObject{
     @Info("图片路径")
     private String img;
 
-    @Showable
+    @Show
     @Info(value = "是否上架",tag = Tag.SELECT)
     @Select(options = {
             @Option(value = "true",description = "已上架"),@Option(value = "false",description = "已下架")

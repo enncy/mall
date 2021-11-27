@@ -5,7 +5,6 @@ import cn.enncy.mall.pojo.Tag;
 import cn.enncy.mybatis.annotation.method.Select;
 import cn.enncy.mybatis.annotation.param.Param;
 import cn.enncy.mybatis.annotation.type.Mapper;
-import cn.enncy.mybatis.core.SqlConstant;
 
 import java.util.List;
 

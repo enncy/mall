@@ -17,6 +17,7 @@
 <%@ page import="cn.enncy.mall.constant.ServiceMapping" %>
 <%@ page import="cn.enncy.mall.utils.ServiceFactory" %>
 <%@ page import="cn.enncy.mall.annotaion.Reference" %>
+<%@ page import="java.util.stream.Collectors" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 
@@ -102,6 +103,8 @@
 
                     <%
                         ServiceMapping mapping = field.getAnnotation(Reference.class).value();
+                        // 获取可展示的字段
+                        String showFields = BaseObjectUtils.getShowFields(mapping.objectClass).stream().map(Field::getName).map(s -> "'" + s + "'").collect(Collectors.joining(","));
                     %>
 
                     <div class="d-flex w-100 input-group">
@@ -109,7 +112,7 @@
                                value="点击按钮添加<%=mapping.desc%>">
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-primary " style="white-space: nowrap"
-                                onclick="search('<%=name%>','<%=mapping.name%>')"
+                                onclick="search('<%=name%>','<%=mapping.name%>',[<%=showFields%>])"
                                 data-bs-toggle="modal" data-bs-target="#<%=name%>Modal">
                             添加<%=mapping.desc%>
                         </button>
@@ -131,7 +134,7 @@
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" id="searchInput">
                                         <button class="btn btn-outline-secondary" type="button" id="searchBtn"
-                                                onclick="search('<%=name%>','<%=mapping.name%>')">搜索
+                                                onclick="search('<%=name%>','<%=mapping.name%>',[<%=showFields%>])">搜索
                                         </button>
                                     </div>
                                     <div>
@@ -177,7 +180,7 @@
 
 <script>
 
-    function search(fieldName, serviceName) {
+    function search(fieldName, serviceName,showList) {
         $.ajax({
             url: '/search/' + serviceName + '?key=' + $("#searchInput").val(),
             dataType: 'json',
@@ -192,7 +195,7 @@
                         html += `
                         <label class="list-group-item">
                             <input name="\${fieldName}" class="form-check-input me-1  search-radio" type="radio" value="\${i.id}">
-                            \${Reflect.ownKeys(i).map(k=>i[k]).join("-")}
+                            \${showList.map(k=>i[k]).join("-")}
                         </label>
                         `
                     }

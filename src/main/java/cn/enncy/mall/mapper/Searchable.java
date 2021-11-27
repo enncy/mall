@@ -1,7 +1,5 @@
 package cn.enncy.mall.mapper;
 
-import cn.enncy.mybatis.annotation.param.Param;
-
 import java.util.List;
 
 /**

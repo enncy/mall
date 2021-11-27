@@ -2,6 +2,7 @@ package cn.enncy.mall.pojo;
 
 
 import cn.enncy.mall.annotaion.Info;
+import cn.enncy.mall.annotaion.Show;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -48,9 +49,23 @@ public class BaseObjectUtils {
                 .collect(Collectors.toList());
     }
 
-    public static <T extends BaseObject> String format(T obj){
+    public static <T extends BaseObject> String format(T obj) {
         Map<String, Object> valuesMap = getValuesMap(obj);
-        Optional<Object> reduce = valuesMap.values().stream().reduce((e1, e2) -> e1.toString() + "-" + e2.toString());
+
+        List<Field> allFields = getAllFields(obj.getClass());
+
+        Optional<Object> reduce = allFields.stream()
+                .filter(field -> field.isAnnotationPresent(Show.class))
+                .map(Field::getName)
+                .map(valuesMap::get)
+                .reduce((e1, e2) -> e1.toString() + "-" + e2.toString());
+
         return (String) reduce.orElse(obj.toString());
+    }
+
+    public static <T extends BaseObject> List<Field> getShowFields(Class<T> obj) {
+        List<Field> allFields = getAllFields(obj);
+        return allFields.stream()
+                .filter(field -> field.isAnnotationPresent(Show.class)).collect(Collectors.toList());
     }
 }
