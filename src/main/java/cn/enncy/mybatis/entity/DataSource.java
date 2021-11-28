@@ -15,6 +15,8 @@ public class DataSource {
     private String password;
 
 
+    public DataSource() {
+    }
 
     public DataSource(String driver, String url, String username, String password) {
         this.driver = driver;

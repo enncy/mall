@@ -215,9 +215,7 @@
     }
 
     function save(fieldName) {
-
         $("#input" + fieldName).val($("[name='" + fieldName + "']:checked").val())
-
     }
 
     function imageUpload(el, id) {

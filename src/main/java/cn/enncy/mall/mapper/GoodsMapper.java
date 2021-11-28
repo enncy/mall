@@ -28,18 +28,18 @@ public interface GoodsMapper extends BaseMapper<Goods> , Searchable<Goods> {
     List<Goods> findByNameLike(@Param("name") String name);
 
     @Override
-    @Select("select * from #{"+ TABLE_NAME+"} where name like '%#{str}%'  or  description like '%#{str}%'  LIMIT #{skip} ,#{limit};")
+    @Select("select * from #{"+ TABLE_NAME+"} where  selling = 1 and (name like '%#{str}%'  or  description like '%#{str}%')  LIMIT #{skip} ,#{limit};")
     List<Goods> search(@Param("str") String str,@Param("skip") int skip,@Param("limit") int limit);
 
-    @Select("select * from #{"+ TABLE_NAME+"} where name like '%#{str}%'  or  description like '%#{str}%' ")
+    @Select("select * from #{"+ TABLE_NAME+"} where selling = 1 and (name like '%#{str}%'  or  description like '%#{str}%') ")
     List<Goods> searchAll(@Param("str") String str);
 
-    @Select("select goods.* from goods left join tag on goods.tag_id = tag.id where  tag.name =  '#{tag}'  LIMIT #{skip} ,#{limit}; ")
+    @Select("select goods.* from goods left join tag on goods.tag_id = tag.id where  selling = 1 and tag.name =  '#{tag}'  LIMIT #{skip} ,#{limit}; ")
     List<Goods> findByTagName(@Param("tag") String tag,@Param("skip") int skip,@Param("limit") int limit);
 
     @Executable(handler = SingleResultHandler.class, resultMaps = {
             @Result(key = "count", target = int.class)
     })
-    @Select("select count(*) as count from goods left join tag on goods.tag_id = tag.id where  tag.name =  '#{tag}'")
+    @Select("select count(*) as count from goods left join tag on goods.tag_id = tag.id where selling = 1 and  tag.name =  '#{tag}'")
     int countByTagName(@Param("tag") String tag);
 }

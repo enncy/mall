@@ -2,11 +2,9 @@ package cn.enncy.mall.controller;
 
 
 import cn.enncy.mall.bean.Pagination;
-import cn.enncy.mall.pojo.Cart;
-import cn.enncy.mall.pojo.Goods;
-import cn.enncy.mall.pojo.User;
-import cn.enncy.mall.service.CartService;
-import cn.enncy.mall.service.GoodsService;
+import cn.enncy.mall.constant.OrderStatus;
+import cn.enncy.mall.pojo.*;
+import cn.enncy.mall.service.*;
 import cn.enncy.mall.utils.ServiceFactory;
 import cn.enncy.spring.mvc.annotation.Controller;
 import cn.enncy.spring.mvc.annotation.Get;
@@ -19,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,9 +40,12 @@ public class GoodsController {
 
     GoodsService goodsService = ServiceFactory.resolve(GoodsService.class);
     CartService cartService = ServiceFactory.resolve(CartService.class);
+    OrderService orderService = ServiceFactory.resolve(OrderService.class);
+    UserService userService = ServiceFactory.resolve(UserService.class);
+    AddressService addressService = ServiceFactory.resolve(AddressService.class);
 
     @Get("/goods")
-    public String goods(@Param("page") int page, @Param("size") int size, @Param("search") String search, @Param("tag") String tag,@Param("order") String order) {
+    public String goods(@Param("page") int page, @Param("size") int size, @Param("search") String search, @Param("tag") String tag, @Param("order") String order) {
         size = size == 0 ? 10 : size;
 
         List<Goods> goodsList;
@@ -55,18 +57,18 @@ public class GoodsController {
         } else {
             pagination = Pagination.createPagination(page, size, goodsService.countByTagName(tag));
             // 按照标签以及页码进行查询，并且筛选出符合 search 的商品
-            if(StringUtils.isNullOrEmpty(search)){
+            if (StringUtils.isNullOrEmpty(search)) {
                 goodsList = goodsService.findByTagName(tag, page, size);
-            }else{
+            } else {
                 goodsList = goodsService.findByTagName(tag, page, size).stream().filter(goods -> goods.getName().contains(search)).collect(Collectors.toList());
             }
         }
 
         // 排序
-        if(!StringUtils.isNullOrEmpty(order)){
-            if("desc".equals(order)){
+        if (!StringUtils.isNullOrEmpty(order)) {
+            if ("desc".equals(order)) {
                 goodsList = goodsList.stream().sorted(Comparator.comparing(Goods::getRealPrice)).collect(Collectors.toList());
-            }else{
+            } else {
                 goodsList = goodsList.stream().sorted(Comparator.comparing(Goods::getRealPrice).reversed()).collect(Collectors.toList());
             }
         }
@@ -80,65 +82,109 @@ public class GoodsController {
 
 
     @Get("/goods/detail")
-    public String detail(@Param("id") int id){
+    public String detail(@Param("id") int id) {
         Goods goods = goodsService.findOneById(id);
         request.setAttribute("goods", goods);
         return "/goods/detail/index";
     }
 
     @Get("/goods/buy")
-    public String buy(@Param("id") int id){
-        Goods goods = goodsService.findOneById(id);
-        request.setAttribute("goods", goods);
+    public String buy(@Param("cartId") int cartId, @Param("id") int id, @Param("count") int count) throws ServletException, IOException {
+        Goods goods;
+        Cart cart= null;
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "/login/index";
+        }
+        // 直接购买
+        if (cartId == 0) {
+            goods = goodsService.findOneById(id);
+        }
+        // 购物车结算
+        else {
+            cart = cartService.findOneById(cartId);
+            long goodsId = cart.getGoodsId();
+            goods = goodsService.findOneById(goodsId);
+
+        }
+
+        // 库存不够
+        if (goods.getStock() == 0 || count > goods.getStock()) {
+            request.setAttribute("error", "商品库存不足！");
+            return "/goods/result/index";
+        } else {
+
+            Order order = new Order();
+            order.setUserId(user.getId());
+            order.setCount(count);
+            order.setGoodsId(goods.getId());
+            order.setStatus(OrderStatus.PAYMENT.value);
+            order.setAddressId(user.getDefaultAddressId());
+            order.setPrice(goods.getRealPrice().multiply(BigDecimal.valueOf(count)));
+            order.setUid(Order.createUid(order.getUserId(),order.getGoodsId(),order.getAddressId()));
+
+            // 删除购物车
+            if(cart!=null){
+                cartService.delete(cart);
+            }
+            // 减少库存
+            goods.setStock(goods.getStock() - count);
+            goodsService.update(goods);
+            // 添加订单
+            orderService.insert(order);
+            Order oneByUid = orderService.findOneByUid(order.getUid());
+            request.setAttribute("address", addressService.findOneById(order.getAddressId()));
+            request.setAttribute("order", oneByUid);
+            request.setAttribute("goods", goods);
+            request.setAttribute("count", count);
+        }
+
+
         return "/goods/buy/index";
     }
 
-    @Get("/goods/buy")
-    public String postBuy(@Param("cartId") int cartId,@Param("id") int id,@Param("count") int count){
-        //Goods goods;
-        //// 直接购买
-        //if(cartId==0){
-        //    Cart cart = cartService.findOneById(cartId);
-        //    long goodsId = cart.getGoodsId();
-        //    goods =  goodsService.findOneById(goodsId);
-        //    cartService.delete(cart);
-        //}
-        //// 购物车结算
-        //else{
-        //    goods = goodsService.findOneById(id);
-        //}
-        //
-        //request.setAttribute("goods", goods);
-        return "/goods/buy/index";
+    @Post("/goods/buy")
+    public String postBuy(@Param("id") int id) {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "/login/index";
+        }
+        if (id != 0) {
+            Order order = orderService.findOneById(id);
+
+            if(user.getBalance().compareTo(order.getPrice()) < 0){
+                request.setAttribute("error", "余额不足！");
+                return "/goods/result/index";
+            }else{
+                user.setBalance(user.getBalance().subtract(order.getPrice()));
+                order.setStatus(OrderStatus.RECEIVING.value);
+                userService.update(user);
+                orderService.update(order);
+                request.setAttribute("msg", "付款成功！");
+            }
+        }else{
+            request.setAttribute("error", "参数错误！");
+        }
+
+        return "/goods/result/index";
     }
 
     @Post("/goods/add")
-    public void add(@Param("id") int id,@Param("count") int count) throws IOException, ServletException {
+    public void add(@Param("id") int id, @Param("count") int count) throws IOException, ServletException {
         User user = (User) session.getAttribute("user");
-        if(user==null){
+        if (user == null) {
             response.sendRedirect("/login");
-        }else{
+        } else {
             Goods goods = goodsService.findOneById(id);
-            // 库存不够
-            if(goods.getStock()==0 || count > goods.getStock()){
-                request.setAttribute("error","商品库存不足！");
-                request.setAttribute("id", goods.getId());
-                request.setAttribute("goods",goods);
-                request.getRequestDispatcher("/goods/detail/index.jsp").forward(request,response);
-            }else{
-                // 减少库存
-                goods.setStock(goods.getStock()-count);
-                goodsService.update(goods);
-                // 添加购物车
-                Cart cart = new Cart();
-                cart.setGoodsId(goods.getId());
-                cart.setCount(count);
-                cart.setUserId(user.getId());
-                cartService.insert(cart);
 
-                response.sendRedirect("/user/cart?id="+cart.getId());
-            }
-
+            // 添加购物车
+            Cart cart = new Cart();
+            cart.setGoodsId(goods.getId());
+            cart.setCount(count);
+            cart.setUserId(user.getId());
+            cartService.insert(cart);
+            response.sendRedirect("/user/cart?id=" + cart.getId());
 
         }
 

@@ -5,15 +5,31 @@
 <%@ page import="com.mysql.cj.util.StringUtils" %>
 <%@ page import="cn.enncy.mall.service.AddressService" %>
 <%@ page import="cn.enncy.mall.utils.ServiceFactory" %>
+<%@ page import="java.util.Comparator" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java"  %>
 
+
+
+<style>
+
+    .card .card-link{
+        display: none;
+    }
+
+
+    .card:hover .card-link{
+        display: inline-block;
+    }
+</style>
 
 <%
 
     // 遍历地址并显示
     User user = (User) session.getAttribute("user");
     assert user != null;
+    long defaultAddressId = user.getDefaultAddressId();
     List<Address> addressList = (List<Address>) request.getAttribute("addresses");
+    addressList.sort(Comparator.comparing(address -> address.getId()!=defaultAddressId));
 
 %>
 
@@ -34,11 +50,18 @@
         <div class="card col-12 w-100 mt-2" style="width: 18rem;">
             <div class="card-body">
 
-                <h5 class="card-title"><%=address.getAlias()%></h5>
+                <h5 class="card-title"><%=address.getAlias()%> <span class="fs-6"><%=address.getId()==defaultAddressId?"(默认)":""%></span></h5>
                 <h6 class="card-subtitle mb-2 text-muted"><%=address.getReceiver() +" : "+address.getPhone()%></h6>
                 <p class="card-text"><%=address.getDetail()%></p>
-                <a href="/user/address/update?id=<%=address.getId()%>" class="card-link">修改</a>
-                <a href="/user/address/delete?id=<%=address.getId()%>" class="card-link">删除</a>
+                <div>
+                    <a href="/user/address/update?id=<%=address.getId()%>" class="card-link">修改</a>
+                    <a href="/user/address/delete?id=<%=address.getId()%>" class="card-link">删除</a>
+                    <% if(address.getId()!=defaultAddressId){ %>
+                    <a href="/user/address/default?id=<%=address.getId()%>" class="card-link">设为默认</a>
+                    <% }  %>
+
+
+                </div>
             </div>
         </div>
 

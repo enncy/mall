@@ -23,4 +23,9 @@ public class OrderService extends BaseService<Order, OrderMapper> implements Ord
     public List<Order> findByUserId(long userId) {
         return mapper.findByUserId(userId);
     }
+
+    @Override
+    public Order findOneByUid(String uid) {
+        return mapper.findOneByUid(uid);
+    }
 }

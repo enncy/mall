@@ -1,11 +1,9 @@
 package cn.enncy.mall.pojo;
 
 
-import cn.enncy.mall.annotaion.Info;
-import cn.enncy.mall.annotaion.Option;
-import cn.enncy.mall.annotaion.Select;
-import cn.enncy.mall.annotaion.Show;
+import cn.enncy.mall.annotaion.*;
 import cn.enncy.mall.constant.InputType;
+import cn.enncy.mall.constant.ServiceMapping;
 import cn.enncy.mall.constant.Tag;
 
 import java.math.BigDecimal;
@@ -37,7 +35,7 @@ public class User extends BaseObject {
     /**
      * 权限
      **/
-    @Info(value = "权限",tag = Tag.SELECT)
+    @Info(value = "权限",tag = Tag.SELECT,disabled = true)
     @Show
     @Select(options = {
             @Option(value = "user",description = "普通用户"),@Option(value = "admin",description = "管理员")
@@ -72,8 +70,14 @@ public class User extends BaseObject {
     @Select(options = {
             @Option(value = "true",description = "已激活"),@Option(value = "false",description = "未激活")
     })
-    @Info(value = "是否激活",tag = Tag.SELECT, disabled = true)
+    @Info(value = "是否激活",tag = Tag.SELECT,disabled = true )
     private boolean active;
+
+
+
+    @Reference(ServiceMapping.ADDRESS)
+    @Info(value = "默认地址",tag = Tag.REFERENCE,disabled = true)
+    private long defaultAddressId;
 
     public String getNickname() {
         return nickname;
@@ -147,6 +151,13 @@ public class User extends BaseObject {
         this.active = active;
     }
 
+    public long getDefaultAddressId() {
+        return defaultAddressId;
+    }
+
+    public void setDefaultAddressId(long defaultAddressId) {
+        this.defaultAddressId = defaultAddressId;
+    }
 
     @Override
     public String toString() {
@@ -163,6 +174,7 @@ public class User extends BaseObject {
                 ", profile='" + profile + '\'' +
                 ", balance=" + balance +
                 ", active=" + active +
+                ", defaultAddressId=" + defaultAddressId +
                 '}';
     }
 }

@@ -50,7 +50,6 @@ public class RoleFilter implements Filter {
         }else
         // 用户权限验证，如果未登录，则跳转到登录界面
         if(userRolePaths.stream().anyMatch(path->request.getServletPath().startsWith(path))){
-            System.out.println("user filter");
             if(user!=null){
                 filterChain.doFilter(servletRequest,servletResponse);
             }else{

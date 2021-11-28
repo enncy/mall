@@ -23,6 +23,11 @@
         font-size: 13px;
         color: #5e5e5e;
     }
+    .goods-img {
+        border-radius: 4px;
+        width: 140px;
+        height: 160px;
+    }
 </style>
 
 <jsp:include page="/common/header.jsp"/>
@@ -31,10 +36,7 @@
 <jsp:include page="/common/navigation.jsp"/>
 
 <%
-
-
     List<Cart> carts = (List<Cart>) request.getAttribute("carts");
-
 %>
 
 <div class="p-lg-5 mt-lg-5 mb-lg-5 d-flex justify-content-center  flex-lg-nowrap flex-wrap ">
@@ -43,6 +45,9 @@
     <jsp:include page="/user/navigation.jsp"/>
 
     <div class="d-flex flex-wrap   col-lg-6 col-md-8 col-12">
+        <div class="col-12 mb-4">
+            <h3>购物车列表</h3>
+        </div>
         <% if(carts.size()==0){ %>
         <div class="card col-12" style="    height: fit-content;">
             <div class="p-2 text-center">
@@ -57,11 +62,11 @@
                 Goods goods = goodsService.findOneById(cart.getGoodsId());
         %>
         <form class="card col-12" method="GET" action="/goods/buy">
-            <input value="<%=cart.getId()%>" name="id" type="hidden">
+            <input value="<%=cart.getId()%>" name="cartId" type="hidden">
             <div class="p-4 d-flex col-12">
-                <div class="me-4">
-                    <img src="<%=goods.getImg()%>" style=" max-width: 160px">
-                </div>
+                <a class="me-4" style="cursor: pointer"  href="/goods/detail?id=<%=goods.getId()%>" >
+                    <img src="<%=goods.getImg()%>"  class="goods-img">
+                </a>
                 <div class="w-100" style="text-align: left">
                     <div><span class="font-primary me-2">商品名:</span> <span
                             class="font-secondary"><%=goods.getName()%></span></div>
@@ -73,7 +78,7 @@
                         <span class="font-primary me-2">数量:</span>
                         <label class="w-25 ">
                             <input value="<%=cart.getCount()%>" id="count"
-                                   onchange="changeCount(this,'<%=cart.getId()%>','<%=goods.getRealPrice() %>')" min="0"
+                                   onchange="changeCount(this,'<%=cart.getId()%>','<%=goods.getRealPrice() %>')" min="0" max="100"
                                    type="number" name="count" class="form-control form-control-sm">
                         </label>
 

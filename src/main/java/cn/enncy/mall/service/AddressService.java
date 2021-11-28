@@ -18,6 +18,7 @@ public class AddressService extends BaseService<Address, AddressMapper> implemen
         super(AddressMapper.class);
     }
 
+
     @Override
     public Address findOneByAlias(String alias) {
         return mapper.findOneByAlias(alias);

@@ -1,14 +1,9 @@
 package cn.enncy.mall.controller;
 
 
-import cn.enncy.mall.pojo.Address;
-import cn.enncy.mall.pojo.Cart;
-import cn.enncy.mall.pojo.Goods;
-import cn.enncy.mall.pojo.User;
-import cn.enncy.mall.service.AddressService;
-import cn.enncy.mall.service.CartService;
-import cn.enncy.mall.service.GoodsService;
-import cn.enncy.mall.service.UserService;
+import cn.enncy.mall.constant.OrderStatus;
+import cn.enncy.mall.pojo.*;
+import cn.enncy.mall.service.*;
 import cn.enncy.mall.utils.RequestUtils;
 import cn.enncy.mall.utils.Security;
 import cn.enncy.mall.utils.ServiceFactory;
@@ -48,6 +43,8 @@ public class UserController {
     AddressService addressService = ServiceFactory.resolve(AddressService.class);
     CartService cartService = ServiceFactory.resolve(CartService.class);
     GoodsService goodsService = ServiceFactory.resolve(GoodsService.class);
+    OrderService orderService = ServiceFactory.resolve(OrderService.class);
+
     HttpServletRequest request;
     HttpServletResponse response;
     HttpSession session;
@@ -60,29 +57,28 @@ public class UserController {
     @Get("/user/address")
     public String address() {
         List<Address> all = addressService.findAll();
-        request.setAttribute("addresses",all);
+        request.setAttribute("addresses", all);
         return "/user/address/index";
     }
 
     @Get("/user/cart")
     public String cart() {
         List<Cart> all = cartService.findAll();
-        request.setAttribute("carts",all);
+        request.setAttribute("carts", all);
         return "/user/cart/index";
     }
 
-    @Get("/user/order")
+    @Get("/user/orders")
     public String order() {
-        return "/user/order/index";
+        return "/user/orders/index";
     }
 
     @Post("/user")
     public String userPost(@Body User user) {
         userService.update(user);
-        session.setAttribute("user",user);
+        session.setAttribute("user", user);
         return "/user/index";
     }
-
 
 
     @Get("/user/balance")
@@ -110,9 +106,9 @@ public class UserController {
     @Get("/user/address/update")
     public String addressUpdate(@Param("id") long id) {
         System.out.println(id);
-        if(id==0){
+        if (id == 0) {
             request.setAttribute("address", new Address());
-        }else{
+        } else {
             request.setAttribute("address", addressService.findOneById(id));
         }
         return "/user/address/update/index";
@@ -124,9 +120,9 @@ public class UserController {
         try {
             RequestUtils.replaceObject(request, address);
 
-            if(address.getId()==0){
+            if (address.getId() == 0) {
                 addressService.insert(address);
-            }else{
+            } else {
                 addressService.update(address);
             }
 
@@ -139,11 +135,11 @@ public class UserController {
 
     @Get("/user/cart/delete")
     public void cartDelete(@Param("id") int id) throws IOException {
-        if (id!=0) {
+        if (id != 0) {
             //  增加库存
             Cart cart = cartService.findOneById(id);
             Goods goods = goodsService.findOneById(cart.getGoodsId());
-            goods.setStock(goods.getStock()+cart.getCount());
+            goods.setStock(goods.getStock() + cart.getCount());
             goodsService.update(goods);
             cartService.deleteById(id);
             request.setAttribute("msg", "删除成功!");
@@ -156,7 +152,7 @@ public class UserController {
 
     @Get("/user/address/delete")
     public void addressDelete(@Param("id") int id) throws IOException {
-        if (id!=0) {
+        if (id != 0) {
             addressService.deleteById(id);
             request.setAttribute("msg", "删除成功!");
         } else {
@@ -165,4 +161,50 @@ public class UserController {
         response.sendRedirect("/user/address");
     }
 
+    @Get("/user/address/default")
+    public void addressDefault(@Param("id") int id) throws IOException {
+        User user = (User) session.getAttribute("user");
+        if (id != 0) {
+            user.setDefaultAddressId(id);
+            userService.update(user);
+            request.setAttribute("msg", "设置成功!");
+        } else {
+            request.setAttribute("error", "id不能为空!");
+        }
+        response.sendRedirect("/user/address");
+    }
+
+
+    @Get("/user/orders/cancel")
+    public void cancel(@Param("id") int id) throws IOException {
+
+        Order order = orderService.findOneById(id);
+        order.setStatus(OrderStatus.CANCEL.value);
+        orderService.update(order);
+        request.setAttribute("msg", "取消成功!");
+        response.sendRedirect("/user/orders");
+    }
+
+
+    @Get("/user/orders/confirm")
+    public void confirm(@Param("id") int id) throws IOException {
+        Order order = orderService.findOneById(id);
+        order.setStatus(OrderStatus.FINISH.value);
+        orderService.update(order);
+        request.setAttribute("msg", "收货成功!");
+        response.sendRedirect("/user/orders");
+    }
+
+
+    @Get("/user/orders/pay")
+    public String pay(@Param("id") int id) throws IOException {
+        Order order = orderService.findOneById(id);
+        Goods goods = goodsService.findOneById(order.getGoodsId());
+        Address address = addressService.findOneById(order.getAddressId());
+        request.setAttribute("goods", goods);
+        request.setAttribute("order", order);
+        request.setAttribute("address", address);
+        request.setAttribute("count", order.getCount());
+        return "/goods/buy/index";
+    }
 }

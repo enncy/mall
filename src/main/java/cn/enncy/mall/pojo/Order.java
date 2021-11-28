@@ -6,6 +6,9 @@ import cn.enncy.mall.constant.InputType;
 
 import cn.enncy.mall.constant.ServiceMapping;
 import cn.enncy.mall.constant.Tag;
+import cn.enncy.mall.utils.formatter.DateFormatter;
+
+import java.math.BigDecimal;
 
 /**
  * //TODO
@@ -19,6 +22,9 @@ public class Order extends BaseObject{
     @Show
     @Info(value = "用户id",tag = Tag.REFERENCE)
     private long userId;
+
+    @Info("订单编号")
+    private String uid;
 
     @Show
     @Reference( ServiceMapping.ADDRESS )
@@ -41,12 +47,24 @@ public class Order extends BaseObject{
     })
     private String status;
 
+    @Show
+    @Info(value = "应付款",type = InputType.NUMBER,disabled = true)
+    private BigDecimal price;
+
     public long getUserId() {
         return userId;
     }
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public long getAddressId() {
@@ -81,14 +99,31 @@ public class Order extends BaseObject{
         this.status = status;
     }
 
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
-                "userId=" + userId +
+                "id=" + id +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", userId=" + userId +
+                ", uid='" + uid + '\'' +
                 ", addressId=" + addressId +
                 ", goodsId=" + goodsId +
                 ", count=" + count +
                 ", status='" + status + '\'' +
+                ", price=" + price +
                 '}';
+    }
+
+    public  static   String createUid(long userId,long goodsId,long addressId){
+        return DateFormatter.format(System.currentTimeMillis(), "yyyyMMddHHmmss") + userId + goodsId + addressId;
     }
 }

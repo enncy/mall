@@ -1,9 +1,7 @@
 package cn.enncy.mall.pojo;
 
 
-import cn.enncy.mall.annotaion.Info;
-import cn.enncy.mall.annotaion.Reference;
-import cn.enncy.mall.annotaion.Show;
+import cn.enncy.mall.annotaion.*;
 import cn.enncy.mall.constant.InputType;
 import cn.enncy.mall.constant.ServiceMapping;
 import cn.enncy.mall.constant.Tag;
@@ -37,10 +35,8 @@ public class Address extends BaseObject {
     private String detail;
 
 
-
     @Info("邮编")
     private String zipCode;
-
 
     public long getUserId() {
         return userId;
@@ -48,6 +44,22 @@ public class Address extends BaseObject {
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
     }
 
     public String getPhone() {
@@ -66,22 +78,6 @@ public class Address extends BaseObject {
         this.detail = detail;
     }
 
-    public String getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
-    }
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
     public String getZipCode() {
         return zipCode;
     }
@@ -94,11 +90,14 @@ public class Address extends BaseObject {
     public String toString() {
         return "Address{" +
                 "userId=" + userId +
+                ", alias='" + alias + '\'' +
+                ", receiver='" + receiver + '\'' +
                 ", phone='" + phone + '\'' +
                 ", detail='" + detail + '\'' +
-                ", receiver='" + receiver + '\'' +
-                ", alias='" + alias + '\'' +
                 ", zipCode='" + zipCode + '\'' +
+                ", id=" + id +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
                 '}';
     }
 }

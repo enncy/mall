@@ -2,11 +2,14 @@ package cn.enncy.mybatis.core;
 
 
 import cn.enncy.mybatis.entity.DataSource;
+import cn.enncy.spring.mvc.PropertiesUtils;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Objects;
 
 /**
  * //TODO
@@ -16,8 +19,20 @@ import java.sql.Statement;
  */
 public class DBUtils {
 
-    private static final DataSource DATA_SOURCE = new DataSource("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost:3306/mall?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&charsetEncoding=UTF-8", "root", "enncymysql");
+    private static final DataSource DATA_SOURCE = new DataSource();
 
+
+    static {
+        try {
+            PropertiesUtils propertiesUtils = new PropertiesUtils(Objects.requireNonNull(DBUtils.class.getClassLoader().getResource("db.properties")).getPath());
+            DATA_SOURCE.setUsername(propertiesUtils.get("username"));
+            DATA_SOURCE.setPassword(propertiesUtils.get("password"));
+            DATA_SOURCE.setDriver(propertiesUtils.get("driver"));
+            DATA_SOURCE.setUrl(propertiesUtils.get("url"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     static Object connect(Connector connector) throws ClassNotFoundException, SQLException {
         Class.forName(DATA_SOURCE.getDriver());

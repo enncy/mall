@@ -65,7 +65,6 @@ public class BaseService<T extends BaseObject, M extends BaseMapper<T>> implemen
 
     @Override
     public boolean update(T baseObject) {
-        System.out.println("update " + baseObject);
         baseObject.setUpdateTime(System.currentTimeMillis());
         baseObject.setCreateTime(baseObject.getCreateTime());
         return mapper.update(baseObject);

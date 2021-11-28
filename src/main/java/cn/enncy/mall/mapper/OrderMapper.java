@@ -24,4 +24,6 @@ public interface OrderMapper extends  BaseMapper<Order> {
     List<Order> findByUserId(@Param("user_id") long userId);
 
 
+    @Select("select * from #{"+ TABLE_NAME+"} where uid = #{uid}")
+    Order findOneByUid(@Param("uid") String uid);
 }

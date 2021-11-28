@@ -10,7 +10,7 @@ public enum OrderStatus {
     // 订单状态
     PAYMENT("payment","待付款"),
     RECEIVING("receiving","待收货"),
-    FINISH("finished","完成"),
+    FINISH("finished","已收货"),
     CANCEL("cancel","取消")
     ;
 
@@ -22,5 +22,13 @@ public enum OrderStatus {
         this.description = desc;
     }
 
+    public static String getDescription(String value) {
+        for (OrderStatus orderStatus : OrderStatus.values()) {
+            if(orderStatus.value.equals(value)){
+                return orderStatus.description;
+            }
+        }
+        return "无";
+    }
 }
 

@@ -3,9 +3,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
-    String favor = "login";
-    String cart = "login";
-    String orders = "login";
+    String favor = "/login";
+    String cart = "/login";
+    String orders = "/login";
     User user = null;
     if (session.getAttribute("user") != null) {
         user = (User) session.getAttribute("user");
