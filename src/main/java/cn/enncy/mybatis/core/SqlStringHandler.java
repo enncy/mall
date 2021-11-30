@@ -1,9 +1,8 @@
 package cn.enncy.mybatis.core;
 
 
-import cn.enncy.mybatis.entity.MybatisSqlError;
+import cn.enncy.mybatis.entity.MybatisException;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -120,7 +119,7 @@ public class SqlStringHandler {
      * @param tableName 表名
      * @return: java.lang.String
      */
-    public static String replaceTableName(String sqlString, String tableName) throws MybatisSqlError {
+    public static String replaceTableName(String sqlString, String tableName) throws MybatisException {
         if (!sqlString.contains(SqlConstant.TABLE_NAME)) {
             //throw new MybatisSqlError("param is not found : "+SqlConstant.TABLE_NAME + " ,  in sql string : "+sqlString);
         }else{

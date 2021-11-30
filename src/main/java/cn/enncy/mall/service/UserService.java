@@ -17,48 +17,13 @@ import java.util.List;
  *
  * @author enncy
  */
-public class UserService extends  BaseService<User,UserMapper> implements UserMapper {
+public interface UserService extends BaseService<User>  {
 
-    public UserService() {
-        super(UserMapper.class);
-    }
+    User findOneByAccount(String account);
 
-    @Override
-    public boolean update(User baseObject) {
-        User old = mapper.findOneById(baseObject.getId());
+    User findOneByEmail(String email);
 
-        // 删除旧图片
-        if(!StringUtils.isNullOrEmpty(old.getAvatar()) && !old.getAvatar().equals(baseObject.getAvatar())){
-            List<String> path = PathUtils.splitPath(Application.REAL_PATH);
-            path .addAll(PathUtils.splitPath(old.getAvatar()));
-            String absPath = String.join("/", path);
-            File file = new File(absPath);
+    List<User> search(String str, int page, int size);
 
-            if(file.exists()   && file.isFile() ){
-                file.delete();
-            }
-        }
-        return super.update(baseObject);
-    }
-
-    @Override
-    public User findOneByAccount(String account) {
-        return mapper.findOneByAccount(account);
-    }
-
-    @Override
-    public User findOneByEmail(String email) {
-        return mapper.findOneByEmail(email);
-    }
-
-    @Override
-    public List<User> search(String str, int page, int size) {
-        size = size == 0 ? 10 : size;
-        return mapper.search(str,page * size, size);
-    }
-
-    @Override
-    public boolean deleteInactiveUser() {
-        return mapper.deleteInactiveUser();
-    }
+    boolean deleteInactiveUser();
 }

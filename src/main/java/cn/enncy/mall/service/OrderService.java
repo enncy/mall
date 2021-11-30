@@ -2,7 +2,12 @@ package cn.enncy.mall.service;
 
 
 import cn.enncy.mall.mapper.OrderMapper;
+import cn.enncy.mall.pojo.Cart;
+import cn.enncy.mall.pojo.Goods;
 import cn.enncy.mall.pojo.Order;
+import cn.enncy.mall.pojo.OrderDetails;
+import cn.enncy.mybatis.annotation.method.Transaction;
+import cn.enncy.mybatis.core.ServiceFactory;
 
 import java.util.List;
 
@@ -12,20 +17,19 @@ import java.util.List;
  *
  * @author enncy
  */
-public class OrderService extends BaseService<Order, OrderMapper> implements OrderMapper{
+public interface OrderService extends BaseService<Order> {
+
+    List<Order> findByUserId(long userId);
 
 
-    public OrderService( ) {
-        super(OrderMapper.class);
-    }
+    Order findOneByUid(String uid);
 
-    @Override
-    public List<Order> findByUserId(long userId) {
-        return mapper.findByUserId(userId);
-    }
+    boolean deleteByUid(String uid);
 
-    @Override
-    public Order findOneByUid(String uid) {
-        return mapper.findOneByUid(uid);
-    }
+    @Transaction
+    void createSingleGoodsOrder(Order order, OrderDetails orderDetails, Goods goods);
+
+    @Transaction
+    void createOrder(Order order, List<OrderDetails> orderDetailsList, List<Cart> cartList, List<Goods> goodsList);
+
 }

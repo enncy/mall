@@ -59,11 +59,8 @@
                 <form action="/goods/add" method="POST">
                     <input type="hidden" name="id" value="<%=goods.getId()%>">
                     <div class="p-2 pb-0 p-lg-0">
-                        <p>名字：<b><%=goods.getName()%>
-                        </b></p>
-                        <p>描述：<b><%=goods.getDescription()%>
+                        <b><%=goods.getDescription()%>
                         </b>
-                        </p>
                     </div>
                     <div class="mt-4 mb-4  price-div">
                         <div class="price-bg"></div>
@@ -99,8 +96,8 @@
                                    href="/login">立即购买</a>
                                 <a type="button" class="col-6 col-lg-7 btn btn-lg btn-danger" href="/login">加入购物车</a>
                             <% } else { %>
-                                <a type="button" class="col-6 col-lg-4 me-lg-2 btn btn-lg btn-outline-danger"
-                                   href="/goods/buy?id=<%=goods.getId()%>">立即购买</a>
+                                <input type="submit"  name="buy" value="立即购买" class="col-6 col-lg-4 me-lg-2 btn btn-lg btn-outline-danger" id="buy">
+
                                 <label for="add" class="col-6 col-lg-7 btn btn-lg btn-danger">
                                     添加至购物车
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"

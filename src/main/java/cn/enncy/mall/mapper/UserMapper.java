@@ -18,16 +18,14 @@ import java.util.List;
 
 @Mapper(table = "user",target = User.class)
 public interface UserMapper extends BaseMapper<User> , Searchable<User> {
-
     /**
      *  根据 账号 查找用户
      *
      * @param account  账号
      * @return cn.enncy.mall.pojo.User
      */
-    @Select("select * from #{"+TABLE_NAME+"} where account = '#{account}'")
+    @Select("select * from #{"+TABLE_NAME+"} where account = '#{account}' ")
     User findOneByAccount(@Param("account") String account);
-
 
     /**
      *  根据 邮箱 查找用户
@@ -35,9 +33,8 @@ public interface UserMapper extends BaseMapper<User> , Searchable<User> {
      * @param email  邮箱
      * @return cn.enncy.mall.pojo.User
      */
-    @Select("select * from #{"+TABLE_NAME+"} where email = '#{email}'")
+    @Select("select * from #{"+TABLE_NAME+"} where email = '#{email}'  ")
     User findOneByEmail(@Param("email") String email);
-
 
     /**
      *  根据 昵称 或 账号 查找用户
@@ -45,17 +42,14 @@ public interface UserMapper extends BaseMapper<User> , Searchable<User> {
      * @return cn.enncy.mall.pojo.User
      */
     @Override
-    @Select("select * from #{"+ TABLE_NAME +"} where account like '%#{str}%'  or  nickname like '%#{str}%'  LIMIT #{skip} ,#{limit};")
+    @Select("select * from #{"+ TABLE_NAME +"} where account like '%#{str}%'  or  nickname like '%#{str}%' and active=1  LIMIT #{skip} ,#{limit};")
     List<User> search(@Param("str") String str,@Param("skip") int skip, @Param("limit") int limit);
 
-
-
     /**
-     *  删除不活跃的用户
+     *  删除未激活的用户
      * @return boolean
      */
-    @Delete("delete from #{"+TABLE_NAME+"} where active=0")
+    @Delete("delete from #{"+TABLE_NAME+"} where active=0   and   unix_timestamp(now()) - (create_time/1000) > 3 * 60;")
     boolean deleteInactiveUser();
-
 
 }

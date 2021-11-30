@@ -3,6 +3,7 @@ package cn.enncy.spring.mvc.core;
 
 import cn.enncy.mall.utils.TypeUtils;
 import cn.enncy.mall.utils.RequestUtils;
+import cn.enncy.mybatis.core.DBUtils;
 import cn.enncy.reflect.AnnotationUtils;
 import cn.enncy.spring.mvc.PathUtils;
 import cn.enncy.spring.mvc.annotation.Controller;
@@ -16,12 +17,14 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,9 +47,9 @@ public class DispatcherServlet implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         try {
-            String path = Arrays.stream(DispatcherServlet.class.getName().split("\\.")).findAny().get();
-            controllers.addAll(annotationUtils.getAnnotationClasses(path, Controller.class));
-            controllers.addAll(annotationUtils.getAnnotationClasses(path, RestController.class));
+
+            controllers.addAll(annotationUtils.getAnnotationClasses(File.separator, Controller.class));
+            controllers.addAll(annotationUtils.getAnnotationClasses(File.separator, RestController.class));
         } catch (URISyntaxException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -143,7 +146,7 @@ public class DispatcherServlet implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
-
+        System.out.println("DispatcherServlet "+Thread.currentThread());
         for (Class<?> controller : controllers) {
             String prefix = "";
             if (controller.isAnnotationPresent(Controller.class)) {
@@ -200,6 +203,13 @@ public class DispatcherServlet implements Filter {
 
         if (!resp.isCommitted()) {
             filterChain.doFilter(req, resp);
+        }
+
+        // 关闭当前的数据库链接
+        try {
+            DBUtils.closeCurrentConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

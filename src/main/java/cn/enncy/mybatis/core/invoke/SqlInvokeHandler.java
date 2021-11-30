@@ -1,13 +1,15 @@
-package cn.enncy.mybatis.core;
+package cn.enncy.mybatis.core.invoke;
 
 
 import cn.enncy.mall.utils.Logger;
 import cn.enncy.mybatis.annotation.method.Executable;
 import cn.enncy.mybatis.annotation.type.Mapper;
 import cn.enncy.mybatis.annotation.type.Result;
+import cn.enncy.mybatis.core.DBUtils;
 import cn.enncy.mybatis.core.result.ListResultHandler;
 import cn.enncy.mybatis.core.result.ObjectResultHandler;
 import cn.enncy.mybatis.core.result.ResultSetHandler;
+import cn.enncy.mybatis.entity.MybatisException;
 import cn.enncy.mybatis.entity.SQL;
 import cn.enncy.mybatis.handler.param.BodyHandler;
 import cn.enncy.mybatis.handler.param.ParamHandler;
@@ -35,39 +37,75 @@ public class SqlInvokeHandler implements InvocationHandler {
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Logger.log("-------------[ sql execute ]--------------");
-        // 1. 获取需要转换的类型
-        Class<?> targetType = resolveTargetType(method);
+    public Object invoke(Object proxy, Method method, Object[] args) throws MybatisException {
 
-        // 2. 处理语句
-        SQL sql = new DefaultSqlHandler(method, target, args).handle();
+        Mapper mapper = null;
+        if(target.isAnnotationPresent(Mapper.class)){
+            mapper = target.getAnnotation(Mapper.class);
+        }else{
 
-        if (sql != null) {
-            long time = 0;
-            Object value;
-            // 3. 执行语句
-            if (sql.isExecuteQuery()) {
-                value = executeQuery(method, targetType, sql.getValue());
-            } else {
-                long l = System.currentTimeMillis();
-                value = execute(sql.getValue());
-                time = System.currentTimeMillis() - l;
+            LinkedList<Class<?>> interfaceList = new LinkedList<>();
+            interfaceList.add(target);
+            interfaceList.add(target.getSuperclass());
+            interfaceList.addAll(Arrays.asList(target.getInterfaces()));
+            while(!interfaceList.isEmpty()){
+                Class<?> first = interfaceList.pop();
+                if(first!=null){
+                    if(first.getSuperclass()==null && first.getInterfaces().length==0){
+                        if(first.isAnnotationPresent(Mapper.class)){
+                            mapper = first.getAnnotation(Mapper.class);
+                            break;
+                        }
+                    }else{
+                        interfaceList.push(first.getSuperclass());
+                        interfaceList.addAll(Arrays.asList(first.getInterfaces()));
+                    }
+                }
             }
 
-            Logger.log(
-                    "\tsql\t: " + sql.getValue(),
-                    "\tresult\t: " + value,
-                    (time == 0 ? "" : "\ttakes\t: " + time + "/ms")
-            );
-            return value;
         }
 
-        return null;
+        if (mapper == null) {
+            try {
+                return method.invoke(proxy, args);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new MybatisException(e.getMessage());
+            }
+        } else {
+            Logger.log("-------------[ sql execute ]--------------");
+            // 1. 获取需要转换的类型
+            Class<?> targetType = resolveTargetType(method, mapper);
+
+            // 2. 处理语句
+            SQL sql = new DefaultSqlHandler(method, target,mapper, args).handle();
+
+            if (sql != null) {
+                long time = 0;
+                Object value;
+                // 3. 执行语句
+                if (sql.isExecuteQuery()) {
+                    value = executeQuery(method, targetType, sql.getValue());
+                } else {
+                    long l = System.currentTimeMillis();
+                    value = execute(sql.getValue());
+                    time = System.currentTimeMillis() - l;
+                }
+
+                Logger.log(
+                        "\tsql\t: " + sql.getValue(),
+                        "\tresult\t: " + value,
+                        (time == 0 ? "" : "\ttakes\t: " + time + "/ms")
+                );
+                return value;
+            }
+
+            return null;
+        }
+
     }
 
     // 执行 sql
-    public Object execute(String sql) throws ClassNotFoundException, SQLException {
+    public Object execute(String sql) throws MybatisException {
         return DBUtils.connect(statement -> {
             String[] split = sql.split("\n");
             if (split.length != 0) {
@@ -83,7 +121,7 @@ public class SqlInvokeHandler implements InvocationHandler {
     }
 
     // 执行查询语句
-    public Object executeQuery(Method method, Class<?> targetType, String sql) throws ClassNotFoundException, SQLException {
+    public Object executeQuery(Method method, Class<?> targetType, String sql) throws MybatisException {
         return DBUtils.connect(statement -> {
             long l = System.currentTimeMillis();
             // 结果集
@@ -131,11 +169,10 @@ public class SqlInvokeHandler implements InvocationHandler {
      * @param method 代理的对象方法
      * @return java.lang.Class<?>
      */
-    public Class<?> resolveTargetType(Method method) {
+    public Class<?> resolveTargetType(Method method, Mapper mapper) {
         Class<?> targetType;
         Class<?> returnType = method.getReturnType();
 
-        Mapper mapper = target.getAnnotation(Mapper.class);
         // 如果是列表
         if (returnType.equals(List.class) || returnType.equals(Object.class)) {
             // 获取列表中的泛型

@@ -4,30 +4,20 @@ package cn.enncy.mall.controller;
 import cn.enncy.mall.constant.OrderStatus;
 import cn.enncy.mall.pojo.*;
 import cn.enncy.mall.service.*;
-import cn.enncy.mall.utils.RequestUtils;
-import cn.enncy.mall.utils.Security;
-import cn.enncy.mall.utils.ServiceFactory;
+import cn.enncy.mybatis.core.ServiceFactory;
 import cn.enncy.spring.mvc.annotation.Controller;
 import cn.enncy.spring.mvc.annotation.Get;
 import cn.enncy.spring.mvc.annotation.Post;
 import cn.enncy.spring.mvc.annotation.params.Body;
 import cn.enncy.spring.mvc.annotation.params.Param;
 import com.mysql.cj.util.StringUtils;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * //TODO
@@ -56,20 +46,25 @@ public class UserController {
 
     @Get("/user/address")
     public String address() {
-        List<Address> all = addressService.findAll();
+        User user = (User) session.getAttribute("user");
+        List<Address> all = addressService.findByUserId(user.getId());
         request.setAttribute("addresses", all);
         return "/user/address/index";
     }
 
     @Get("/user/cart")
     public String cart() {
-        List<Cart> all = cartService.findAll();
+        User user = (User) session.getAttribute("user");
+        List<Cart> all = cartService.findByUserId(user.getId());
         request.setAttribute("carts", all);
         return "/user/cart/index";
     }
 
     @Get("/user/orders")
     public String order() {
+        User user = (User) session.getAttribute("user");
+        List<Order> all = orderService.findByUserId(user.getId());
+        request.setAttribute("orders", all);
         return "/user/orders/index";
     }
 
@@ -105,7 +100,7 @@ public class UserController {
 
     @Get("/user/address/update")
     public String addressUpdate(@Param("id") long id) {
-        System.out.println(id);
+
         if (id == 0) {
             request.setAttribute("address", new Address());
         } else {
@@ -115,22 +110,23 @@ public class UserController {
     }
 
     @Post("/user/address/update")
-    public String addressUpdatePost(@Body Address address) {
-        request.setAttribute("address", address);
-        try {
-            RequestUtils.replaceObject(request, address);
-
-            if (address.getId() == 0) {
+    public String addressUpdatePost(@Body Address address) throws IOException {
+        User user = (User) session.getAttribute("user");
+        address.setUserId(user.getId());
+        address.setDetail(address.getDetail().replaceAll("\\n"," "));
+        if (address.getId() == 0) {
+            if(addressService.findOneByAlias(address.getAlias())==null){
                 addressService.insert(address);
-            } else {
-                addressService.update(address);
+            }else{
+                request.setAttribute("error","此备注已经被占用！");
+                return "/user/address/update/index";
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("error", "服务器错误");
+        } else {
+            addressService.update(address);
         }
-        return "/user/address/index";
+        response.sendRedirect("/user/address");
+
+        return "/user/address/update/index";
     }
 
     @Get("/user/cart/delete")
@@ -196,15 +192,15 @@ public class UserController {
     }
 
 
-    @Get("/user/orders/pay")
-    public String pay(@Param("id") int id) throws IOException {
-        Order order = orderService.findOneById(id);
-        Goods goods = goodsService.findOneById(order.getGoodsId());
-        Address address = addressService.findOneById(order.getAddressId());
-        request.setAttribute("goods", goods);
-        request.setAttribute("order", order);
-        request.setAttribute("address", address);
-        request.setAttribute("count", order.getCount());
-        return "/goods/buy/index";
-    }
+    //@Get("/user/orders/pay")
+    //public String pay(@Param("id") int id) throws IOException {
+    //    Order order = orderService.findOneById(id);
+    //    Goods goods = goodsService.findOneById(order.getGoodsId());
+    //    Address address = addressService.findOneById(order.getAddressId());
+    //    request.setAttribute("goods", goods);
+    //    request.setAttribute("order", order);
+    //    request.setAttribute("address", address);
+    //    request.setAttribute("count", order.getCount());
+    //    return "/goods/pay/index";
+    //}
 }

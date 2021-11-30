@@ -2,16 +2,11 @@ package cn.enncy.mall.controller.restful;
 
 
 import cn.enncy.mall.bean.ResultBody;
-import cn.enncy.mall.pojo.User;
 import cn.enncy.mall.service.*;
-import cn.enncy.mall.utils.ServiceFactory;
+import cn.enncy.mybatis.core.ServiceFactory;
 import cn.enncy.spring.mvc.annotation.Get;
 import cn.enncy.spring.mvc.annotation.RestController;
 import cn.enncy.spring.mvc.annotation.params.Param;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-
-import java.util.List;
 
 /**
  * //TODO

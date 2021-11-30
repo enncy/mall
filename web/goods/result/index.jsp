@@ -63,7 +63,7 @@
     <% } %>
 
         <p class="mt-5">
-            <span>即将跳转到订单列表页... <a href="/user/orders">点击跳转</a></span>
+            <span>请您重新结算，即将跳转到订单列表页... <a href="/user/orders">点击跳转</a></span>
         </p>
     </div>
 

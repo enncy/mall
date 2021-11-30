@@ -4,7 +4,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.mysql.cj.util.StringUtils" %>
 <%@ page import="cn.enncy.mall.service.AddressService" %>
-<%@ page import="cn.enncy.mall.utils.ServiceFactory" %>
+<%@ page import="cn.enncy.mybatis.core.ServiceFactory" %>
 <%@ page import="java.util.Comparator" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java"  %>
 

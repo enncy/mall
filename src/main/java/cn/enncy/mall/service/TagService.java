@@ -12,25 +12,13 @@ import java.util.List;
  *
  * @author enncy
  */
-public class TagService extends BaseService<Tag, TagMapper> implements TagMapper {
+public interface TagService extends  BaseService<Tag>{
 
-    public TagService( ) {
-        super(TagMapper.class);
-    }
+    Tag findOneByName(String name);
 
-    @Override
-    public Tag findOneByName(String name) {
-        return mapper.findOneByName(name);
-    }
+    List<Tag> findByCount();
 
-    @Override
-    public List<Tag> findByCount() {
-        return mapper.findByCount();
-    }
+    List<Tag> search(String key, int page, int size);
 
-    @Override
-    public List<Tag> search(String key, int page, int size) {
-        size = size == 0 ? 10 : size;
-        return mapper.search(key, page * size, size );
-    }
 }
+

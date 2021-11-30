@@ -2,5 +2,7 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/src/main/java/cn/enncy/mybatis/core/DBUtils.java" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/cn/enncy/mybatis/core/invoke/TransactionInvokeHandler.java" dialect="MySQL" />
+    <file url="PROJECT" dialect="MySQL" />
   </component>
 </project>

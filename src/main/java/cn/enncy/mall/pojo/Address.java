@@ -100,4 +100,9 @@ public class Address extends BaseObject {
                 ", updateTime=" + updateTime +
                 '}';
     }
+
+
+    public String createOrderAddressDetails(){
+        return this.getDetail().replaceAll("\\n"," ") +" - "+ this.getPhone();
+    }
 }

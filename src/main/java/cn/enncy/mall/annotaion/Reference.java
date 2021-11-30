@@ -17,4 +17,6 @@ import java.lang.annotation.*;
 public @interface Reference {
     // 引用
     ServiceMapping  value();
+
+    String key() default "id";
 }

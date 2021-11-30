@@ -1,6 +1,7 @@
 package cn.enncy.mybatis.handler.sql;
 
-import cn.enncy.mybatis.entity.MybatisSqlError;
+import cn.enncy.mybatis.entity.MybatisException;
+
 import cn.enncy.mybatis.entity.SQL;
 
 import java.sql.SQLException;
@@ -12,5 +13,5 @@ import java.sql.SQLException;
  * @author enncy
  */
 public interface SqlHandler {
-    SQL handle(SQL sql) throws MybatisSqlError, SQLException;
+    SQL handle(SQL sql) throws MybatisException, SQLException;
 }

@@ -3,7 +3,9 @@ package cn.enncy.mybatis.handler.sql;
 
 import cn.enncy.mybatis.annotation.param.Body;
 import cn.enncy.mybatis.annotation.param.Param;
-import cn.enncy.mybatis.entity.MybatisSqlError;
+import cn.enncy.mybatis.annotation.type.Mapper;
+import cn.enncy.mybatis.entity.MybatisException;
+
 import cn.enncy.mybatis.entity.SQL;
 import cn.enncy.mybatis.handler.param.BodyHandler;
 import cn.enncy.mybatis.handler.param.ParamHandler;
@@ -22,12 +24,12 @@ public abstract  class ParamsSqlHandler extends TableSqlHandler {
     private static final BodyHandler BODY_HANDLER = new BodyHandler();
     private static final ParamHandler PARAM_HANDLER = new ParamHandler();
 
-    public ParamsSqlHandler(Method method, Class<?> target, Object[] methodArguments) {
-        super(method, target, methodArguments);
+    public ParamsSqlHandler(Method method, Class<?> target, Mapper mapper, Object[] methodArguments) {
+        super(method, target,mapper, methodArguments);
     }
 
     @Override
-    public SQL handle(SQL sql) throws MybatisSqlError {
+    public SQL handle(SQL sql) throws MybatisException {
         SQL handle = super.handle(sql);
         Parameter[] parameters = method.getParameters();
         for (int i = 0; i < parameters.length; i++) {
@@ -41,7 +43,7 @@ public abstract  class ParamsSqlHandler extends TableSqlHandler {
             else if (parameter.isAnnotationPresent(Param.class)) {
                 handle.setValue(PARAM_HANDLER.handle(handle.getValue(), parameter, methodArguments[i]));
             }else{
-                throw new MybatisSqlError("there is no handler to resolve param : " + parameter.getName() + " in sql : " + handle.getValue());
+                throw new MybatisException("there is no handler to resolve param : " + parameter.getName() + " in sql : " + handle.getValue());
             }
         }
         return handle;

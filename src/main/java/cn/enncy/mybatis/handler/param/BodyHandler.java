@@ -4,7 +4,8 @@ package cn.enncy.mybatis.handler.param;
 import cn.enncy.mybatis.core.ReflectUtils;
 import cn.enncy.mybatis.core.SqlConstant;
 import cn.enncy.mybatis.core.SqlStringHandler;
-import cn.enncy.mybatis.entity.MybatisSqlError;
+import cn.enncy.mybatis.entity.MybatisException;
+
 
 import java.lang.reflect.Parameter;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class BodyHandler implements Handler {
 
 
     @Override
-    public String handle(String sql, Parameter parameter, Object value) throws MybatisSqlError {
+    public String handle(String sql, Parameter parameter, Object value) throws MybatisException {
 
         String result = sql;
         Map<String, Object> objectsValueMap = ReflectUtils.getObjectsValueMap(value);
@@ -38,7 +39,7 @@ public class BodyHandler implements Handler {
             } else if(sql.toUpperCase().startsWith(SqlConstant.DELETE)){
                 result = SqlStringHandler.replaceParams(result, objectsValueMap);
             }else{
-                throw new MybatisSqlError("sql body handler error , no  insert,update or delete prefix . sql : "+sql+" , value : "+value);
+                throw new MybatisException("sql body handler error , no  insert,update or delete prefix . sql : "+sql+" , value : "+value);
             }
 
         }

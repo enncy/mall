@@ -3,7 +3,8 @@ package cn.enncy.mall.controller.admin;
 
 import cn.enncy.mall.constant.ServiceMapping;
 import cn.enncy.mall.service.BaseService;
-import cn.enncy.mall.utils.ServiceFactory;
+import cn.enncy.mall.service.impl.ServiceImpl;
+import cn.enncy.mybatis.core.ServiceFactory;
 import cn.enncy.spring.mvc.annotation.Controller;
 import cn.enncy.spring.mvc.annotation.Get;
 import cn.enncy.spring.mvc.annotation.params.Param;
@@ -59,7 +60,7 @@ public class DeleteController {
     }
 
     public void delete(long targetId, ServiceMapping serviceMapping) throws IOException {
-        BaseService<?, ?> resolve = ServiceFactory.resolve(serviceMapping.serviceClass);
+        BaseService<?> resolve = ServiceFactory.resolve(serviceMapping.serviceClass);
         resolve.deleteById(targetId);
         response.sendRedirect("/admin/" + serviceMapping.name);
     }

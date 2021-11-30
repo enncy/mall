@@ -1,14 +1,12 @@
 <%@ page import="cn.enncy.mall.constant.ServiceMapping" %>
-<%@ page import="cn.enncy.mall.utils.ServiceFactory" %>
+<%@ page import="cn.enncy.mybatis.core.ServiceFactory" %>
 <%@ page import="cn.enncy.mall.service.TagService" %>
 <%@ page import="cn.enncy.mall.pojo.Tag" %>
+<%@ page import="cn.enncy.mall.service.impl.TagServiceImpl" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
-
-    TagService tagService = ServiceFactory.resolve(TagService.class);
-
-
+    TagService tagService = ServiceFactory.resolve(TagServiceImpl.class);
 %>
 
 <div style="background-color: white">

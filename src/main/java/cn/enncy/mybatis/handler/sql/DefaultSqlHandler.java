@@ -6,7 +6,8 @@ import cn.enncy.mybatis.annotation.method.Insert;
 import cn.enncy.mybatis.annotation.method.Select;
 import cn.enncy.mybatis.annotation.method.Update;
 import cn.enncy.mybatis.annotation.type.Mapper;
-import cn.enncy.mybatis.entity.MybatisSqlError;
+import cn.enncy.mybatis.entity.MybatisException;
+
 import cn.enncy.mybatis.entity.SQL;
 
 import java.lang.reflect.Method;
@@ -20,11 +21,11 @@ import java.lang.reflect.Method;
 public class DefaultSqlHandler  extends ParamsSqlHandler{
 
 
-    public DefaultSqlHandler(Method method, Class<?> target, Object[] methodArguments) {
-        super(method, target, methodArguments);
+    public DefaultSqlHandler(Method method, Class<?> target,Mapper mapper, Object[] methodArguments) {
+        super(method, target,mapper, methodArguments);
     }
 
-    public SQL handle() throws MybatisSqlError {
+    public SQL handle() throws MybatisException {
         SQL sql = null;
         if (target.isAnnotationPresent(Mapper.class)) {
             if (method.isAnnotationPresent(Insert.class)) {
@@ -41,7 +42,7 @@ public class DefaultSqlHandler  extends ParamsSqlHandler{
     }
 
     @Override
-    public SQL handle(SQL sql) throws MybatisSqlError {
+    public SQL handle(SQL sql) throws MybatisException {
         return super.handle(sql);
     }
 }

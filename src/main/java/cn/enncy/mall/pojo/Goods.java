@@ -15,9 +15,6 @@ import java.math.BigDecimal;
  * @author enncy
  */
 public class Goods extends BaseObject{
-    @Show
-    @Info("名字")
-    private String name;
 
     @Show
     @Reference(ServiceMapping.TAG)
@@ -50,13 +47,12 @@ public class Goods extends BaseObject{
     private int stock;
 
 
-
-    public String getName() {
-        return name;
+    public long getTagId() {
+        return tagId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTagId(long tagId) {
+        this.tagId = tagId;
     }
 
     public BigDecimal getPrice() {
@@ -65,6 +61,14 @@ public class Goods extends BaseObject{
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public BigDecimal getDiscountPrice() {
+        return discountPrice;
+    }
+
+    public void setDiscountPrice(BigDecimal discountPrice) {
+        this.discountPrice = discountPrice;
     }
 
     public String getDescription() {
@@ -99,29 +103,12 @@ public class Goods extends BaseObject{
         this.stock = stock;
     }
 
-    public long getTagId() {
-        return tagId;
-    }
-
-    public void setTagId(long tagId) {
-        this.tagId = tagId;
-    }
-
-    public BigDecimal getDiscountPrice() {
-        return discountPrice;
-    }
-
-    public void setDiscountPrice(BigDecimal discountPrice) {
-        this.discountPrice = discountPrice;
-    }
-
     @Override
     public String toString() {
         return "Goods{" +
                 "id=" + id +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
-                ", name='" + name + '\'' +
                 ", tagId=" + tagId +
                 ", price=" + price +
                 ", discountPrice=" + discountPrice +
@@ -134,5 +121,9 @@ public class Goods extends BaseObject{
 
     public BigDecimal getRealPrice(){
         return this.getDiscountPrice().intValue() == 0 ? this.getPrice() : this.getDiscountPrice();
+    }
+
+    public String getSimpleDescription(){
+        return this.getDescription().substring(0, 20) + "...";
     }
 }

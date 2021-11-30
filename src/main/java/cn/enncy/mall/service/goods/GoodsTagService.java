@@ -5,7 +5,8 @@ import cn.enncy.mall.pojo.Goods;
 import cn.enncy.mall.pojo.Tag;
 import cn.enncy.mall.service.GoodsService;
 import cn.enncy.mall.service.TagService;
-import cn.enncy.mall.utils.ServiceFactory;
+import cn.enncy.mall.service.impl.GoodsServiceImpl;
+import cn.enncy.mybatis.core.ServiceFactory;
 
 /**
  * 商品标签业务
@@ -13,7 +14,7 @@ import cn.enncy.mall.utils.ServiceFactory;
  *
  * @author enncy
  */
-public class GoodsTagService  extends GoodsService {
+public class GoodsTagService  extends GoodsServiceImpl {
 
 
     TagService tagService = ServiceFactory.resolve(TagService.class);

@@ -27,18 +27,8 @@ public class Order extends BaseObject{
     private String uid;
 
     @Show
-    @Reference( ServiceMapping.ADDRESS )
-    @Info(value = "地址id",tag = Tag.REFERENCE)
-    private long addressId;
-
-    @Show
-    @Reference( ServiceMapping.GOODS )
-    @Info(value = "商品id",tag = Tag.REFERENCE)
-    private long goodsId;
-
-    @Show
-    @Info(value = "数量",type = InputType.NUMBER)
-    private int count;
+    @Info("地址详情")
+    private String addressDetail;
 
     @Show
     @Info(value = "状态",tag = Tag.SELECT)
@@ -48,8 +38,9 @@ public class Order extends BaseObject{
     private String status;
 
     @Show
-    @Info(value = "应付款",type = InputType.NUMBER,disabled = true)
-    private BigDecimal price;
+    @Info(value = "总金额",type = InputType.NUMBER,disabled = true)
+    private BigDecimal totalPrice;
+
 
     public long getUserId() {
         return userId;
@@ -67,28 +58,12 @@ public class Order extends BaseObject{
         this.uid = uid;
     }
 
-    public long getAddressId() {
-        return addressId;
+    public String getAddressDetail() {
+        return addressDetail;
     }
 
-    public void setAddressId(long addressId) {
-        this.addressId = addressId;
-    }
-
-    public long getGoodsId() {
-        return goodsId;
-    }
-
-    public void setGoodsId(long goodsId) {
-        this.goodsId = goodsId;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
+    public void setAddressDetail(String addressDetail) {
+        this.addressDetail = addressDetail;
     }
 
     public String getStatus() {
@@ -99,12 +74,12 @@ public class Order extends BaseObject{
         this.status = status;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     @Override
@@ -115,15 +90,13 @@ public class Order extends BaseObject{
                 ", updateTime=" + updateTime +
                 ", userId=" + userId +
                 ", uid='" + uid + '\'' +
-                ", addressId=" + addressId +
-                ", goodsId=" + goodsId +
-                ", count=" + count +
+                ", addressDetail='" + addressDetail + '\'' +
                 ", status='" + status + '\'' +
-                ", price=" + price +
+                ", totalPrice=" + totalPrice +
                 '}';
     }
 
-    public  static   String createUid(long userId,long goodsId,long addressId){
-        return DateFormatter.format(System.currentTimeMillis(), "yyyyMMddHHmmss") + userId + goodsId + addressId;
+    public  static   String createUid(long userId){
+        return DateFormatter.format(System.currentTimeMillis(), "yyyyMMddHHmmss") + userId;
     }
 }

@@ -1,7 +1,8 @@
 package cn.enncy.mybatis.handler.param;
 
 
-import cn.enncy.mybatis.entity.MybatisSqlError;
+
+import cn.enncy.mybatis.entity.MybatisException;
 
 import java.lang.reflect.Parameter;
 
@@ -12,5 +13,5 @@ import java.lang.reflect.Parameter;
  * @author enncy
  */
 public interface Handler {
-    String handle(String sql, Parameter parameter, Object value) throws MybatisSqlError;
+    String handle(String sql, Parameter parameter, Object value) throws MybatisException;
 }

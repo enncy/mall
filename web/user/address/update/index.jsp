@@ -5,7 +5,7 @@
 <%@ page import="cn.enncy.mall.pojo.User" %>
 <%@ page import="java.util.Optional" %>
 <%@ page import="cn.enncy.mall.service.AddressService" %>
-<%@ page import="cn.enncy.mall.utils.ServiceFactory" %>
+<%@ page import="cn.enncy.mybatis.core.ServiceFactory" %>
 <%@ page import="cn.enncy.mall.utils.Logger" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
@@ -27,12 +27,16 @@
 
     <div class="d-flex flex-wrap   col-lg-6 col-md-8 col-12">
 
+        <div>
+            <jsp:include page="/common/alert.jsp"/>
+        </div>
+
         <h2>${requestScope.address.id==0 ? "添加":"修改"}地址</h2>
 
         <div class="card col-12 mt-2">
             <div class="card-body d-flex  ">
                 <form method="POST" class="col-12">
-                    <input class="d-none" name="userId" value="${sessionScope.user.id }"/>
+
                     <div class="mb-3 col-12">
                         <label for="inputAlias">备注</label>
                         <input name="alias" type="text" class="form-control" id="inputAlias" required

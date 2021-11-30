@@ -3,11 +3,18 @@ package cn.enncy.mall.service;
 
 import cn.enncy.mall.mapper.BaseMapper;
 import cn.enncy.mall.pojo.BaseObject;
+import cn.enncy.mybatis.annotation.method.*;
+import cn.enncy.mybatis.annotation.param.Body;
+import cn.enncy.mybatis.annotation.param.Param;
+import cn.enncy.mybatis.annotation.type.Result;
 import cn.enncy.mybatis.core.SqlSession;
+import cn.enncy.mybatis.core.result.SingleResultHandler;
 import cn.enncy.mybatis.utils.ParameterizedTypeUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static cn.enncy.mybatis.core.SqlConstant.*;
 
 /**
  * //TODO
@@ -17,56 +24,21 @@ import java.util.List;
  */
 
 
-public class BaseService<T extends BaseObject, M extends BaseMapper<T>> implements BaseMapper<T> {
-    public M mapper;
+public interface BaseService<T extends BaseObject> {
 
-    public BaseService(Class<M> mapperClass) {
-        // 获取第2个泛型，并且实例化
-        this.mapper = SqlSession.getMapper(mapperClass);
-    }
+    int count();
 
-    @Override
-    public int count() {
-        return mapper.count();
-    }
+    boolean insert(T baseObject);
 
-    @Override
-    public boolean insert(T baseObject) {
-        long l = System.currentTimeMillis();
-        baseObject.setCreateTime(l);
-        baseObject.setUpdateTime(l);
-        return mapper.insert(baseObject);
-    }
+    boolean deleteById(long id);
 
-    @Override
-    public boolean deleteById(long id) {
-        return mapper.deleteById(id);
-    }
+    boolean delete(T baseObject);
 
-    public boolean delete(T baseObject) {
-        return mapper.deleteById(baseObject.getId());
-    }
+    T findOneById(long id);
 
-    @Override
-    public T findOneById(long id) {
-        return mapper.findOneById(id);
-    }
+    List<T> findByPages(int skip, int limit);
 
-    @Override
-    public List<T> findByPages(int page, int size) {
-        size = size == 0 ? 10 : size;
-        return mapper.findByPages(page * size, size);
-    }
+    List<T> findAll();
 
-    @Override
-    public List<T> findAll() {
-        return mapper.findAll();
-    }
-
-    @Override
-    public boolean update(T baseObject) {
-        baseObject.setUpdateTime(System.currentTimeMillis());
-        baseObject.setCreateTime(baseObject.getCreateTime());
-        return mapper.update(baseObject);
-    }
+    boolean update(T baseObject);
 }

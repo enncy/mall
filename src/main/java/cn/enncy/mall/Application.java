@@ -1,8 +1,10 @@
 package cn.enncy.mall;
 
 
+import cn.enncy.mall.mapper.UserMapper;
+import cn.enncy.mall.service.impl.UserServiceImpl;
 import cn.enncy.mall.utils.Logger;
-import cn.enncy.mall.utils.ServiceFactory;
+import cn.enncy.mybatis.core.ServiceFactory;
 import cn.enncy.mall.service.UserService;
 
 import javax.servlet.ServletContextEvent;
@@ -28,6 +30,7 @@ public class Application implements ServletContextListener {
         Application.REAL_PATH = servletContextEvent.getServletContext().getRealPath("");
         System.out.println(Application.class.getClassLoader().getResource("/"));
         Logger.log("tomcat 启动");
+        // 删除未激活的用户
         startRegisterTask();
     }
 
@@ -38,7 +41,7 @@ public class Application implements ServletContextListener {
 
     public void startRegisterTask() {
         // 定时任务，清理超时的注册验证
-        UserService userService = ServiceFactory.resolve(UserService.class);
+        UserService userService = ServiceFactory.resolve(UserServiceImpl.class);
         ScheduledExecutorService service = Executors
                 .newSingleThreadScheduledExecutor();
         // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间

@@ -4,7 +4,8 @@ package cn.enncy.mall.controller.admin;
 import cn.enncy.mall.constant.ServiceMapping;
 import cn.enncy.mall.pojo.*;
 import cn.enncy.mall.service.BaseService;
-import cn.enncy.mall.utils.ServiceFactory;
+import cn.enncy.mall.service.impl.ServiceImpl;
+import cn.enncy.mybatis.core.ServiceFactory;
 import cn.enncy.spring.mvc.annotation.Controller;
 import cn.enncy.spring.mvc.annotation.Get;
 import cn.enncy.spring.mvc.annotation.Post;
@@ -98,7 +99,7 @@ public class OperateController {
         if (targetId == 0) {
             request.setAttribute("object", serviceMapping.objectClass.newInstance());
         } else {
-            BaseService<?, ?> resolve = ServiceFactory.resolve(serviceMapping.serviceClass);
+            BaseService<?> resolve = ServiceFactory.resolve(serviceMapping.serviceClass);
             request.setAttribute("object", resolve.findOneById(targetId));
         }
         request.setAttribute("service", serviceMapping);
@@ -107,7 +108,7 @@ public class OperateController {
 
     // 公共操作提交方法，如果 targetId 为 0 ，则为添加操作，否则为更新操作
     public void operatePost(long targetId, BaseObject object, ServiceMapping serviceMapping) throws IOException, IllegalAccessException, InstantiationException {
-        BaseService<BaseObject, ?> service = (BaseService<BaseObject, ?>) ServiceFactory.resolve(serviceMapping.serviceClass);
+        ServiceImpl<BaseObject, ?> service = (ServiceImpl<BaseObject, ?>) ServiceFactory.resolve(serviceMapping.serviceClass);
         if (targetId == 0) {
             service.insert(object);
         } else {

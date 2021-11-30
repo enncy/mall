@@ -5,7 +5,7 @@ import cn.enncy.mall.pojo.User;
 import cn.enncy.mall.service.UserService;
 import cn.enncy.mall.utils.Email;
 import cn.enncy.mall.utils.Security;
-import cn.enncy.mall.utils.ServiceFactory;
+import cn.enncy.mybatis.core.ServiceFactory;
 import cn.enncy.spring.mvc.annotation.Controller;
 import cn.enncy.spring.mvc.annotation.Get;
 import cn.enncy.spring.mvc.annotation.Post;
@@ -32,14 +32,19 @@ public class CommonController {
     HttpSession session;
 
     @Get("/login")
-    public String login(HttpSession session) {
-        ;
+    public String login(HttpSession session) throws IOException {
+
         // 如果已经登录，则无需登录
         User user = (User) session.getAttribute("user");
         if (user != null) {
-            return "/index";
+            response.sendRedirect("/user");
         }
+        String referer = request.getHeader("Referer");
+        session.setAttribute("referer",referer);
+
+
         return "/login/index";
+
     }
 
     @Post("/login")
@@ -52,22 +57,36 @@ public class CommonController {
         } else {
             UserService userService = ServiceFactory.resolve(UserService.class);
             User user = userService.findOneByAccount(account);
-            if (user != null && user.getPassword().equals(password)) {
-                request.setAttribute("msg", "登录成功!");
-                // 将用户存入 session
-                session.setAttribute("user", user);
+            if(user==null ){
+                error = "用户不存在！";
 
-                String origin = (String) session.getAttribute("origin");
-
-                if (StringUtils.isNullOrEmpty(origin)) {
-                    return "index";
-                } else {
-                    response.sendRedirect(origin);
-                }
-            } else {
-                error = "登录失败，账号或者密码错误!";
-
+            }else if(!user.isActive()){
+                error = "用户未激活！";
             }
+            else{
+                if (  user.getPassword().equals(password)) {
+                    request.setAttribute("msg", "登录成功!");
+                    // 将用户存入 session
+                    session.setAttribute("user", user);
+
+                    String origin = (String) session.getAttribute("origin");
+                    String referer = (String) session.getAttribute("referer");
+                    System.out.println("origin "+origin);
+                    System.out.println("referer "+referer);
+                    if (!StringUtils.isNullOrEmpty(origin)) {
+                        response.sendRedirect(origin);
+                    }else if(!StringUtils.isNullOrEmpty(referer)){
+                        response.sendRedirect(referer);
+                    }
+                    else {
+                        return "index";
+                    }
+                } else {
+                    error = "登录失败，账号或者密码错误!";
+
+                }
+            }
+
         }
         request.setAttribute("error", error);
         return "/login/index";
@@ -78,20 +97,26 @@ public class CommonController {
         if (checkToken(account, token)) {
             UserService userService = ServiceFactory.resolve(UserService.class);
             User user = userService.findOneByAccount(account);
+            if(user==null){
+                request.setAttribute("error", "验证已过期，请重新注册！");
+                return "/register/index";
+            }
             session.setAttribute("user", user);
 
             // 如果未激活，则激活，并且返回首页
-            if (!user.isActive()) {
+            if ( !user.isActive()) {
                 user.setActive(true);
                 userService.update(user);
                 return "/index";
             } else {
                 request.setAttribute("error", "此账号已经被注册！");
+                return "/register/index";
             }
         } else {
-            response.sendRedirect("/error?code=400");
+            request.setAttribute("error", "参数错误，请重新注册！");
+            return "/register/index";
         }
-        return "/error?code=400";
+
     }
 
     @Get("/register")

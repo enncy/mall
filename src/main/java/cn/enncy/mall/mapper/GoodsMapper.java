@@ -24,14 +24,11 @@ import static cn.enncy.mybatis.core.SqlConstant.TABLE_NAME;
 @Mapper(table = "goods",target = Goods.class)
 public interface GoodsMapper extends BaseMapper<Goods> , Searchable<Goods> {
 
-    @Select("select * from #{"+ TABLE_NAME+"} where name like '%#{name}%'")
-    List<Goods> findByNameLike(@Param("name") String name);
-
     @Override
-    @Select("select * from #{"+ TABLE_NAME+"} where  selling = 1 and (name like '%#{str}%'  or  description like '%#{str}%')  LIMIT #{skip} ,#{limit};")
+    @Select("select * from #{"+ TABLE_NAME+"} where  selling = 1 and description like '%#{str}%'  LIMIT #{skip} ,#{limit};")
     List<Goods> search(@Param("str") String str,@Param("skip") int skip,@Param("limit") int limit);
 
-    @Select("select * from #{"+ TABLE_NAME+"} where selling = 1 and (name like '%#{str}%'  or  description like '%#{str}%') ")
+    @Select("select * from #{"+ TABLE_NAME+"} where selling = 1 and description like '%#{str}%' ")
     List<Goods> searchAll(@Param("str") String str);
 
     @Select("select goods.* from goods left join tag on goods.tag_id = tag.id where  selling = 1 and tag.name =  '#{tag}'  LIMIT #{skip} ,#{limit}; ")

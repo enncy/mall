@@ -1,4 +1,4 @@
-<%@ page import="cn.enncy.mall.utils.ServiceFactory" %>
+<%@ page import="cn.enncy.mybatis.core.ServiceFactory" %>
 <%@ page import="cn.enncy.mall.service.TagService" %>
 <%@ page import="cn.enncy.mall.pojo.Tag" %>
 <%@ page import="cn.enncy.mall.service.GoodsService" %>
@@ -90,7 +90,7 @@
                 <div>
 
                     商品分类 ：
-                    <a class="tag" href="/goods">首页</a>
+                    <a class="tag" href="/goods">全部</a>
                     <% for (Tag tag : tagService.findByCount()) { %>
                     <a class="tag" href="/goods?tag=<%=tag.getName()%>">
                         <span><%=tag.getName()%></span>
@@ -123,34 +123,34 @@
                             <%
                                 BigDecimal discountPrice = goods.getDiscountPrice();
                                 BigDecimal price = goods.getPrice();
-                                String name = goods.getName();
-                                if (name.length() > 14) {
-                                    name = name.substring(0, 14) + "...";
+                                String description = goods.getDescription();
+                                if (description.length() > 20) {
+                                    description = description.substring(0, 20) + "...";
                                 }
 
                             %>
                             <div class="pt-3 pe-3 ps-3 pb-1 col-lg-3  col-md-4 col-6 goods-card">
                                 <a href="/goods/detail?id=<%=goods.getId()%>" style="color: black;text-decoration:none">
                                     <div class="text-center">
-                                        <img src="<%=goods.getImg()%>" class="card-img-top goods-img" alt="<%=name%>">
+                                        <img src="<%=goods.getImg()%>" class="card-img-top goods-img"
+                                             alt="<%=description%>">
                                     </div>
                                     <div class="p-2">
                                         <div class="d-flex flex-wrap">
-                                    <span class="col-12 font-primary"
-                                      style="white-space:nowrap;overflow: hidden "><%=name%></span>
+
                                             <span class="col-12 font-secondary"
-                                                  style="height: 40px; overflow: hidden; "><%=goods.getDescription()%></span>
+                                                  style="height: 40px; overflow: hidden; "><%=goods.getDescription()%>
+                                            </span>
+
                                             <div class="mt-2 d-flex col-12  align-items-baseline">
-
-                                    <span class="me-2 price"><span
-                                            style="font-size: 16px;margin-right: 2px">¥</span><%=discountPrice.intValue() == 0 ? price : discountPrice%></span>
-                                                <% if (discountPrice.intValue() != 0) { %>
-                                                <del class="me-2 font-secondary">¥<%=price%>
-                                                </del>
-                                                <% } %>
-
-                                                <%--<span class="font-secondary"--%>
-                                                <%--      style="font-size: 10px">库存<%=goods.getStock()%></span>--%>
+                                                <span class="me-2 price">
+                                                    <span style="font-size: 16px;margin-right: 2px">
+                                                        ¥ <%=goods.getRealPrice()%>
+                                                    </span>
+                                                    <% if (discountPrice.intValue() != 0) { %>
+                                                    <del class="me-2 font-secondary">¥<%=price%> </del>
+                                                    <% } %>
+                                                </span>
                                             </div>
 
 

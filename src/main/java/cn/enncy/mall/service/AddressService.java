@@ -3,8 +3,10 @@ package cn.enncy.mall.service;
 
 import cn.enncy.mall.mapper.AddressMapper;
 import cn.enncy.mall.pojo.Address;
+import cn.enncy.mall.service.impl.ServiceImpl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * //TODO
@@ -12,28 +14,15 @@ import java.util.List;
  *
  * @author enncy
  */
-public class AddressService extends BaseService<Address, AddressMapper> implements  AddressMapper{
-
-    public AddressService() {
-        super(AddressMapper.class);
-    }
+public interface AddressService extends BaseService<Address> {
 
 
-    @Override
-    public Address findOneByAlias(String alias) {
-        return mapper.findOneByAlias(alias);
-    }
+    Address findOneByAlias(String alias);
 
-    @Override
-    public List<Address> findByUserId(long userId) {
-        return mapper.findByUserId(userId);
-    }
+    List<Address> findByUserId(long userId);
 
-    @Override
-    public List<Address> search(String str, int page, int size) {
-        size = size == 0 ? 10 : size;
-        return mapper.search(str,page*size, size);
-    }
+    List<Address> searchByUserId(long userId, String str, int page, int size);
 
+    List<Address> search(String str, int page, int size);
 
 }

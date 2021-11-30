@@ -2,6 +2,7 @@ package cn.enncy.mall.mapper;
 
 
 import cn.enncy.mall.pojo.Order;
+import cn.enncy.mybatis.annotation.method.Delete;
 import cn.enncy.mybatis.annotation.type.Mapper;
 import cn.enncy.mybatis.annotation.param.Param;
 import cn.enncy.mybatis.annotation.method.Select;
@@ -26,4 +27,7 @@ public interface OrderMapper extends  BaseMapper<Order> {
 
     @Select("select * from #{"+ TABLE_NAME+"} where uid = #{uid}")
     Order findOneByUid(@Param("uid") String uid);
+
+    @Delete("DELETE FROM #{"+TABLE_NAME+"} WHERE uid=#{uid}  ;")
+    boolean deleteByUid(@Param("uid") String uid);
 }

@@ -3,6 +3,7 @@ package cn.enncy.mall.service;
 
 import cn.enncy.mall.mapper.CartMapper;
 import cn.enncy.mall.pojo.Cart;
+import cn.enncy.mall.service.impl.ServiceImpl;
 
 import java.util.List;
 
@@ -12,15 +13,6 @@ import java.util.List;
  *
  * @author enncy
  */
-public class CartService extends BaseService<Cart, CartMapper> implements  CartMapper{
-
-
-    public CartService( ) {
-        super(CartMapper.class);
-    }
-
-    @Override
-    public List<Cart> findByUserId(long userId) {
-        return mapper.findByUserId(userId);
-    }
+public interface CartService extends  BaseService<Cart>{
+    List<Cart> findByUserId(long userId);
 }
