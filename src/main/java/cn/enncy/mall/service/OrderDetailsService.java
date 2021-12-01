@@ -4,6 +4,9 @@ package cn.enncy.mall.service;
 import cn.enncy.mall.mapper.OrderDetailsMapper;
 import cn.enncy.mall.pojo.OrderDetails;
 import cn.enncy.mall.service.impl.ServiceImpl;
+import cn.enncy.mybatis.annotation.param.Param;
+
+import java.util.List;
 
 /**
  * //TODO
@@ -13,4 +16,5 @@ import cn.enncy.mall.service.impl.ServiceImpl;
  */
 public interface OrderDetailsService extends  BaseService<OrderDetails> {
 
+    List<OrderDetails> findByOrderUid(String orderUid);
 }

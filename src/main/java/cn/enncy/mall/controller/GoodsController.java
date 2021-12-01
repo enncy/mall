@@ -44,6 +44,7 @@ public class GoodsController {
     OrderService orderService = ServiceFactory.resolve(OrderService.class);
     UserService userService = ServiceFactory.resolve(UserService.class);
     AddressService addressService = ServiceFactory.resolve(AddressService.class);
+    OrderDetailsService orderDetailsService = ServiceFactory.resolve(OrderDetailsService.class);
 
     @Get("/goods")
     public String goods(@Param("page") int page, @Param("size") int size, @Param("search") String search, @Param("tag") String tag, @Param("order") String order) {
@@ -113,9 +114,9 @@ public class GoodsController {
                 // 默认地址
                 Address defaultAddress = addressService.findOneById(user.getDefaultAddressId());
 
-                if(defaultAddress==null){
+                if (defaultAddress == null) {
                     error = "您未设置默认地址，或者默认地址已被删除，请设置后重新结算";
-                }else{
+                } else {
                     // 应付款
                     BigDecimal totalPrice = new BigDecimal("0.00");
                     // 创建订单
@@ -124,7 +125,6 @@ public class GoodsController {
                     order.setAddressDetail(defaultAddress.createOrderAddressDetails());
                     order.setStatus(OrderStatus.PAYMENT.value);
                     order.setUid(Order.createUid(user.getId()));
-
 
 
                     // 直接购买 （单个）
@@ -164,17 +164,17 @@ public class GoodsController {
                             totalPrice = totalPrice.add(goods.getRealPrice().multiply(BigDecimal.valueOf(c)));
                         }
 
-                        if(error==null){
+                        if (error == null) {
                             order.setTotalPrice(totalPrice);
                             // 生成多商品订单
                             orderService.createOrder(order, orderDetailsList, cartList, goodsList);
                         }
                     }
 
-                    if(error==null){
+                    if (error == null) {
                         request.setAttribute("order", order);
                         request.setAttribute("orderDetailsList", orderDetailsList);
-                        return "/goods/pay/index";
+                        response.sendRedirect("/goods/pay?uid" + order.getUid());
                     }
                 }
 
@@ -189,6 +189,12 @@ public class GoodsController {
     }
 
 
+    @Get("/goods/pay")
+    public String getPay(@Param("uid") String uid) {
+
+        return "/goods/pay/index";
+    }
+
     @Post("/goods/pay")
     public String postPay(@Param("uid") String uid) {
         User user = (User) session.getAttribute("user");
@@ -196,14 +202,14 @@ public class GoodsController {
         if (user == null) {
             return "/login/index";
         }
-        if ( StringUtils.isNullOrEmpty(uid)) {
+        if (StringUtils.isNullOrEmpty(uid)) {
             request.setAttribute("error", "参数错误！");
-        }else{
+        } else {
             Order order = orderService.findOneByUid(uid);
-            if(user.getBalance().compareTo(order.getTotalPrice()) < 0){
+            if (user.getBalance().compareTo(order.getTotalPrice()) < 0) {
                 request.setAttribute("error", "余额不足！");
                 return "/goods/result/index";
-            }else{
+            } else {
                 user.setBalance(user.getBalance().subtract(order.getTotalPrice()));
                 order.setStatus(OrderStatus.RECEIVING.value);
                 userService.update(user);
