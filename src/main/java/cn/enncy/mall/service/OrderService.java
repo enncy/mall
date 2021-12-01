@@ -32,4 +32,10 @@ public interface OrderService extends BaseService<Order> {
     @Transaction
     void createOrder(Order order, List<OrderDetails> orderDetailsList, List<Cart> cartList, List<Goods> goodsList);
 
+
+    @Transaction
+    void returnOrder(Order order);
+
+    @Transaction
+    void cancelOrder(Order order);
 }

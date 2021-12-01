@@ -7,7 +7,7 @@
     }
 </style>
 
-<div class="d-flex col-12 col-lg-1">
+<div class="d-flex col-12 col-md-2 col-lg-1">
     <ul class="nav flex-column">
         <li class="nav-item">
             <a class="nav-link" href="/user">个人信息</a>

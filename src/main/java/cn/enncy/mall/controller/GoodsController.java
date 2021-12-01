@@ -5,12 +5,13 @@ import cn.enncy.mall.bean.Pagination;
 import cn.enncy.mall.constant.OrderStatus;
 import cn.enncy.mall.pojo.*;
 import cn.enncy.mall.service.*;
+import cn.enncy.mall.utils.StringUtils;
 import cn.enncy.mybatis.core.ServiceFactory;
 import cn.enncy.spring.mvc.annotation.Controller;
 import cn.enncy.spring.mvc.annotation.Get;
 import cn.enncy.spring.mvc.annotation.Post;
 import cn.enncy.spring.mvc.annotation.params.Param;
-import com.mysql.cj.util.StringUtils;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -52,14 +53,14 @@ public class GoodsController {
 
         List<Goods> goodsList;
         Pagination pagination;
-        if (StringUtils.isNullOrEmpty(tag)) {
+        if (StringUtils.isEmpty(tag)) {
             List<Goods> searchAll = goodsService.searchAll(search);
             pagination = Pagination.createPagination(page, size, searchAll.size());
             goodsList = searchAll.stream().skip((long) page * size).limit(size).collect(Collectors.toList());
         } else {
             pagination = Pagination.createPagination(page, size, goodsService.countByTagName(tag));
             // 按照标签以及页码进行查询，并且筛选出符合 search 的商品
-            if (StringUtils.isNullOrEmpty(search)) {
+            if (StringUtils.isEmpty(search)) {
                 goodsList = goodsService.findByTagName(tag, page, size);
             } else {
                 goodsList = goodsService.findByTagName(tag, page, size).stream().filter(goods -> goods.getDescription().contains(search)).collect(Collectors.toList());
@@ -67,7 +68,7 @@ public class GoodsController {
         }
 
         // 排序
-        if (!StringUtils.isNullOrEmpty(order)) {
+        if (StringUtils.notEmpty(order)) {
             if ("desc".equals(order)) {
                 goodsList = goodsList.stream().sorted(Comparator.comparing(Goods::getRealPrice)).collect(Collectors.toList());
             } else {
@@ -92,97 +93,100 @@ public class GoodsController {
 
     @Post("/goods/buy")
     public String postBuy(@Param("id") int id) throws IOException {
-
-        User user = (User) session.getAttribute("user");
-
         String error = null;
-        List<Integer> counts = Arrays.stream(request.getParameterValues("count")).map(Integer::parseInt).collect(Collectors.toList());
-        List<Long> cartIds = Arrays.stream(request.getParameterValues("cartId")).map(Long::parseLong).collect(Collectors.toList());
+        User user = (User) session.getAttribute("user");
+        String[] ids = request.getParameterValues("cartId");
+        if(ids ==null || ids.length==0 || id==0){
+            error = "未选择商品";
+        }else{
+            List<Integer> counts = Arrays.stream(request.getParameterValues("count")).map(Integer::parseInt).collect(Collectors.toList());
+            List<Long> cartIds = Arrays.stream(ids).map(Long::parseLong).collect(Collectors.toList());
 
-        if (user == null) {
-            response.sendRedirect("/login");
-        } else {
+            if (user == null) {
+                response.sendRedirect("/login");
+            } else {
 
-            try {
-                // 订单详情列表
-                ArrayList<OrderDetails> orderDetailsList = new ArrayList<>();
-                // 购物车列表
-                ArrayList<Cart> cartList = new ArrayList<>();
-                // 商品列表
-                ArrayList<Goods> goodsList = new ArrayList<>();
+                try {
+                    // 订单详情列表
+                    ArrayList<OrderDetails> orderDetailsList = new ArrayList<>();
+                    // 购物车列表
+                    ArrayList<Cart> cartList = new ArrayList<>();
+                    // 商品列表
+                    ArrayList<Goods> goodsList = new ArrayList<>();
 
-                // 默认地址
-                Address defaultAddress = addressService.findOneById(user.getDefaultAddressId());
+                    // 默认地址
+                    Address defaultAddress = addressService.findOneById(user.getDefaultAddressId());
 
-                if (defaultAddress == null) {
-                    error = "您未设置默认地址，或者默认地址已被删除，请设置后重新结算";
-                } else {
-                    // 应付款
-                    BigDecimal totalPrice = new BigDecimal("0.00");
-                    // 创建订单
-                    Order order = new Order();
-                    order.setUserId(user.getId());
-                    order.setAddressDetail(defaultAddress.createOrderAddressDetails());
-                    order.setStatus(OrderStatus.PAYMENT.value);
-                    order.setUid(Order.createUid(user.getId()));
+                    if (defaultAddress == null) {
+                        error = "您未设置默认地址，或者默认地址已被删除，请设置后重新结算";
+                    } else {
+                        // 应付款
+                        BigDecimal totalPrice = new BigDecimal("0.00");
+                        // 创建订单
+                        Order order = new Order();
+                        order.setUserId(user.getId());
+                        order.setAddressDetail(defaultAddress.createOrderAddressDetails());
+                        order.setStatus(OrderStatus.PAYMENT.value);
+                        order.setUid(Order.createUid(user.getId()));
 
 
-                    // 直接购买 （单个）
-                    if (id != 0) {
-                        int count = counts.get(0);
-                        Goods goods = goodsService.findOneById(id);
-                        if (count > goods.getStock()) {
-                            error = "商品 <a href='/goods/detail?id=" + goods.getId() + "'>" + goods.getSimpleDescription() + "</a> 库存不足";
-                        } else {
-                            OrderDetails orderDetails = OrderDetails.createOrderDetails(order.getUid(), count, goods);
-                            orderDetailsList.add(orderDetails);
-                            // 计算价格
-                            totalPrice = totalPrice.add(goods.getRealPrice().multiply(BigDecimal.valueOf(count)));
-                            order.setTotalPrice(totalPrice);
-                            // 创建订单
-                            orderService.createSingleGoodsOrder(order, orderDetails, goods);
-                        }
-                    }
-                    // 购物车添加 （多个商品）
-                    else {
-
-                        for (int i = 0; i < cartIds.size(); i++) {
-
-                            int c = counts.get(i);
-                            Cart cart = cartService.findOneById(cartIds.get(i));
-                            Goods goods = goodsService.findOneById(cart.getGoodsId());
-
-                            if (c > goods.getStock()) {
+                        // 直接购买 （单个）
+                        if (id != 0) {
+                            int count = counts.get(0);
+                            Goods goods = goodsService.findOneById(id);
+                            if (count > goods.getStock()) {
                                 error = "商品 <a href='/goods/detail?id=" + goods.getId() + "'>" + goods.getSimpleDescription() + "</a> 库存不足";
-                                break;
+                            } else {
+                                OrderDetails orderDetails = OrderDetails.createOrderDetails(order.getUid(), count, goods);
+                                orderDetailsList.add(orderDetails);
+                                // 计算价格
+                                totalPrice = totalPrice.add(goods.getRealPrice().multiply(BigDecimal.valueOf(count)));
+                                order.setTotalPrice(totalPrice);
+                                // 创建订单
+                                orderService.createSingleGoodsOrder(order, orderDetails, goods);
                             }
-                            cartList.add(cart);
-                            goodsList.add(goods);
-                            // 添加订单详情
-                            orderDetailsList.add(OrderDetails.createOrderDetails(order.getUid(), c, goods));
-                            // 计算价格
-                            totalPrice = totalPrice.add(goods.getRealPrice().multiply(BigDecimal.valueOf(c)));
+                        }
+                        // 购物车添加 （多个商品）
+                        else {
+
+                            for (int i = 0; i < cartIds.size(); i++) {
+
+                                int c = counts.get(i);
+                                Cart cart = cartService.findOneById(cartIds.get(i));
+                                Goods goods = goodsService.findOneById(cart.getGoodsId());
+
+                                if (c > goods.getStock()) {
+                                    error = "商品 <a href='/goods/detail?id=" + goods.getId() + "'>" + goods.getSimpleDescription() + "</a> 库存不足";
+                                    break;
+                                }
+                                cartList.add(cart);
+                                goodsList.add(goods);
+                                // 添加订单详情
+                                orderDetailsList.add(OrderDetails.createOrderDetails(order.getUid(), c, goods));
+                                // 计算价格
+                                totalPrice = totalPrice.add(goods.getRealPrice().multiply(BigDecimal.valueOf(c)));
+                            }
+
+                            if (error == null) {
+                                order.setTotalPrice(totalPrice);
+                                // 生成多商品订单
+                                orderService.createOrder(order, orderDetailsList, cartList, goodsList);
+                            }
                         }
 
                         if (error == null) {
-                            order.setTotalPrice(totalPrice);
-                            // 生成多商品订单
-                            orderService.createOrder(order, orderDetailsList, cartList, goodsList);
+                            response.sendRedirect("/goods/pay?uid=" + order.getUid());
                         }
                     }
 
-                    if (error == null) {
-                        request.setAttribute("order", order);
-                        request.setAttribute("orderDetailsList", orderDetailsList);
-                        response.sendRedirect("/goods/pay?uid" + order.getUid());
-                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    error = "服务器错误";
                 }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                error = "服务器错误";
             }
         }
+
+
 
         request.setAttribute("error", error);
         return "/goods/result/index";
@@ -190,7 +194,17 @@ public class GoodsController {
 
 
     @Get("/goods/pay")
-    public String getPay(@Param("uid") String uid) {
+    public String getPay(@Param("uid") String uid) throws IOException {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            response.sendRedirect("/login");
+        }else{
+            Order order = orderService.findOneByUid(uid);
+            List<OrderDetails> orderDetailsList = orderDetailsService.findByOrderUid(order.getUid());
+            request.setAttribute("order", order);
+            request.setAttribute("orderDetailsList", orderDetailsList);
+        }
 
         return "/goods/pay/index";
     }
@@ -202,20 +216,25 @@ public class GoodsController {
         if (user == null) {
             return "/login/index";
         }
-        if (StringUtils.isNullOrEmpty(uid)) {
+        if (StringUtils.isEmpty(uid)) {
             request.setAttribute("error", "参数错误！");
         } else {
             Order order = orderService.findOneByUid(uid);
-            if (user.getBalance().compareTo(order.getTotalPrice()) < 0) {
-                request.setAttribute("error", "余额不足！");
-                return "/goods/result/index";
-            } else {
-                user.setBalance(user.getBalance().subtract(order.getTotalPrice()));
-                order.setStatus(OrderStatus.RECEIVING.value);
-                userService.update(user);
-                orderService.update(order);
-                request.setAttribute("msg", "付款成功！");
+            String status = order.getStatus();
+            if(status.equals(OrderStatus.PAYMENT.value)){
+                if (user.getBalance().compareTo(order.getTotalPrice()) < 0) {
+                    request.setAttribute("error", "余额不足！");
+                } else {
+                    user.setBalance(user.getBalance().subtract(order.getTotalPrice()));
+                    order.setStatus(OrderStatus.RECEIVING.value);
+                    userService.update(user);
+                    orderService.update(order);
+                    request.setAttribute("msg", "付款成功！");
+                }
+            }else{
+                request.setAttribute("error", "此订单已经结算！");
             }
+
         }
         return "/goods/result/index";
     }
@@ -232,6 +251,17 @@ public class GoodsController {
             } else {
 
                 Goods goods = goodsService.findOneById(id);
+
+                // 如果购物车已经存在，则只添加数量
+                List<Cart> userCartList = cartService.findByUserId(user.getId());
+                for (Cart cart : userCartList) {
+                    if(cart.getGoodsId() == goods.getId()){
+                        cart.setCount(cart.getCount() + count);
+                        cartService.update(cart);
+                        response.sendRedirect("/user/cart?id=" + cart.getId());
+                        return;
+                    }
+                }
 
                 // 添加购物车
                 Cart cart = new Cart();

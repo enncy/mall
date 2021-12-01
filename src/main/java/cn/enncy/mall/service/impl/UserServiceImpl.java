@@ -5,8 +5,8 @@ import cn.enncy.mall.Application;
 import cn.enncy.mall.mapper.UserMapper;
 import cn.enncy.mall.pojo.User;
 import cn.enncy.mall.service.UserService;
+import cn.enncy.mall.utils.StringUtils;
 import cn.enncy.spring.mvc.PathUtils;
-import com.mysql.cj.util.StringUtils;
 
 import java.io.File;
 import java.util.List;
@@ -27,7 +27,7 @@ public class UserServiceImpl extends ServiceImpl<User, UserMapper> implements Us
         User old = mapper.findOneById(baseObject.getId());
 
         // 删除旧图片
-        if (!StringUtils.isNullOrEmpty(old.getAvatar()) && !old.getAvatar().equals(baseObject.getAvatar())) {
+        if (StringUtils.notEmpty(old.getAvatar()) && !old.getAvatar().equals(baseObject.getAvatar())) {
             List<String> path = PathUtils.splitPath(Application.REAL_PATH);
             path.addAll(PathUtils.splitPath(old.getAvatar()));
             String absPath = String.join("/", path);

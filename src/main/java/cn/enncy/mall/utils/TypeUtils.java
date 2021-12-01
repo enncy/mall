@@ -1,8 +1,5 @@
 package cn.enncy.mall.utils;
 
-
-import com.mysql.cj.util.StringUtils;
-
 /**
  * //TODO
  * <br/>Created in 16:38 2021/11/20
@@ -17,7 +14,7 @@ public class TypeUtils {
 
 
     public static Object stringToTarget(String string, Class<?> t) throws Exception {
-        boolean nullOrEmpty = StringUtils.isNullOrEmpty(string);
+        boolean nullOrEmpty = StringUtils.isEmpty(string);
 
         if (double.class.equals(t)) {
             return nullOrEmpty ? 0 : Double.parseDouble(string);

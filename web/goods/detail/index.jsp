@@ -80,7 +80,7 @@
                     <div class="mb-3">
                         <span>数量: </span>
                         <label class="w-25 ">
-                            <input id="count" min="1"  max="100" type="number" name="count" value="1" class="form-control form-control-sm">
+                            <input id="count" min="1"  type="number" name="count" value="1" class="form-control form-control-sm">
                         </label>
                     </div>
                     <div>

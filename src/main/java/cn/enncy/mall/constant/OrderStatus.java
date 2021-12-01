@@ -11,6 +11,7 @@ public enum OrderStatus {
     PAYMENT("payment","待付款"),
     RECEIVING("receiving","待收货"),
     FINISH("finished","已收货"),
+    RETURN("return","已退货"),
     CANCEL("cancel","取消")
     ;
 

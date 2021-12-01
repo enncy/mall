@@ -3,15 +3,11 @@ package cn.enncy.mybatis.core.result;
 
 import cn.enncy.mybatis.core.ReflectUtils;
 import cn.enncy.mybatis.core.SqlStringHandler;
-import com.mysql.cj.jdbc.result.ResultSetImpl;
-import com.mysql.cj.util.StringUtils;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
 
 /**
  * //TODO

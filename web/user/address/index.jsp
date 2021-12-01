@@ -2,7 +2,7 @@
 <%@ page import="cn.enncy.mall.pojo.User" %>
 <%@ page import="cn.enncy.mall.pojo.Address" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.mysql.cj.util.StringUtils" %>
+
 <%@ page import="cn.enncy.mall.service.AddressService" %>
 <%@ page import="cn.enncy.mybatis.core.ServiceFactory" %>
 <%@ page import="java.util.Comparator" %>
@@ -38,7 +38,7 @@
 
 <jsp:include page="/common/navigation.jsp"/>
 
-<div class="p-lg-5 mt-lg-5 mb-lg-5 d-flex justify-content-center  flex-lg-nowrap flex-wrap ">
+<div class="p-1  p-lg-5 mt-lg-5 mb-lg-5  p-md-2 mt-md-2 mb-md-2 d-flex justify-content-center  flex-lg-nowrap flex-wrap ">
 
 
     <jsp:include page="/user/navigation.jsp"/>

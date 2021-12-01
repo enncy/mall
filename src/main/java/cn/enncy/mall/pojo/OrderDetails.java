@@ -106,6 +106,10 @@ public class OrderDetails extends BaseObject{
                 '}';
     }
 
+    public BigDecimal getTotalPrice(){
+        return this.getPrice().multiply(BigDecimal.valueOf(this.getCount()));
+    }
+
     public static OrderDetails createOrderDetails(String orderUid,int count,Goods goods){
         OrderDetails orderDetails = new OrderDetails();
         orderDetails.setGoodsId(goods.getId());

@@ -5,6 +5,8 @@
 <%@ page import="cn.enncy.mall.service.GoodsService" %>
 <%@ page import="cn.enncy.mall.pojo.Goods" %>
 <%@ page import="java.math.BigDecimal" %>
+<%@ page import="java.util.Arrays" %>
+<%@ page import="java.util.stream.Collectors" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <style>
@@ -46,10 +48,12 @@
 <jsp:include page="/common/navigation.jsp"/>
 
 <%
+    GoodsService goodsService = ServiceFactory.resolve(GoodsService.class);
     List<Cart> carts = (List<Cart>) request.getAttribute("carts");
+    List<Goods> goodsList = carts.stream().map(Cart::getGoodsId).map(goodsService::findOneById).collect(Collectors.toList());
 %>
 
-<div class="p-lg-5 mt-lg-5 mb-lg-5 d-flex justify-content-center  flex-lg-nowrap flex-wrap ">
+<div class="p-1  p-lg-5 mt-lg-5 mb-lg-5  p-md-2 mt-md-2 mb-md-2 d-flex justify-content-center  flex-lg-nowrap flex-wrap ">
 
     <jsp:include page="/user/navigation.jsp"/>
 
@@ -66,9 +70,11 @@
         <% } else {%>
         <form class=" col-12" method="POST" action="/goods/buy">
             <%
-                for (Cart cart : carts) {
-                    GoodsService goodsService = ServiceFactory.resolve(GoodsService.class);
-                    Goods goods = goodsService.findOneById(cart.getGoodsId());
+                for (int i = 0; i < carts.size(); i++) {
+
+                    Cart cart = carts.get(i);
+                    Goods goods = goodsList.get(i);
+
             %>
             <div class="d-flex col-12 flex-nowrap pt-3">
                 <div class="card col-10" id="cartDiv<%=cart.getId()%>">
@@ -89,7 +95,6 @@
                                         <input value="<%=cart.getCount()%>" id="count<%=cart.getId()%>" name="count"
                                                onchange="changeCount(this,'<%=cart.getId()%>','<%=goods.getRealPrice() %>')"
                                                min="0"
-                                               max="100"
                                                type="number" class="form-control form-control-sm">
                                     </label>
                                 </div>
@@ -110,7 +115,7 @@
                 <input class="d-none" value="<%=cart.getId()%>" id="cart<%=cart.getId()%>" name="cartId"
                        type="checkbox">
                 <label class="col-1  " style="writing-mode: vertical-rl" for="cart<%=cart.getId()%>">
-                    <a  onclick="selectedDiv('<%=cart.getId()%>',this)" class="btn btn-sm btn-outline-success h-100">
+                    <a  onclick="selectedDiv('<%=cart.getId()%>')" id="choiceDiv<%=cart.getId()%>" class="btn btn-sm btn-outline-success h-100">
                         选择
                     </a>
                 </label>
@@ -125,10 +130,10 @@
             <% } %>
 
             <div class="col-12 mt-5  d-flex align-items-end justify-content-end">
-                <div class="me-4" >已选中 <span id="totalCount"></span> 个商品</div>
+                <div class="me-4" >已选中 <span id="totalCount">0</span> 个商品</div>
                 <span class="me-2">应付款:</span>
                 <span class="price me-5">¥ <span style="font-size: 36px" id="totalPrice">0</span></span>
-                <input type="submit" class="col-6 col-lg-4  btn btn-lg btn-danger float-end " id="buyBtn" value="结算">
+                <input disabled  type="submit" class="col-6 col-lg-4  btn btn-lg btn-danger float-end " id="buyBtn" value="结算">
             </div>
         </form>
         <% } %>
@@ -140,16 +145,12 @@
 
 
 <script>
+
+    var cartIds =  <%=carts.stream().map(Cart::getId).collect(Collectors.toList())%>
+
     function changeCount(el, id, price) {
         var total = (parseFloat(el.value) * parseFloat(price))
-        console.log(total)
         $("#cartTotalPrice" + id + "").text(total.toFixed(2))
-        console.log(total)
-        if (total <= 0) {
-            $("#buyBtn").addClass("disabled")
-        } else {
-            $("#buyBtn").removeClass("disabled")
-        }
 
     }
 
@@ -157,9 +158,10 @@
     let count = 0
 
 
-    function  selectedDiv(id,el){
+    function  selectedDiv(id){
+        let el = document.querySelector("#choiceDiv"+id)
         let cartPrice =    parseInt($("#count"+id).val()) * parseInt($("#price"+id).text())
-        console.log(cartPrice)
+
         if($(el).hasClass("btn-outline-success")){
             $(el).removeClass("btn-outline-success")
             $(el).addClass("btn-outline-dark")
@@ -173,6 +175,13 @@
             price -= cartPrice;
             count-=1
         }
+
+        if (price <= 0) {
+            $("#buyBtn").attr("disabled","")
+        } else {
+            $("#buyBtn").removeAttr("disabled")
+        }
+
 
         $("#totalPrice").text(price)
         $("#totalCount").text(count)

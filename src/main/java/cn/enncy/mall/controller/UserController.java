@@ -4,13 +4,14 @@ package cn.enncy.mall.controller;
 import cn.enncy.mall.constant.OrderStatus;
 import cn.enncy.mall.pojo.*;
 import cn.enncy.mall.service.*;
+import cn.enncy.mall.utils.StringUtils;
 import cn.enncy.mybatis.core.ServiceFactory;
 import cn.enncy.spring.mvc.annotation.Controller;
 import cn.enncy.spring.mvc.annotation.Get;
 import cn.enncy.spring.mvc.annotation.Post;
 import cn.enncy.spring.mvc.annotation.params.Body;
 import cn.enncy.spring.mvc.annotation.params.Param;
-import com.mysql.cj.util.StringUtils;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,6 +42,10 @@ public class UserController {
 
     @Get("/user")
     public String userGet() {
+        // 刷新用户
+        User user = (User) session.getAttribute("user");
+        user = userService.findOneById(user.getId());
+        session.setAttribute("user",user);
         return "/user/index";
     }
 
@@ -83,7 +88,7 @@ public class UserController {
 
     @Post("/user/balance")
     public String balancePost(@Param("balance") String balance) {
-        if (!StringUtils.isNullOrEmpty(balance)) {
+        if (StringUtils.notEmpty(balance)) {
             UserService userService = ServiceFactory.resolve(UserService.class);
             User user = (User) session.getAttribute("user");
             if (user != null) {
@@ -132,11 +137,6 @@ public class UserController {
     @Get("/user/cart/delete")
     public void cartDelete(@Param("id") int id) throws IOException {
         if (id != 0) {
-            //  增加库存
-            Cart cart = cartService.findOneById(id);
-            Goods goods = goodsService.findOneById(cart.getGoodsId());
-            goods.setStock(goods.getStock() + cart.getCount());
-            goodsService.update(goods);
             cartService.deleteById(id);
             request.setAttribute("msg", "删除成功!");
         } else {
@@ -170,13 +170,10 @@ public class UserController {
         response.sendRedirect("/user/address");
     }
 
-
     @Get("/user/orders/cancel")
     public void cancel(@Param("id") int id) throws IOException {
-
         Order order = orderService.findOneById(id);
-        order.setStatus(OrderStatus.CANCEL.value);
-        orderService.update(order);
+        orderService.cancelOrder(order);
         request.setAttribute("msg", "取消成功!");
         response.sendRedirect("/user/orders");
     }
@@ -185,22 +182,22 @@ public class UserController {
     @Get("/user/orders/confirm")
     public void confirm(@Param("id") int id) throws IOException {
         Order order = orderService.findOneById(id);
-        order.setStatus(OrderStatus.FINISH.value);
-        orderService.update(order);
+        changeOrderStatus(order,OrderStatus.FINISH);
         request.setAttribute("msg", "收货成功!");
         response.sendRedirect("/user/orders");
     }
 
+    @Get("/user/orders/return")
+    public void returnOrder(@Param("id") int id) throws IOException {
+        Order order = orderService.findOneById(id);
+        orderService.returnOrder(order);
+        request.setAttribute("msg", "退货成功!");
+        response.sendRedirect("/user/orders");
+    }
 
-    //@Get("/user/orders/pay")
-    //public String pay(@Param("id") int id) throws IOException {
-    //    Order order = orderService.findOneById(id);
-    //    Goods goods = goodsService.findOneById(order.getGoodsId());
-    //    Address address = addressService.findOneById(order.getAddressId());
-    //    request.setAttribute("goods", goods);
-    //    request.setAttribute("order", order);
-    //    request.setAttribute("address", address);
-    //    request.setAttribute("count", order.getCount());
-    //    return "/goods/pay/index";
-    //}
+
+    public void changeOrderStatus(Order order,OrderStatus orderStatus){
+        order.setStatus(orderStatus.value);
+        orderService.update(order);
+    }
 }

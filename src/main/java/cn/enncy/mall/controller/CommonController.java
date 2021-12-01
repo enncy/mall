@@ -5,13 +5,14 @@ import cn.enncy.mall.pojo.User;
 import cn.enncy.mall.service.UserService;
 import cn.enncy.mall.utils.Email;
 import cn.enncy.mall.utils.Security;
+import cn.enncy.mall.utils.StringUtils;
 import cn.enncy.mybatis.core.ServiceFactory;
 import cn.enncy.spring.mvc.annotation.Controller;
 import cn.enncy.spring.mvc.annotation.Get;
 import cn.enncy.spring.mvc.annotation.Post;
 import cn.enncy.spring.mvc.annotation.params.Body;
 import cn.enncy.spring.mvc.annotation.params.Param;
-import com.mysql.cj.util.StringUtils;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,7 +52,7 @@ public class CommonController {
     public String loginHandler(@Param("account") String account, @Param("password") String password) throws IOException {
 
         String error = "";
-        if (StringUtils.isNullOrEmpty(account) || StringUtils.isNullOrEmpty(password)) {
+        if (StringUtils.isEmpty(account) || StringUtils.isEmpty(password)) {
             error = "不能留空!";
 
         } else {
@@ -73,9 +74,9 @@ public class CommonController {
                     String referer = (String) session.getAttribute("referer");
                     System.out.println("origin "+origin);
                     System.out.println("referer "+referer);
-                    if (!StringUtils.isNullOrEmpty(origin)) {
+                    if (StringUtils.notEmpty(origin)) {
                         response.sendRedirect(origin);
-                    }else if(!StringUtils.isNullOrEmpty(referer)){
+                    }else if(StringUtils.notEmpty(referer)){
                         response.sendRedirect(referer);
                     }
                     else {
@@ -125,14 +126,22 @@ public class CommonController {
     }
 
     @Post("/register")
-    public String postRegister(@Body User user, @Param("confirmPassword") String confirmPassword )  {
+    public String postRegister(@Body User user, @Param("confirmPassword") String confirmPassword ) {
         String error = "";
         String msg = "";
-        if (StringUtils.isNullOrEmpty(user.getAccount()) || StringUtils.isNullOrEmpty(confirmPassword) || StringUtils.isNullOrEmpty(user.getPassword()) || StringUtils.isNullOrEmpty(user.getEmail())) {
+        if (StringUtils.isEmpty(user.getAccount()) || StringUtils.isEmpty(confirmPassword) || StringUtils.isEmpty(user.getPassword()) || StringUtils.isEmpty(user.getEmail())) {
             error = "不能留空!";
+        } else if (!StringUtils.isWord(user.getAccount())){
+            error = "用户名存在特殊字符，请删掉空格或者多余的字符！";
+        }else if (!StringUtils.isWord(user.getPassword())){
+            error = "密码存在特殊字符，请删掉空格或者多余的字符！";
+        }else if (user.getAccount().length()>20 || user.getAccount().length()<2){
+            error = "账号必须大于2小于20个字符!";
+        }else if (user.getPassword().length()>20 || user.getPassword().length()<6){
+            error = "密码必须大于6小于20个字符!";
         } else if (!confirmPassword.equals(user.getPassword())) {
             error = "2次输入的密码不一致!";
-        } else {
+        } else{
             UserService userService = ServiceFactory.resolve(UserService.class);
             if (userService.findOneByAccount(user.getAccount()) != null) {
                 error = "账号已被占用!";
@@ -176,7 +185,7 @@ public class CommonController {
     @Post("/forget")
     public String fogetPost(@Param("email") String email) {
 
-        if (StringUtils.isNullOrEmpty(email)) {
+        if (StringUtils.isEmpty(email)) {
             request.setAttribute("error", "邮箱不能为空");
         } else {
             // 创建激活 秘钥 和 链接
@@ -207,7 +216,7 @@ public class CommonController {
 
     // 验证密匙
     public boolean checkToken(String str, String token) {
-        if (StringUtils.isNullOrEmpty(token) || StringUtils.isNullOrEmpty(str)) {
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(str)) {
             return false;
         } else {
             return token.equals(Security.stringToMD5(str));
@@ -217,7 +226,7 @@ public class CommonController {
     @Post("/forget/reset")
     public String resetPost(@Param("email") String email, @Param("token") String token, @Param("password") String password, @Param("confirmPassword") String confirmPassword) throws IOException {
         if (checkToken(email, token)) {
-            if (StringUtils.isNullOrEmpty(password) || StringUtils.isNullOrEmpty(confirmPassword)) {
+            if (StringUtils.isEmpty(password) || StringUtils.isEmpty(confirmPassword)) {
                 request.setAttribute("error", "不能留空!");
             } else if (!confirmPassword.equals(password)) {
                 request.setAttribute("error", "2次输入的密码不一致!");

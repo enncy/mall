@@ -25,9 +25,9 @@ public class OrderRestController {
 
     @Get("/user/orders/update/address")
     public ResultBody  updateAddress(@Param("id") int id,@Param("addressId") int addressId){
-        Address oneById = addressService.findOneById(addressId);
+        Address address = addressService.findOneById(addressId);
         Order order = orderService.findOneById(id);
-        order.setAddressDetail(oneById.getDetail());
+        order.setAddressDetail(address.createOrderAddressDetails());
         orderService.update(order);
 
         return ResultBody.of(order);

@@ -20,6 +20,6 @@ import static cn.enncy.mybatis.core.SqlConstant.TABLE_NAME;
 @Mapper(table = "order_details",target = OrderDetails.class)
 public interface OrderDetailsMapper  extends BaseMapper<OrderDetails>{
 
-    @Select("select * from #{"+ TABLE_NAME +"}   left join  `order` on    where  "  )
+    @Select("select * from #{"+TABLE_NAME+"}  where  order_uid = #{orderUid}"  )
     List<OrderDetails> findByOrderUid(@Param("orderUid") String orderUid);
 }

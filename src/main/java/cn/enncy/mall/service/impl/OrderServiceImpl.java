@@ -1,15 +1,14 @@
 package cn.enncy.mall.service.impl;
 
 
+import cn.enncy.mall.constant.OrderStatus;
 import cn.enncy.mall.mapper.OrderMapper;
-import cn.enncy.mall.pojo.Cart;
-import cn.enncy.mall.pojo.Goods;
-import cn.enncy.mall.pojo.Order;
-import cn.enncy.mall.pojo.OrderDetails;
+import cn.enncy.mall.pojo.*;
 import cn.enncy.mall.service.*;
 import cn.enncy.mybatis.annotation.method.Transaction;
 import cn.enncy.mybatis.core.ServiceFactory;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -22,6 +21,8 @@ public class OrderServiceImpl  extends ServiceImpl<Order,OrderMapper> implements
     OrderDetailsService orderDetailsService = ServiceFactory.resolve(OrderDetailsService.class);
     CartService cartService = ServiceFactory.resolve(CartService.class);
     GoodsService goodsService = ServiceFactory.resolve(GoodsService.class);
+    UserService userService = ServiceFactory.resolve(UserService.class);
+
 
     public OrderServiceImpl( ) {
         super(OrderMapper.class);
@@ -43,9 +44,12 @@ public class OrderServiceImpl  extends ServiceImpl<Order,OrderMapper> implements
     }
 
 
+
+
     @Override
     @Transaction
     public void createSingleGoodsOrder(Order order, OrderDetails orderDetails, Goods goods){
+        initTime(order);
         // 添加订单
         mapper.insert(order);
         // 添加订单详情
@@ -58,6 +62,7 @@ public class OrderServiceImpl  extends ServiceImpl<Order,OrderMapper> implements
     @Override
     @Transaction
     public void createOrder(Order order, List<OrderDetails> orderDetailsList, List<Cart> cartList, List<Goods> goodsList){
+        initTime(order);
         // 添加订单
         mapper.insert(order);
         // 添加订单详情
@@ -73,6 +78,57 @@ public class OrderServiceImpl  extends ServiceImpl<Order,OrderMapper> implements
             goods.setStock(goods.getStock()-cart.getCount());
             goodsService.update(goods);
         }
+    }
+
+    /**
+     *  退货，并且退款
+     */
+    @Override
+    @Transaction
+    public void returnOrder(Order order) {
+        returnGoods(order);
+        // 退款
+        User user = userService.findOneById(order.getUserId());
+        user.setBalance(user.getBalance().add(order.getTotalPrice()));
+        userService.update(user);
+
+        // 更新状态
+        order.setStatus(OrderStatus.RETURN.value);
+        update(order);
+    }
+
+    /**
+     *  退货
+     */
+    @Override
+    @Transaction
+    public void cancelOrder(Order order) {
+        returnGoods(order);
+        // 更新状态
+        order.setStatus(OrderStatus.CANCEL.value);
+        update(order);
+    }
+
+    /**
+     *  退货
+     */
+    public void returnGoods(Order order){
+        String uid = order.getUid();
+        List<OrderDetails> orderDetailsList = orderDetailsService.findByOrderUid(uid);
+        // 返还库存
+        for (OrderDetails orderDetails : orderDetailsList) {
+            Goods goods = goodsService.findOneById(orderDetails.getGoodsId());
+            if(goods!=null){
+                goods.setStock(goods.getStock() + orderDetails.getCount());
+                goodsService.update(goods);
+            }
+        }
+    }
+
+    private void initTime(Order order){
+        long l = System.currentTimeMillis();
+        order.setCreateTime(l);
+        order.setUpdateTime(l);
     }
 
 
