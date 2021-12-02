@@ -21,8 +21,8 @@ import static cn.enncy.mybatis.core.SqlConstant.TABLE_NAME;
 @Mapper(table = "order",target = Order.class)
 public interface OrderMapper extends  BaseMapper<Order> {
 
-    @Select("select * from #{"+ TABLE_NAME+"} where user_id = #{user_id}")
-    List<Order> findByUserId(@Param("user_id") long userId);
+    @Select("select * from #{"+ TABLE_NAME+"} where user_id = #{userId}")
+    List<Order> findByUserId(@Param("userId") long userId);
 
 
     @Select("select * from #{"+ TABLE_NAME+"} where uid = #{uid}")

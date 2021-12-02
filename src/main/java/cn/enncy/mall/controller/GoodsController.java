@@ -122,11 +122,11 @@ public class GoodsController {
                         BigDecimal totalPrice = new BigDecimal("0.00");
                         // 创建订单
                         Order order = new Order();
+                        String uid = Order.createUid(user.getId());
                         order.setUserId(user.getId());
                         order.setAddressDetail(defaultAddress.createOrderAddressDetails());
                         order.setStatus(OrderStatus.PAYMENT.value);
-                        order.setUid(Order.createUid(user.getId()));
-
+                        order.setUid(uid);
 
                         // 直接购买 （单个）
                         if (id != 0) {
@@ -147,15 +147,11 @@ public class GoodsController {
                         // 购物车添加 （多个商品）
                         else {
                             List<Integer> counts = Arrays.stream(request.getParameterValues("count")).map(Integer::parseInt).collect(Collectors.toList());
-
                             List<Long> cartIds = Arrays.stream(ids).map(Long::parseLong).collect(Collectors.toList());
-
                             for (int i = 0; i < cartIds.size(); i++) {
-
                                 int c = counts.get(i);
                                 Cart cart = cartService.findOneById(cartIds.get(i));
                                 Goods goods = goodsService.findOneById(cart.getGoodsId());
-
                                 if (c > goods.getStock()) {
                                     error = "商品 <a href='/goods/detail?id=" + goods.getId() + "'>" + goods.getSimpleDescription() + "</a> 库存不足";
                                     break;
@@ -163,7 +159,7 @@ public class GoodsController {
                                 cartList.add(cart);
                                 goodsList.add(goods);
                                 // 添加订单详情
-                                orderDetailsList.add(OrderDetails.createOrderDetails(order.getUid(), c, goods));
+                                orderDetailsList.add(OrderDetails.createOrderDetails(uid, c, goods));
                                 // 计算价格
                                 totalPrice = totalPrice.add(goods.getRealPrice().multiply(BigDecimal.valueOf(c)));
                             }

@@ -67,10 +67,9 @@
 
 <%
 
-    OrderService orderService = ServiceFactory.resolve(OrderService.class);
     OrderDetailsService orderDetailsService = ServiceFactory.resolve(OrderDetailsService.class);
     String currentStatus = Optional.ofNullable(request.getParameter("status")).orElse(OrderStatus.RECEIVING.value);
-    List<Order> orders = orderService.findAll();
+    List<Order> orders = (List<Order>) request.getAttribute("orders");
     List<Order> currentOrders = orders.stream().filter(order -> order.getStatus().equals(currentStatus)).collect(Collectors.toList());
 
     long paymentCount = orders.stream().map(Order::getStatus).filter(s -> s.equals(OrderStatus.PAYMENT.value)).count();
