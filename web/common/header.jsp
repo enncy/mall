@@ -13,7 +13,7 @@
     ></script>
     <style>
         .container {
-            max-width: 960px;
+            max-width: 1080px !important;
         }
 
         /*
@@ -90,9 +90,12 @@
 
         .overflow-hidden { overflow: hidden; }
 
+        .container {
+            padding: 60px 15px 0 !important;
+        }
 
     </style>
 
 
 </head>
-<body>
+<body class="d-flex flex-column h-100">

@@ -12,12 +12,11 @@
 
 <style>
 
-    .card .card-link{
+    .address-card .card-link{
         display: none;
     }
 
-
-    .card:hover .card-link{
+    .address-card:hover .card-link{
         display: inline-block;
     }
 </style>
@@ -38,29 +37,27 @@
 
 <jsp:include page="/common/navigation.jsp"/>
 
-<div class="p-1  p-lg-5 mt-lg-5 mb-lg-5  p-md-2 mt-md-2 mb-md-2 d-flex justify-content-center  flex-lg-nowrap flex-wrap ">
+<div class=" container p-lg-5 mt-lg-5 mb-lg-5  p-md-2 mt-md-2 mb-md-2 d-flex justify-content-center  flex-lg-nowrap flex-wrap ">
 
 
     <jsp:include page="/user/navigation.jsp"/>
 
-    <div class="d-flex flex-wrap   col-lg-6 col-md-8 col-12">
+    <div class="d-flex flex-wrap card p-4  col-lg-10 col-md-11 col-12">
 
         <% for( Address address : addressList){ %>
 
-        <div class="card col-12 w-100 mt-2" style="width: 18rem;">
+        <div class="card address-card col-12 w-100 mt-2" style="width: 18rem;">
             <div class="card-body">
 
                 <h5 class="card-title"><%=address.getAlias()%> <span class="fs-6"><%=address.getId()==defaultAddressId?"(默认)":""%></span></h5>
                 <h6 class="card-subtitle mb-2 text-muted"><%=address.getReceiver() +" : "+address.getPhone()%></h6>
-                <p class="card-text"><%=address.getDetail()%></p>
-                <div>
-                    <a href="/user/address/update?id=<%=address.getId()%>" class="card-link">修改</a>
+                <div class="card-text d-flex flex-wrap">
+                    <%=address.getDetail()%>
+                    <a href="/user/address/update?id=<%=address.getId()%>" class="card-link  ms-5">修改</a>
                     <a href="/user/address/delete?id=<%=address.getId()%>" class="card-link">删除</a>
                     <% if(address.getId()!=defaultAddressId){ %>
                     <a href="/user/address/default?id=<%=address.getId()%>" class="card-link">设为默认</a>
                     <% }  %>
-
-
                 </div>
             </div>
         </div>

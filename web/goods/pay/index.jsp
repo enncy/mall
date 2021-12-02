@@ -41,9 +41,9 @@
     List<OrderDetails> orderDetailsList = (List<OrderDetails>) request.getAttribute("orderDetailsList");
 %>
 
-<div class="p-lg-5 mt-lg-5 mb-lg-5 d-flex justify-content-center flex-wrap">
+<div class="container p-lg-5 mt-lg-5 mb-lg-5 d-flex justify-content-center flex-wrap">
 
-    <form class="p-4 col-12 col-lg-10" method="POST">
+    <form class="p-4 col-lg-10 col-md-11 col-12" method="POST">
         <input style="display: none" name="id" value="<%=order.getId()%>">
         <input style="display: none" name="uid" value="<%=order.getUid()%>">
 

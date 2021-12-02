@@ -28,11 +28,8 @@
 
     .goods-img {
         border-radius: 4px;
-        width: 100%;
-        height: 100%;
-        max-width: 300px;
-        min-width: 200px ;
-
+        width: 400px;
+        height: 400px;
     }
 </style>
 
@@ -47,9 +44,9 @@
     User user = (User) session.getAttribute("user");
 %>
 
-<div class="p-lg-5 mt-lg-5 mb-lg-5 d-flex justify-content-center   flex-wrap">
+<div class="container p-lg-5 mt-lg-5 mb-lg-5 d-flex justify-content-center   flex-wrap">
 
-    <div class="col-12 col-md-10  col-lg-8">
+    <div class="  col-12">
         <div class="d-flex flex-wrap col-12">
             <div class="col-12   col-lg-5 text-center me-lg-4">
 

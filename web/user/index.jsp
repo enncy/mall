@@ -30,15 +30,15 @@
     User user = (User) session.getAttribute("user");
 %>
 
-<div class="p-1  p-lg-5 mt-lg-5 mb-lg-5  p-md-2 mt-md-2 mb-md-2 d-flex justify-content-center  flex-lg-nowrap flex-wrap ">
+<div class="container  p-lg-5 mt-lg-5 mb-lg-5  p-md-2 mt-md-2 mb-md-2 d-flex justify-content-center  flex-lg-nowrap flex-wrap ">
 
     <jsp:include page="navigation.jsp"/>
 
-    <form method="POST" class="d-flex flex-wrap   col-lg-6 col-md-8 col-12">
+    <form method="POST" class="d-flex flex-wrap  card p-4  col-lg-10 col-md-11 col-12 mb-0">
 
-        <div class="card col-12">
-            <div class="card-body d-flex align-items-center" style="white-space: nowrap">
-                <div class="col-2 text-center" data-bs-toggle="modal" data-bs-target="#upload"
+        <div class="  col-12">
+            <div class="d-flex " style="white-space: nowrap">
+                <div class="col-2 " data-bs-toggle="modal" data-bs-target="#upload"
                      style="cursor: pointer">
                     <% if (user.getAvatar() == null) { %>
                     <svg style="width: 40px;height: 40px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -53,24 +53,12 @@
                          alt="${sessionScope.user.avatar}">
                     <% } %>
                 </div>
-                <div class="ml-2 col-4">
+                <div class="col-4">
                     <h5 class="card-title">${sessionScope.user.nickname}
                     </h5>
                     <h6 class="card-subtitle mb-2 text-muted">${sessionScope.user.profile}
                     </h6>
-
                 </div>
-                <div class="ml-2 d-flex col-6 justify-content-end  align-items-baseline">
-                    <div style="color: #7abaff;font-size: xx-large;cursor:pointer;">
-
-                        <%=user.getBalance().toString().equals("0") ? "0" : new DecimalFormat("#,##0.00").format(user.getBalance().setScale(2, BigDecimal.ROUND_HALF_UP))%>
-                    </div>
-                    <div class="ml-1" style="color: #7abaff;font-size: xx-large">
-                        ¥
-                    </div>
-                    <a class="ml-4" style="font-size: 12px" href="/user/balance">充值余额</a>
-                </div>
-
 
             </div>
         </div>

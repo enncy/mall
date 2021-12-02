@@ -1,5 +1,9 @@
 package cn.enncy.mall.utils;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.NumberFormat;
+
 /**
  * //TODO
  * <br/>Created in 16:38 2021/11/20
@@ -28,7 +32,9 @@ public class TypeUtils {
             return nullOrEmpty ? 0 : Short.parseShort(string);
         } else if (boolean.class.equals(t)) {
             return nullOrEmpty ? 0 : Boolean.parseBoolean(string);
-        } else {
+        }  else if (Number.class.isAssignableFrom(t)) {
+            return t.getConstructor(String.class).newInstance(nullOrEmpty?"0":string);
+        }    else {
             return nullOrEmpty ? "" : t.getConstructor(String.class).newInstance(string);
         }
 

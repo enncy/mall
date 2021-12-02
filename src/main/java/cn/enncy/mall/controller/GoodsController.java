@@ -49,7 +49,7 @@ public class GoodsController {
 
     @Get("/goods")
     public String goods(@Param("page") int page, @Param("size") int size, @Param("search") String search, @Param("tag") String tag, @Param("order") String order) {
-        size = size == 0 ? 10 : size;
+        size = size == 0 ? 20 : size;
 
         List<Goods> goodsList;
         Pagination pagination;
@@ -92,15 +92,13 @@ public class GoodsController {
     }
 
     @Post("/goods/buy")
-    public String postBuy(@Param("id") int id) throws IOException {
+    public String postBuy(@Param("id") int id,@Param("count") int count) throws IOException {
         String error = null;
         User user = (User) session.getAttribute("user");
         String[] ids = request.getParameterValues("cartId");
-        if(ids ==null || ids.length==0 || id==0){
+        if(ids==null && id==0){
             error = "未选择商品";
         }else{
-            List<Integer> counts = Arrays.stream(request.getParameterValues("count")).map(Integer::parseInt).collect(Collectors.toList());
-            List<Long> cartIds = Arrays.stream(ids).map(Long::parseLong).collect(Collectors.toList());
 
             if (user == null) {
                 response.sendRedirect("/login");
@@ -132,7 +130,7 @@ public class GoodsController {
 
                         // 直接购买 （单个）
                         if (id != 0) {
-                            int count = counts.get(0);
+
                             Goods goods = goodsService.findOneById(id);
                             if (count > goods.getStock()) {
                                 error = "商品 <a href='/goods/detail?id=" + goods.getId() + "'>" + goods.getSimpleDescription() + "</a> 库存不足";
@@ -148,6 +146,9 @@ public class GoodsController {
                         }
                         // 购物车添加 （多个商品）
                         else {
+                            List<Integer> counts = Arrays.stream(request.getParameterValues("count")).map(Integer::parseInt).collect(Collectors.toList());
+
+                            List<Long> cartIds = Arrays.stream(ids).map(Long::parseLong).collect(Collectors.toList());
 
                             for (int i = 0; i < cartIds.size(); i++) {
 
@@ -189,7 +190,7 @@ public class GoodsController {
 
 
         request.setAttribute("error", error);
-        return "/goods/result/index";
+        return "/result/index";
     }
 
 
@@ -236,18 +237,20 @@ public class GoodsController {
             }
 
         }
-        return "/goods/result/index";
+
+        request.setAttribute("redirect","/user/orders?status=payment");
+        return "/result/index";
     }
 
 
     @Post("/goods/add")
-    public void add(@Param("id") int id, @Param("count") int count, @Param("buy") String buy) throws IOException, ServletException {
+    public String add(@Param("id") int id, @Param("count") int count, @Param("buy") String buy) throws IOException, ServletException {
         User user = (User) session.getAttribute("user");
         if (user == null) {
             response.sendRedirect("/login");
         } else {
-            if (buy.equals("立即购买")) {
-                response.sendRedirect("/goods/buy?id=" + id + "&count=" + count);
+            if ("立即购买".equals(buy)) {
+                return postBuy(id,count);
             } else {
 
                 Goods goods = goodsService.findOneById(id);
@@ -259,7 +262,6 @@ public class GoodsController {
                         cart.setCount(cart.getCount() + count);
                         cartService.update(cart);
                         response.sendRedirect("/user/cart?id=" + cart.getId());
-                        return;
                     }
                 }
 
@@ -273,6 +275,8 @@ public class GoodsController {
             }
 
         }
+
+        return "/user/cart/index";
 
     }
 }

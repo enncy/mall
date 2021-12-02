@@ -25,6 +25,7 @@ public class Application implements ServletContextListener {
     public static  String  REAL_PATH = "";
 
 
+
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         Application.REAL_PATH = servletContextEvent.getServletContext().getRealPath("");

@@ -68,57 +68,67 @@
 
 %>
 
-<div class="p-lg-5 pt-lg-0 mt-lg-5 mb-lg-5 d-flex justify-content-center  flex-lg-nowrap flex-wrap">
+<div class="container p-lg-5 pt-lg-0 mt-lg-5 mb-lg-5 d-flex justify-content-center  flex-lg-nowrap flex-wrap">
     <form>
         <input type="hidden" value="${param.tag}" name="tag">
-        <div class="col-12 col-lg-12 p-2 pt-0 mb-5 d-flex flex-wrap justify-content-center">
+        <div class="col-12  p-2 pt-0 mb-5 d-flex flex-wrap justify-content-center">
             <div class="col-12 d-flex justify-content-center flex-wrap">
-                <div class="col-12 col-lg-4 col-sm-8">
+                <div class="col-12 col-lg-10">
 
                     <div class="input-group mb-3 ">
                         <input type="text" class="form-control" name="search" placeholder="输入商品名字"
                                value="${param.search}">
                         <button class="btn btn-outline-secondary" type="submit">搜索商品</button>
                     </div>
-
-                </div>
-
-
-            </div>
-
-            <div class="col-12 d-flex justify-content-center ">
-                <div>
-
-                    商品分类 ：
-                    <a class="tag" href="/goods">全部</a>
-                    <% for (Tag tag : tagService.findByCount()) { %>
-                    <a class="tag" href="/goods?tag=<%=tag.getName()%>">
-                        <span><%=tag.getName()%></span>
-                        <span style="font-size: 12px;color: #525252">(<%=tag.getCount()%>)</span></li>
-                    </a>
-                    <% } %>
                 </div>
             </div>
 
-            <div class="d-flex col-12 col-sm-11 col-lg-10  pt-4 flex-wrap   justify-content-center">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light col-12">
+                <div class="container-fluid">
+                    <a class="navbar-brand">商品分类</a>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/goods">全部</a>
+                            </li>
+                            <% for (Tag tag : tagService.findByCount()) { %>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/goods?search=${param.search}&tag=<%=tag.getName()%>">
+                                    <span><%=tag.getName()%></span>
+                                    <span style="font-size: 12px;color: #525252">(<%=tag.getCount()%>)</span>
+                                </a>
+                            </li>
+                            <% } %>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
 
-                <div class="col-12 col-sm-10 col-log-8 ms-lg-5">
-                    <form class="me-2">
+            <div class="d-flex col-12  pt-4 flex-wrap   justify-content-center">
 
-                        <div class="mb-2 mt-2 card">
+                <div class="col-12  ">
+                    <form class="me-2 d-flex ">
 
-                            <div class="d-flex p-2">
-                                <span class="me-lg-5 me-1 fw-bold">当前共有 <%=goodsList.size()%> 件商品</span>
-                                <span class="me-lg-5 me-1"> <span
-                                        class="fw-bold">目前分类 : </span> ${ empty param.tag?"无":param.tag} </span>
-                                <span class="me-2 fw-bold">价格排序 : </span>
-                                <label for="order">${param.order=='desc'?"降序△":"升序▽"}</label>
-                                <input style="display:none;cursor:pointer;" type="submit" name="order" id="order"
-                                       value="${param.order=='desc'?"asc":"desc"}">
+                        <nav class="navbar navbar-expand-lg navbar-light bg-light col-12">
+                            <div class="container-fluid"  >
+                                <div class="me-3 font-secondary">当前共有 <span class="font-primary"> <%=goodsList.size()%> </span>  件商品</div>
+                                <div class="me-3  font-secondary">目前分类 : <span class="font-primary">${ empty param.tag?"无":param.tag}</span> </div>
+                                <div class="me-3  font-secondary">价格排序 :</div>
+                                <div class="collapse navbar-collapse font-primary" id="navbarNav2">
+                                    <ul class="navbar-nav">
+                                        <li class="nav-item" >
+                                            <label for="order" style="cursor: pointer">${param.order=='desc'?"降序△":"升序▽"}</label>
+                                            <input style="display:none;cursor:pointer;" type="submit" name="order" id="order"
+                                                   value="${param.order=='desc'?"asc":"desc"}">
+                                        </li>
+
+                                    </ul>
+                                </div>
                             </div>
+                        </nav>
 
-                        </div>
-                        <div class=" d-flex flex-wrap">
+
+                        <div class=" d-flex flex-wrap   mt-4" >
                             <% for (Goods goods : goodsList) { %>
                             <%
                                 BigDecimal discountPrice = goods.getDiscountPrice();

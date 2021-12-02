@@ -68,7 +68,7 @@ public class DispatcherServlet implements Filter {
 
         try {
             List<Object> objects = parseParameters(method, req, resp);
-
+            System.out.println("objects "+objects);
             Object invoke = method.invoke(controller, objects.toArray());
 
             // 如果请求未被处理
@@ -146,7 +146,7 @@ public class DispatcherServlet implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
-        System.out.println("DispatcherServlet "+Thread.currentThread());
+        //System.out.println("DispatcherServlet "+Thread.currentThread());
         for (Class<?> controller : controllers) {
             String prefix = "";
             if (controller.isAnnotationPresent(Controller.class)) {

@@ -28,7 +28,10 @@ public class DBUtils {
 
     public static void closeCurrentConnection() throws SQLException {
         Connection conn = CONNECTION_MAP.remove(Thread.currentThread());
-        conn.close();
+        if(conn!=null){
+            conn.close();
+        }
+
     }
 
 

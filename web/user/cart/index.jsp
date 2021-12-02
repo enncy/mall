@@ -53,11 +53,11 @@
     List<Goods> goodsList = carts.stream().map(Cart::getGoodsId).map(goodsService::findOneById).collect(Collectors.toList());
 %>
 
-<div class="p-1  p-lg-5 mt-lg-5 mb-lg-5  p-md-2 mt-md-2 mb-md-2 d-flex justify-content-center  flex-lg-nowrap flex-wrap ">
+<div class=" container p-lg-5 mt-lg-5 mb-lg-5  p-md-2 mt-md-2 mb-md-2 d-flex justify-content-center  flex-lg-nowrap flex-wrap ">
 
     <jsp:include page="/user/navigation.jsp"/>
 
-    <div class="d-flex flex-wrap   col-lg-6 col-md-8 col-12">
+    <div class="d-flex flex-wrap  card p-4  col-lg-10 col-md-11 col-12">
         <div class="col-12 mb-4">
             <h3>购物车列表 </h3>
         </div>
@@ -85,8 +85,9 @@
                         <div class="w-100" style="text-align: left">
                             <div><span class="font-primary me-2">商品描述:</span> <span
                                     class="font-secondary"><%=goods.getDescription()%></span></div>
-                            <div><span class="font-primary me-2" >单价:</span> <span
-                                    class="font-secondary" id="price<%=cart.getId()%>"><%=goods.getRealPrice()%></span></div>
+                            <div><span class="font-primary me-2">单价:</span> <span
+                                    class="font-secondary" id="price<%=cart.getId()%>"><%=goods.getRealPrice()%></span>
+                            </div>
 
                             <div class="mt-2 d-flex align-items-end justify-content-end">
                                 <div class="col-4 d-flex align-items-end">
@@ -112,10 +113,11 @@
                         </div>
                     </div>
                 </div>
-                <input class="d-none" value="<%=cart.getId()%>" id="cart<%=cart.getId()%>" name="cartId"
+                <input class="d-none" onchange="selectedDiv('<%=cart.getId()%>')" value="<%=cart.getId()%>"
+                       id="cart<%=cart.getId()%>" name="cartId"
                        type="checkbox">
                 <label class="col-1  " style="writing-mode: vertical-rl" for="cart<%=cart.getId()%>">
-                    <a  onclick="selectedDiv('<%=cart.getId()%>')" id="choiceDiv<%=cart.getId()%>" class="btn btn-sm btn-outline-success h-100">
+                    <a id="choiceDiv<%=cart.getId()%>" class="btn btn-sm btn-outline-success h-100">
                         选择
                     </a>
                 </label>
@@ -130,10 +132,11 @@
             <% } %>
 
             <div class="col-12 mt-5  d-flex align-items-end justify-content-end">
-                <div class="me-4" >已选中 <span id="totalCount">0</span> 个商品</div>
+                <div class="me-4">已选中 <span id="totalCount">0</span> 个商品</div>
                 <span class="me-2">应付款:</span>
                 <span class="price me-5">¥ <span style="font-size: 36px" id="totalPrice">0</span></span>
-                <input disabled  type="submit" class="col-6 col-lg-4  btn btn-lg btn-danger float-end " id="buyBtn" value="结算">
+                <input disabled type="submit" class="col-6 col-lg-4  btn btn-lg btn-danger float-end " id="buyBtn"
+                       value="结算">
             </div>
         </form>
         <% } %>
@@ -146,50 +149,69 @@
 
 <script>
 
-    var cartIds =  <%=carts.stream().map(Cart::getId).collect(Collectors.toList())%>
+    var cartIds = <%=carts.stream().map(Cart::getId).collect(Collectors.toList())%>
 
-    function changeCount(el, id, price) {
-        var total = (parseFloat(el.value) * parseFloat(price))
-        $("#cartTotalPrice" + id + "").text(total.toFixed(2))
 
-    }
+
+
+        function changeCount(el, id, price) {
+            var total = (parseFloat(el.value) * parseFloat(price))
+            $("#cartTotalPrice" + id + "").text(total.toFixed(2))
+            console.log("changeCount")
+            changePrice()
+        }
 
     let price = 0
     let count = 0
 
 
-    function  selectedDiv(id){
-        let el = document.querySelector("#choiceDiv"+id)
-        let cartPrice =    parseInt($("#count"+id).val()) * parseInt($("#price"+id).text())
+    function selectedDiv(id) {
+        let el = document.querySelector("#choiceDiv" + id)
 
-        if($(el).hasClass("btn-outline-success")){
+        if ($(el).hasClass("btn-outline-success")) {
             $(el).removeClass("btn-outline-success")
             $(el).addClass("btn-outline-dark")
             $(el).text("取消")
-            price += cartPrice;
-            count+=1
-        }else{
+            count += 1;
+        } else {
             $(el).removeClass("btn-outline-dark")
             $(el).addClass("btn-outline-success")
             $(el).text("选择")
-            price -= cartPrice;
-            count-=1
+            count -= 1;
         }
 
-        if (price <= 0) {
-            $("#buyBtn").attr("disabled","")
+
+
+        if ($("#cartDiv" + id).hasClass("selected")) {
+            $("#cartDiv" + id).removeClass("selected")
         } else {
-            $("#buyBtn").removeAttr("disabled")
+            $("#cartDiv" + id).addClass("selected")
         }
 
+        changePrice()
 
+
+    }
+
+    function changePrice() {
+        price = 0;
+        for (let i of cartIds) {
+            console.log(i, $("#cart" + i).prop('checked'))
+            if ($("#cart" + i).prop('checked')) {
+                let cartPrice = parseInt($("#count" + i).val()) * parseInt($("#price" + i).text())
+                console.log(cartPrice)
+                price += cartPrice;
+            }
+
+        }
         $("#totalPrice").text(price)
         $("#totalCount").text(count)
 
-        if ($("#cartDiv"+id).hasClass("selected")) {
-            $("#cartDiv"+id).removeClass("selected")
+
+        if (price <= 0) {
+            $("#buyBtn").attr("disabled", "")
         } else {
-            $("#cartDiv"+id).addClass("selected")
+            $("#buyBtn").removeAttr("disabled")
         }
     }
 

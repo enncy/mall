@@ -5,7 +5,7 @@
 
 <jsp:include page="/common/navigation.jsp"/>
 
-<div class="p-5 d-flex justify-content-center">
+<div class="container p-5 d-flex justify-content-center" >
 
     <%
 
@@ -34,7 +34,7 @@
 
     %>
 
-    <div class="jumbotron col-lg-6 col-sm-12">
+    <div class="jumbotron col-lg-6 col-sm-12  mt-5  mb-5" style="height: 500px">
         <h1><%=msg%>
         </h1>
         <p class="lead"><%=detail%>

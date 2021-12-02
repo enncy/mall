@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 /**
@@ -42,10 +43,6 @@ public class UserController {
 
     @Get("/user")
     public String userGet() {
-        // 刷新用户
-        User user = (User) session.getAttribute("user");
-        user = userService.findOneById(user.getId());
-        session.setAttribute("user",user);
         return "/user/index";
     }
 
@@ -86,22 +83,59 @@ public class UserController {
         return "/user/balance/index";
     }
 
-    @Post("/user/balance")
-    public String balancePost(@Param("balance") String balance) {
-        if (StringUtils.notEmpty(balance)) {
-            UserService userService = ServiceFactory.resolve(UserService.class);
-            User user = (User) session.getAttribute("user");
+    @Post("/user/balance/in")
+    public String balancePost(@Param("balance") BigDecimal balance, @Param("money") BigDecimal money) {
+        User user = (User) session.getAttribute("user");
+        if (money != null) {
+            balance = money;
+        }
+
+
+        if (balance.compareTo(BigDecimal.valueOf(0)) > 0) {
             if (user != null) {
                 BigDecimal origin = user.getBalance();
-                user.setBalance(origin.add(BigDecimal.valueOf(Double.parseDouble(balance))));
+                user.setBalance(origin.add(balance));
                 userService.update(user);
-                return "/user/index";
+                return "/user/balance/index";
             }
         } else {
             request.setAttribute("error", "余额不能为0!");
         }
-        return "/user/balance/index";
+        request.setAttribute("redirect", "/user/balance");
+        return "/result/index";
     }
+
+    @Post("/user/balance/out")
+    public String balanceOutPost(@Param("balance") BigDecimal balance, @Param("money") BigDecimal money, @Param("operate") String operate) {
+        User user = (User) session.getAttribute("user");
+
+        if (StringUtils.notEmpty(operate)) {
+            balance = "全部".equals(operate) ? user.getBalance() : user.getBalance().divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP);
+
+        } else if (money != null) {
+            balance = money;
+        }
+
+        if (balance.compareTo(BigDecimal.valueOf(0)) > 0) {
+
+
+            if (user != null) {
+                BigDecimal origin = user.getBalance();
+                if (origin.compareTo(balance) < 0) {
+                    request.setAttribute("error", "提现额度不能大于余额!");
+                } else {
+                    user.setBalance(origin.subtract(balance));
+                    userService.update(user);
+                    return "/user/balance/index";
+                }
+            }
+        } else {
+            request.setAttribute("error", "余额不能为0!");
+        }
+        request.setAttribute("redirect", "/user/balance");
+        return "/result/index";
+    }
+
 
     @Get("/user/address/update")
     public String addressUpdate(@Param("id") long id) {
@@ -118,12 +152,12 @@ public class UserController {
     public String addressUpdatePost(@Body Address address) throws IOException {
         User user = (User) session.getAttribute("user");
         address.setUserId(user.getId());
-        address.setDetail(address.getDetail().replaceAll("\\n"," "));
+        address.setDetail(address.getDetail().replaceAll("\\n", " "));
         if (address.getId() == 0) {
-            if(addressService.findOneByAlias(address.getAlias())==null){
+            if (addressService.findOneByAlias(address.getAlias()) == null) {
                 addressService.insert(address);
-            }else{
-                request.setAttribute("error","此备注已经被占用！");
+            } else {
+                request.setAttribute("error", "此备注已经被占用！");
                 return "/user/address/update/index";
             }
         } else {
@@ -171,32 +205,46 @@ public class UserController {
     }
 
     @Get("/user/orders/cancel")
-    public void cancel(@Param("id") int id) throws IOException {
+    public String cancel(@Param("id") int id) throws IOException {
         Order order = orderService.findOneById(id);
-        orderService.cancelOrder(order);
-        request.setAttribute("msg", "取消成功!");
-        response.sendRedirect("/user/orders");
+        if (order.getStatus().equals(OrderStatus.PAYMENT.value)) {
+            orderService.cancelOrder(order);
+            response.sendRedirect("/user/orders");
+        }
+        request.setAttribute("error", "必须在付款或结算前才能取消订单!");
+        request.setAttribute("redirect", "/user/orders?status=payment");
+        return "/result/index";
     }
 
 
     @Get("/user/orders/confirm")
-    public void confirm(@Param("id") int id) throws IOException {
+    public String confirm(@Param("id") int id) throws IOException {
         Order order = orderService.findOneById(id);
-        changeOrderStatus(order,OrderStatus.FINISH);
-        request.setAttribute("msg", "收货成功!");
-        response.sendRedirect("/user/orders");
+
+        if (order.getStatus().equals(OrderStatus.RECEIVING.value)) {
+            changeOrderStatus(order, OrderStatus.FINISH);
+            response.sendRedirect("/user/orders");
+        }
+        request.setAttribute("error", "此订单未结算或者已经完成!");
+        request.setAttribute("redirect", "/user/orders?status=receiving");
+        return "/result/index";
     }
 
     @Get("/user/orders/return")
-    public void returnOrder(@Param("id") int id) throws IOException {
+    public String returnOrder(@Param("id") int id) throws IOException {
+
         Order order = orderService.findOneById(id);
-        orderService.returnOrder(order);
-        request.setAttribute("msg", "退货成功!");
-        response.sendRedirect("/user/orders");
+        if (order.getStatus().equals(OrderStatus.FINISH.value)) {
+            orderService.returnOrder(order);
+            response.sendRedirect("/user/orders");
+        }
+        request.setAttribute("error", "未收货前不能退货!");
+        request.setAttribute("redirect", "/user/orders?status=finish");
+        return "/result/index";
     }
 
 
-    public void changeOrderStatus(Order order,OrderStatus orderStatus){
+    public void changeOrderStatus(Order order, OrderStatus orderStatus) {
         order.setStatus(orderStatus.value);
         orderService.update(order);
     }

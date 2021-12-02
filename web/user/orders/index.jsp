@@ -46,8 +46,8 @@
         background-color: rgba(0, 0, 0, .03);
     }
 
-    .shadow {
-        box-shadow: 0px 0px 4px #f8f8f8;
+    .card-shadow:hover {
+        box-shadow: 0px 0px 6px #d5d5d5;
     }
 
     .btn{
@@ -76,29 +76,40 @@
     long paymentCount = orders.stream().map(Order::getStatus).filter(s -> s.equals(OrderStatus.PAYMENT.value)).count();
     long receivingCount = orders.stream().map(Order::getStatus).filter(s -> s.equals(OrderStatus.RECEIVING.value)).count();
     long finishCount = orders.stream().map(Order::getStatus).filter(s -> s.equals(OrderStatus.FINISH.value)).count();
+    long returnCount = orders.stream().map(Order::getStatus).filter(s -> s.equals(OrderStatus.RETURN.value)).count();
     long cancelCount = orders.stream().map(Order::getStatus).filter(s -> s.equals(OrderStatus.CANCEL.value)).count();
 
 %>
 
-<div class="p-1  p-lg-5 mt-lg-5 mb-lg-5  p-md-2 mt-md-2 mb-md-2 d-flex justify-content-center  flex-lg-nowrap flex-wrap ">
+<div class="container  p-lg-5 mt-lg-5 mb-lg-5  p-md-2 mt-md-2 mb-md-2 d-flex justify-content-center  flex-lg-nowrap flex-wrap ">
 
 
     <jsp:include page="/user/navigation.jsp"/>
 
-    <div class="d-flex flex-wrap   col-lg-6 col-md-8 col-12">
+    <div class="d-flex flex-wrap  card p-4  col-lg-10 col-md-11 col-12">
         <div class="col-12 mb-4">
             <jsp:include page="/common/alert.jsp"/>
-            <h3>订单列表</h3>
-            <div class="d-flex ">
-                <a class="me-5" href="/user/orders?status=payment">待付款<span
-                        class="font-secondary">(<%=paymentCount%>)</span></a>
-                <a class="me-5" href="/user/orders?status=receiving">收货中<span
-                        class="font-secondary">(<%=receivingCount%>)</span></a>
-                <a class="me-5" href="/user/orders?status=finished">已收货<span
-                        class="font-secondary">(<%=finishCount%>)</span></a>
-                <a class="me-5" href="/user/orders?status=cancel">取消<span
-                        class="font-secondary">(<%=cancelCount%>)</span></a>
-            </div>
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <a class="navbar-brand">订单分类</a>
+                    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                        <div class="navbar-nav">
+                            <a class="me-5" href="/user/orders?status=payment">待付款<span
+                                    class="font-secondary">(<%=paymentCount%>)</span></a>
+                            <a class="me-5" href="/user/orders?status=receiving">收货中<span
+                                    class="font-secondary">(<%=receivingCount%>)</span></a>
+                            <a class="me-5" href="/user/orders?status=finished">已收货<span
+                                    class="font-secondary">(<%=finishCount%>)</span></a>
+                            <a class="me-5" href="/user/orders?status=return">已退货<span
+                                    class="font-secondary">(<%=returnCount%>)</span></a>
+                            <a class="me-5" href="/user/orders?status=cancel">取消<span
+                                    class="font-secondary">(<%=cancelCount%>)</span></a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
         </div>
         <% if (currentOrders.size() == 0) { %>
         <div class="card col-12" style="    height: fit-content;">
@@ -116,7 +127,7 @@
                     String status = order.getStatus();
 
             %>
-            <div class="card shadow <%=!order.equals(currentOrders.get(0))?"mt-5":""%>">
+            <div class="card card-shadow <%=!order.equals(currentOrders.get(0))?"mt-5":""%>">
 
                 <%
                     for (OrderDetails orderDetails : orderDetailsList) {
@@ -177,8 +188,8 @@
                         </div>
                     </li>
 
-                    <%--如果订单不是取消状态--%>
-                    <% if (!status.equals(OrderStatus.CANCEL.value)) { %>
+                    <%--如果订单不是取消和退货状态--%>
+                    <% if (!status.equals(OrderStatus.CANCEL.value)  && !status.equals(OrderStatus.RETURN.value)) { %>
                     <li class="list-group-item d-flex" style="background-color: #f8f8f8;white-space: nowrap">
                         <% if (status.equals(OrderStatus.RECEIVING.value) || status.equals(OrderStatus.PAYMENT.value)) { %>
                         <div class="input-group">
@@ -245,7 +256,7 @@
                             <a class="btn btn-outline-secondary btn-sm"
                                href="/user/orders/confirm?id=<%=order.getId()%>">确认收货</a>
                         </div>
-                        <% } else {%>
+                        <% } else if (status.equals(OrderStatus.FINISH.value)) {%>
                         <div class="ms-2 d-flex justify-content-end w-100">
                             <a class="btn btn-danger btn-sm " href="/user/orders/return?id=<%=order.getId()%>">退货</a>
                         </div>
