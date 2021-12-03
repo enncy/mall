@@ -15,7 +15,14 @@
         String msg;
         String detail;
 
-        if (code.equals("404")) {
+        if(code == null){
+            msg = "500 INTERNAL SERVER ERROR";
+            detail = "服务器内部出现了问题，请您尝试访问其他页面";
+
+            exception.printStackTrace();
+        }
+
+        else if (code.equals("404")) {
             msg = "404 NOT FOUND";
             detail = "您正在访问的页面不存在了，请尝试访问其他页面。";
         } else if (code.equals("400")) {

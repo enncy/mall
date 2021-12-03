@@ -91,7 +91,7 @@
         .overflow-hidden { overflow: hidden; }
 
         .container {
-            padding: 60px 15px 0 !important;
+            padding: 60px  0 !important;
         }
 
     </style>

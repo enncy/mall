@@ -16,6 +16,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Executable {
-    Class<? extends MapResultHandler> handler();
+    boolean singleResult() default  false;
     Result[] resultMaps();
 }

@@ -57,7 +57,7 @@ public class CommonController {
 
         } else {
             UserService userService = ServiceFactory.resolve(UserService.class);
-            System.out.println("userService "+userService);
+
             User user = userService.findOneByAccount(account);
             if(user==null ){
                 error = "用户不存在！";
@@ -249,5 +249,8 @@ public class CommonController {
         session.removeAttribute("user");
         response.sendRedirect("/");
     }
+
+
+
 
 }

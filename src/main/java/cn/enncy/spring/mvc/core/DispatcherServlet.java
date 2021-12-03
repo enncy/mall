@@ -68,7 +68,6 @@ public class DispatcherServlet implements Filter {
 
         try {
             List<Object> objects = parseParameters(method, req, resp);
-            System.out.println("objects "+objects);
             Object invoke = method.invoke(controller, objects.toArray());
 
             // 如果请求未被处理

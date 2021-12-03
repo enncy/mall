@@ -14,23 +14,31 @@ import java.util.Map;
  *
  * @author enncy
  */
-public class ListResultHandler  implements ResultSetHandler{
+public class ListResultHandler extends MapResultHandler implements ResultSetHandler {
     ResultSet resultSet;
     Class<?> resultType;
 
-    public ListResultHandler(ResultSet resultSet, Class<?> resultType) {
+    public ListResultHandler(ResultSet resultSet, Class<?> resultType, Map<String, Class<?>> resultMap) {
+        super(resultSet,resultMap);
         this.resultSet = resultSet;
         this.resultType = resultType;
+
     }
 
     @Override
     public Object handle() throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         // 目标转换类型根据 resultType 字段 sql 注解的优先级最高，其次 到mapper 的注解
         List<Object> list = new ArrayList<>();
-        while (resultSet.next()) {
-            Object resultTarget = ObjectResultHandler.createResultTarget(resultSet, resultType);
-            list.add(resultTarget);
+        if (Map.class.isAssignableFrom(resultType)) {
+            while (resultSet.next()) {
+                list.add(this.handleMap());
+            }
+        } else {
+            while (resultSet.next()) {
+                list.add(ObjectResultHandler.createResultTarget(resultSet, resultType));
+            }
         }
+
         return list;
 
     }

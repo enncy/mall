@@ -34,7 +34,7 @@ public interface GoodsMapper extends BaseMapper<Goods> , Searchable<Goods> {
     @Select("select goods.* from goods left join tag on goods.tag_id = tag.id where  selling = 1 and tag.name =  '#{tag}'  LIMIT #{skip} ,#{limit}; ")
     List<Goods> findByTagName(@Param("tag") String tag,@Param("skip") int skip,@Param("limit") int limit);
 
-    @Executable(handler = SingleResultHandler.class, resultMaps = {
+    @Executable(singleResult = true, resultMaps = {
             @Result(key = "count", target = int.class)
     })
     @Select("select count(*) as count from goods left join tag on goods.tag_id = tag.id where selling = 1 and  tag.name =  '#{tag}'")

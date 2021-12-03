@@ -27,16 +27,14 @@ public class DefaultSqlHandler  extends ParamsSqlHandler{
 
     public SQL handle() throws MybatisException {
         SQL sql = null;
-        if (target.isAnnotationPresent(Mapper.class)) {
-            if (method.isAnnotationPresent(Insert.class)) {
-                sql = new SQL(String.join("\n",method.getAnnotation(Insert.class).value()), false);
-            } else if (method.isAnnotationPresent(Update.class)) {
-                sql = new SQL(String.join("\n",method.getAnnotation(Update.class).value()), false);
-            } else if (method.isAnnotationPresent(Delete.class)) {
-                sql = new SQL(String.join("\n", method.getAnnotation(Delete.class).value()), false);
-            } else if (method.isAnnotationPresent(Select.class)) {
-                sql =  new SQL(String.join("\n",method.getAnnotation(Select.class).value()), true);
-            }
+        if (method.isAnnotationPresent(Insert.class)) {
+            sql = new SQL(String.join("\n",method.getAnnotation(Insert.class).value()), false);
+        } else if (method.isAnnotationPresent(Update.class)) {
+            sql = new SQL(String.join("\n",method.getAnnotation(Update.class).value()), false);
+        } else if (method.isAnnotationPresent(Delete.class)) {
+            sql = new SQL(String.join("\n", method.getAnnotation(Delete.class).value()), false);
+        } else if (method.isAnnotationPresent(Select.class)) {
+            sql =  new SQL(String.join("\n",method.getAnnotation(Select.class).value()), true);
         }
         return super.handle(sql);
     }

@@ -1,18 +1,17 @@
 package cn.enncy.mybatis.core.invoke;
 
 
+import cn.enncy.mall.mapper.UserMapper;
 import cn.enncy.mall.utils.Logger;
 import cn.enncy.mybatis.annotation.method.Executable;
 import cn.enncy.mybatis.annotation.type.Mapper;
 import cn.enncy.mybatis.annotation.type.Result;
 import cn.enncy.mybatis.core.DBUtils;
-import cn.enncy.mybatis.core.result.ListResultHandler;
-import cn.enncy.mybatis.core.result.ObjectResultHandler;
-import cn.enncy.mybatis.core.result.ResultSetHandler;
+import cn.enncy.mybatis.core.ReflectUtils;
+import cn.enncy.mybatis.core.result.*;
 import cn.enncy.mybatis.entity.MybatisException;
 import cn.enncy.mybatis.entity.SQL;
-import cn.enncy.mybatis.handler.param.BodyHandler;
-import cn.enncy.mybatis.handler.param.ParamHandler;
+
 import cn.enncy.mybatis.handler.sql.DefaultSqlHandler;
 import cn.enncy.mybatis.utils.ParameterizedTypeUtils;
 
@@ -38,31 +37,13 @@ public class SqlInvokeHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws MybatisException {
-
-        Mapper mapper = null;
-        if(target.isAnnotationPresent(Mapper.class)){
+        //System.out.println("method "+method);
+        //System.out.println("mapper "+mapper);
+        Mapper mapper ;
+        if (target.isAnnotationPresent(Mapper.class)) {
             mapper = target.getAnnotation(Mapper.class);
-        }else{
-
-            LinkedList<Class<?>> interfaceList = new LinkedList<>();
-            interfaceList.add(target);
-            interfaceList.add(target.getSuperclass());
-            interfaceList.addAll(Arrays.asList(target.getInterfaces()));
-            while(!interfaceList.isEmpty()){
-                Class<?> first = interfaceList.pop();
-                if(first!=null){
-                    if(first.getSuperclass()==null && first.getInterfaces().length==0){
-                        if(first.isAnnotationPresent(Mapper.class)){
-                            mapper = first.getAnnotation(Mapper.class);
-                            break;
-                        }
-                    }else{
-                        interfaceList.push(first.getSuperclass());
-                        interfaceList.addAll(Arrays.asList(first.getInterfaces()));
-                    }
-                }
-            }
-
+        } else {
+            mapper = findMapper();
         }
 
         if (mapper == null) {
@@ -72,19 +53,20 @@ public class SqlInvokeHandler implements InvocationHandler {
                 throw new MybatisException(e.getMessage());
             }
         } else {
+
             Logger.log("-------------[ sql execute ]--------------");
             // 1. 获取需要转换的类型
             Class<?> targetType = resolveTargetType(method, mapper);
 
             // 2. 处理语句
-            SQL sql = new DefaultSqlHandler(method, target,mapper, args).handle();
+            SQL sql = new DefaultSqlHandler(method, target, mapper, args).handle();
 
             if (sql != null) {
                 long time = 0;
                 Object value;
                 // 3. 执行语句
                 if (sql.isExecuteQuery()) {
-                    value = executeQuery(method, targetType, sql.getValue());
+                    value = executeQuery(method, targetType, sql.getValue(), mapper);
                 } else {
                     long l = System.currentTimeMillis();
                     value = execute(sql.getValue());
@@ -121,14 +103,14 @@ public class SqlInvokeHandler implements InvocationHandler {
     }
 
     // 执行查询语句
-    public Object executeQuery(Method method, Class<?> targetType, String sql) throws MybatisException {
+    public Object executeQuery(Method method, Class<?> targetType, String sql, Mapper mapper) throws MybatisException {
         return DBUtils.connect(statement -> {
             long l = System.currentTimeMillis();
             // 结果集
             ResultSet resultSet = statement.executeQuery(sql);
             Logger.log("\ttakes\t: " + (System.currentTimeMillis() - l) + "/ms");
             //  处理器处理结果集
-            ResultSetHandler handler = resolveResultSetHandler(method, resultSet, targetType);
+            ResultSetHandler handler = resolveResultSetHandler(method, resultSet, targetType, mapper);
             // 处理返回结果
             return handler.handle();
         });
@@ -142,23 +124,29 @@ public class SqlInvokeHandler implements InvocationHandler {
      * @param targetType 目标类型
      * @return cn.enncy.mybatis.core.result.ResultSetHandler
      */
-    public ResultSetHandler resolveResultSetHandler(Method method, ResultSet resultSet, Class<?> targetType) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        // 如何方法多加了 Executable 属性，则按照 Executable 方法去执行
+    public ResultSetHandler resolveResultSetHandler(Method method, ResultSet resultSet, Class<?> targetType, Mapper mapper) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        //  获取结果映射表
+        Map<String, Class<?>> resultMap;
+        // 如何方法多加了 Executable 属性，则按照 Executable 的结果集映射去执行
         if (method.isAnnotationPresent(Executable.class)) {
             Executable executable = method.getAnnotation(Executable.class);
-            //  获取结果映射表
-            Map<String, Class<?>> resultMap = Arrays.stream(executable.resultMaps()).collect(Collectors.toMap(Result::key, Result::target));
-            // map 映射处理器
-            return executable.handler().getConstructor(ResultSet.class, Map.class).newInstance(resultSet, resultMap);
-        } else {
-            // 如果返回值为 list 对象
-            if (method.getReturnType().equals(List.class)) {
-                // 集合处理器
-                return new ListResultHandler(resultSet, targetType);
-            } else {
-                // 对象处理器
-                return new ObjectResultHandler(resultSet, targetType);
+            resultMap = Arrays.stream(executable.resultMaps()).collect(Collectors.toMap(Result::key, Result::target));
+            if(executable.singleResult()){
+                return new SingleResultHandler(resultSet, resultMap);
             }
+        } else {
+            resultMap = ReflectUtils.getObjectFieldsTypeMap(mapper.target());
+        }
+
+        // 如果返回值为 list 对象
+        if (method.getReturnType().equals(List.class)) {
+            // 集合处理器
+            return new ListResultHandler(resultSet, targetType, resultMap);
+        } else if(method.getReturnType().equals(Map.class)){
+            return new MapResultHandler(resultSet, resultMap);
+        }   else{
+            // 对象处理器
+            return new ObjectResultHandler(resultSet, targetType, resultMap);
         }
     }
 
@@ -171,17 +159,48 @@ public class SqlInvokeHandler implements InvocationHandler {
      */
     public Class<?> resolveTargetType(Method method, Mapper mapper) {
         Class<?> targetType;
-        Class<?> returnType = method.getReturnType();
+        Type genericReturnType = method.getGenericReturnType();
+        if(genericReturnType instanceof ParameterizedType){
+            Type parameterizedType = ParameterizedTypeUtils.get(genericReturnType, 0);
 
-        // 如果是列表
-        if (returnType.equals(List.class) || returnType.equals(Object.class)) {
-            // 获取列表中的泛型
+            // 如果是列表
+            if (List.class.isAssignableFrom(genericReturnType.getClass())) {
+                // 获取列表中的泛型
+                targetType = mapper.target();
+            } else {
+                if (parameterizedType instanceof ParameterizedType) {
+                    targetType = (Class<?>) ((ParameterizedType) parameterizedType).getRawType();
+                } else  {
+                    targetType = mapper.target();
+                }
+            }
+        }else{
             targetType = mapper.target();
-        } else {
-            // 获取返回值作为目标类型
-            targetType = returnType;
         }
+
         return targetType;
+    }
+
+
+    public Mapper findMapper(){
+        Mapper mapper = null;
+        LinkedList<Class<?>> interfaceList = new LinkedList<>();
+        interfaceList.add(target);
+        interfaceList.add(target.getSuperclass());
+        interfaceList.addAll(Arrays.asList(target.getInterfaces()));
+        while (!interfaceList.isEmpty()) {
+            Class<?> first = interfaceList.pop();
+            if (first != null) {
+                if (first.isAnnotationPresent(Mapper.class)) {
+                    mapper = first.getAnnotation(Mapper.class);
+                    break;
+                } else {
+                    interfaceList.push(first.getSuperclass());
+                    interfaceList.addAll(Arrays.asList(first.getInterfaces()));
+                }
+            }
+        }
+        return mapper;
     }
 
 }

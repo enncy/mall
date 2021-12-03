@@ -10,6 +10,7 @@ import cn.enncy.mybatis.core.ServiceFactory;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * //TODO
@@ -109,6 +110,11 @@ public class OrderServiceImpl  extends ServiceImpl<Order,OrderMapper> implements
         update(order);
     }
 
+    @Override
+    public BigDecimal getSalesVolume(int day) {
+        return mapper.getSalesVolume(day);
+    }
+
     /**
      *  退货
      */
@@ -132,4 +138,8 @@ public class OrderServiceImpl  extends ServiceImpl<Order,OrderMapper> implements
     }
 
 
+    @Override
+    public List<Map<String,Object>> analysisGoodsSaleOfDay(int day) {
+        return mapper.analysisGoodsSaleOfDay(day);
+    }
 }

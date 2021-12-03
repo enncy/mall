@@ -27,7 +27,7 @@
     }
 </style>
 
-<div class="d-flex col-12 col-lg-2 flex-wrap user-nav" >
+<div class="d-flex   col-lg-2  col-md-3  d-none  d-lg-block d-md-block flex-wrap user-nav col-0" >
 
     <ul class="list-group col-12 h-100" style="white-space: nowrap;"  >
         <li class="list-group-item">

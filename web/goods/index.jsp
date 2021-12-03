@@ -86,7 +86,10 @@
             <nav class="navbar navbar-expand-lg navbar-light bg-light col-12">
                 <div class="container-fluid">
                     <a class="navbar-brand">商品分类</a>
-                    <div class="collapse navbar-collapse" id="navbarNav">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#goodsNav" aria-controls="goodsNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="goodsNav">
                         <ul class="navbar-nav">
                             <li class="nav-item">
                                 <a class="nav-link" href="/goods">全部</a>
@@ -111,19 +114,23 @@
 
                         <nav class="navbar navbar-expand-lg navbar-light bg-light col-12">
                             <div class="container-fluid"  >
-                                <div class="me-3 font-secondary">当前共有 <span class="font-primary"> <%=goodsList.size()%> </span>  件商品</div>
-                                <div class="me-3  font-secondary">目前分类 : <span class="font-primary">${ empty param.tag?"无":param.tag}</span> </div>
-                                <div class="me-3  font-secondary">价格排序 :</div>
-                                <div class="collapse navbar-collapse font-primary" id="navbarNav2">
+                                <a class="navbar-brand">当前共有 <span class="font-primary"> <%=goodsList.size()%> </span>  件商品</a>
+                                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#goodsNav2" aria-controls="goodsNav2" aria-expanded="false" aria-label="Toggle navigation">
+                                    <span class="navbar-toggler-icon"></span>
+                                </button>
+                                <div class="collapse navbar-collapse" id="goodsNav2">
+                                    <div class="me-3  font-secondary">目前分类 : <span class="font-primary">${ empty param.tag?"无":param.tag}</span> </div>
+                                    <div class="me-3  font-secondary">价格排序 :</div>
                                     <ul class="navbar-nav">
                                         <li class="nav-item" >
-                                            <label for="order" style="cursor: pointer">${param.order=='desc'?"降序△":"升序▽"}</label>
+                                            <label for="order" class="nav-link font-primary"  style="cursor: pointer">${param.order=='desc'?"降序△":"升序▽"}</label>
                                             <input style="display:none;cursor:pointer;" type="submit" name="order" id="order"
                                                    value="${param.order=='desc'?"asc":"desc"}">
                                         </li>
 
                                     </ul>
                                 </div>
+
                             </div>
                         </nav>
 

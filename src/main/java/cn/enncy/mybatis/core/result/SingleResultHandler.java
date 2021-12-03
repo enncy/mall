@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author enncy
  */
-public class SingleResultHandler extends  MapResultHandler{
+public class SingleResultHandler extends MapResultHandler {
 
 
     public SingleResultHandler(ResultSet resultSet, Map<String, Class<?>> resultMap) {
@@ -20,8 +20,13 @@ public class SingleResultHandler extends  MapResultHandler{
 
     @Override
     public Object handle() throws SQLException {
-        Map<String, Object> stringObjectMap = super.handleMap();
-        // 直接返回第一个
-        return  stringObjectMap.entrySet().iterator().next().getValue();
+
+        if (resultSet.next()) {
+            Map<String, Object> stringObjectMap = super.handleMap();
+            // 直接返回第一个
+            return stringObjectMap.entrySet().iterator().next().getValue();
+        }
+
+        return null;
     }
 }

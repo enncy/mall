@@ -7,6 +7,7 @@ import cn.enncy.mall.service.impl.ServiceImpl;
 import cn.enncy.mybatis.annotation.param.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * //TODO
@@ -17,4 +18,8 @@ import java.util.List;
 public interface OrderDetailsService extends  BaseService<OrderDetails> {
 
     List<OrderDetails> findByOrderUid(String orderUid);
+
+
 }
+
+

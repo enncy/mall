@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * //TODO
@@ -15,12 +16,13 @@ import java.sql.SQLException;
  *
  * @author enncy
  */
-public class ObjectResultHandler implements ResultSetHandler {
+public class ObjectResultHandler  extends MapResultHandler implements ResultSetHandler {
 
     ResultSet resultSet;
     Class<?> resultType;
 
-    public ObjectResultHandler(ResultSet resultSet, Class<?> resultType) {
+    public ObjectResultHandler(ResultSet resultSet, Class<?> resultType,Map<String, Class<?>> resultMap) {
+        super(resultSet,resultMap);
         this.resultSet = resultSet;
         this.resultType = resultType;
     }

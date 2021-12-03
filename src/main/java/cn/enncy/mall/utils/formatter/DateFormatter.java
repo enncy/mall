@@ -23,6 +23,13 @@ public class DateFormatter implements Formatter{
         Date date = new Date();
         date.setTime(time);
         LocalDateTime  localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
         return DateTimeFormatter.ofPattern(pattern).format(localDateTime);
+    }
+
+    public static LocalDateTime format(long time){
+        Date date = new Date();
+        date.setTime(time);
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 }

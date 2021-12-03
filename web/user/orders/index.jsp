@@ -58,6 +58,11 @@
     .goods-a:hover{
         box-shadow: 0px 0px 2px red;
     }
+
+    #orderNav a{
+        text-decoration: none;
+        margin: 10px 0;
+    }
 </style>
 
 <jsp:include page="/common/header.jsp"/>
@@ -91,9 +96,12 @@
 
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container-fluid">
-                    <a class="navbar-brand">订单分类</a>
-                    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                        <div class="navbar-nav">
+                    <a class="navbar-brand"  >订单分类</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#orderNav" aria-controls="orderNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="orderNav">
+                        <div class="navbar-nav" >
                             <a class="me-5" href="/user/orders?status=payment">待付款<span
                                     class="font-secondary">(<%=paymentCount%>)</span></a>
                             <a class="me-5" href="/user/orders?status=receiving">收货中<span

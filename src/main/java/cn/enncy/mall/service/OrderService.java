@@ -7,9 +7,12 @@ import cn.enncy.mall.pojo.Goods;
 import cn.enncy.mall.pojo.Order;
 import cn.enncy.mall.pojo.OrderDetails;
 import cn.enncy.mybatis.annotation.method.Transaction;
+import cn.enncy.mybatis.annotation.param.Param;
 import cn.enncy.mybatis.core.ServiceFactory;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * //TODO
@@ -38,4 +41,9 @@ public interface OrderService extends BaseService<Order> {
 
     @Transaction
     void cancelOrder(Order order);
+
+    BigDecimal getSalesVolume(int day);
+
+
+    List<Map<String,Object>> analysisGoodsSaleOfDay(int day);
 }

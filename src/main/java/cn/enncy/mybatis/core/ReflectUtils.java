@@ -102,6 +102,17 @@ public class ReflectUtils {
     }
 
 
+    public  static Map<String,Class<?>> getObjectFieldsTypeMap(Class<?> clazz){
+        Field[] fields = clazz.getDeclaredFields();
+        Map<String, Class<?>> map = new HashMap<>();
+        for (Field field : fields) {
+            map.put(field.getName(), field.getType());
+        }
+
+        return map;
+    }
+
+
 
     /**
      * 将数组的值赋值给对象

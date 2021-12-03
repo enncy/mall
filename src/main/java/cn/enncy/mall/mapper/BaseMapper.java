@@ -20,7 +20,7 @@ import static cn.enncy.mybatis.core.SqlConstant.*;
 
 public interface BaseMapper<T> {
 
-    @Executable(handler = SingleResultHandler.class, resultMaps = {
+    @Executable(singleResult = true, resultMaps = {
             @Result(key = "count", target = int.class)
     })
     @Select("SELECT COUNT(*) as count FROM #{TABLE_NAME};")
