@@ -67,8 +67,10 @@ public class ChartRestController {
                 true,
                 true,
                 false);
+        chart.setBackgroundPaint(null);
         Plot plot = chart.getPlot();
         plot.setBackgroundAlpha(0);
+        plot.setBackgroundImage(null);
         plot.setBackgroundPaint(null);
         plot.setOutlinePaint(null);
         plot.setForegroundAlpha(0.6f);
@@ -100,7 +102,7 @@ public class ChartRestController {
         JFreeChart chart = ChartFactory.createPieChart3D("订单状态分布图", dataset, true, true, false);
 
         PiePlot pieplot = (PiePlot) chart.getPlot();
-
+        chart.setBackgroundPaint(null);
         pieplot.setBackgroundAlpha(0);
         pieplot.setBackgroundPaint(null);
         pieplot.setOutlinePaint(null);

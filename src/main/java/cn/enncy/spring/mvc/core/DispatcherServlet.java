@@ -153,49 +153,45 @@ public class DispatcherServlet implements Filter {
             } else if (controller.isAnnotationPresent(RestController.class)) {
                 prefix = controller.getAnnotation(RestController.class).value();
             }
-            try {
-                Object obj = ControllerFactory.resolve(controller, req, resp);
+            Object obj = ControllerFactory.resolve(controller, req, resp);
 
-                Class<? extends Annotation> target = null;
+            Class<? extends Annotation> target = null;
 
-                if ("POST".equalsIgnoreCase(req.getMethod())) {
-                    target = Post.class;
-                } else if ("GET".equalsIgnoreCase(req.getMethod())) {
-                    target = Get.class;
-                }
+            if ("POST".equalsIgnoreCase(req.getMethod())) {
+                target = Post.class;
+            } else if ("GET".equalsIgnoreCase(req.getMethod())) {
+                target = Get.class;
+            }
 
-                // 获取  controller 的 方法
-                List<Method> controllerMethods = annotationUtils.getAnnotationMethods(controller, target);
+            // 获取  controller 的 方法
+            List<Method> controllerMethods = annotationUtils.getAnnotationMethods(controller, target);
 
-                // 遍历 controller 的方法
-                for (Method requestMethod : controllerMethods) {
+            // 遍历 controller 的方法
+            for (Method requestMethod : controllerMethods) {
 
-                    // 获取 带有 target 注解的方法
-                    for (Annotation annotation : requestMethod.getAnnotations()) {
+                // 获取 带有 target 注解的方法
+                for (Annotation annotation : requestMethod.getAnnotations()) {
 
-                        if (annotation.annotationType().equals(target)) {
-                            String path = "";
-                            if ("POST".equalsIgnoreCase(req.getMethod())) {
-                                path = prefix + ((Post) annotation).value();
-                            } else if ("GET".equalsIgnoreCase(req.getMethod())) {
-                                path = prefix + ((Get) annotation).value();
-                            }
-                            String validPath = String.join("/",PathUtils.  splitPath(path));
-
-                            String validTargetPath = String.join("/", PathUtils. splitPath(req.getRequestURI()));
-                            // 如果路径匹配
-                            if (validPath.equalsIgnoreCase(validTargetPath)) {
-
-                                // 处理
-                                handleRequest(requestMethod, obj, req, resp);
-                                return;
-                            }
-
+                    if (annotation.annotationType().equals(target)) {
+                        String path = "";
+                        if ("POST".equalsIgnoreCase(req.getMethod())) {
+                            path = prefix + ((Post) annotation).value();
+                        } else if ("GET".equalsIgnoreCase(req.getMethod())) {
+                            path = prefix + ((Get) annotation).value();
                         }
+                        String validPath = String.join("/",PathUtils.  splitPath(path));
+
+                        String validTargetPath = String.join("/", PathUtils. splitPath(req.getRequestURI()));
+                        // 如果路径匹配
+                        if (validPath.equalsIgnoreCase(validTargetPath)) {
+
+                            // 处理
+                            handleRequest(requestMethod, obj, req, resp);
+                            return;
+                        }
+
                     }
                 }
-            } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException | InstantiationException e) {
-                e.printStackTrace();
             }
 
         }

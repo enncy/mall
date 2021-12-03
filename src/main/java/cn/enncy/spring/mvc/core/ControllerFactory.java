@@ -22,29 +22,33 @@ import java.util.Map;
 public class ControllerFactory {
     private static final Map<Class<?>, Object> controllers = new HashMap<>();
 
-    public static <T> T resolve(Class<T> type, HttpServletRequest req, HttpServletResponse resp) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
+    public static <T> T resolve(Class<T> type, HttpServletRequest req, HttpServletResponse resp)  {
         Object controller = controllers.get(type);
-        if (controller == null) {
-            controller = type.getConstructor().newInstance();
-            controllers.put(type, controller);
-        }
-
-        Field[] fields = type.getDeclaredFields();
-        for (Field field : fields) {
-            if (!field.isAccessible()) {
-                field.setAccessible(true);
+        try{
+            if (controller == null) {
+                controller = type.getConstructor().newInstance();
+                controllers.put(type, controller);
             }
 
-            if (ServletRequest.class.isAssignableFrom(field.getType())) {
+            Field[] fields = type.getDeclaredFields();
+            for (Field field : fields) {
+                if (!field.isAccessible()) {
+                    field.setAccessible(true);
+                }
 
-                field.set(controller, req);
+                if (ServletRequest.class.isAssignableFrom(field.getType())) {
+
+                    field.set(controller, req);
+                }
+                if (ServletResponse.class.isAssignableFrom(field.getType())) {
+                    field.set(controller, resp);
+                }
+                if (HttpSession.class.isAssignableFrom(field.getType())) {
+                    field.set(controller, req.getSession());
+                }
             }
-            if (ServletResponse.class.isAssignableFrom(field.getType())) {
-                field.set(controller, resp);
-            }
-            if (HttpSession.class.isAssignableFrom(field.getType())) {
-                field.set(controller, req.getSession());
-            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
         return (T) controller;

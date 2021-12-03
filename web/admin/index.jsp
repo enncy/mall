@@ -12,6 +12,9 @@
 <%@ page import="cn.enncy.mall.constant.OrderStatus" %>
 <%@ page import="java.util.stream.Collectors" %>
 <%@ page import="cn.enncy.mall.utils.formatter.DateFormatter" %>
+<%@ page import="cn.enncy.spring.mvc.core.ControllerFactory" %>
+<%@ page import="cn.enncy.mall.controller.restful.ChartRestController" %>
+<%@ page import="java.lang.reflect.InvocationTargetException" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <jsp:include page="common/header.jsp"/>
@@ -25,6 +28,8 @@
     GoodsService goodsService = ServiceFactory.resolve(GoodsService.class);
     OrderService orderService = ServiceFactory.resolve(OrderService.class);
 
+    ChartRestController chartRestController = ControllerFactory.resolve(ChartRestController.class, request, response);
+
     Calendar calendar = Calendar.getInstance();
     int day = calendar.get(Calendar.DAY_OF_WEEK);
     int userCount = userService.count();
@@ -35,7 +40,7 @@
 %>
 
 
-<div class="d-flex justify-content-between flex-wrap  align-items-center pt-3 pb-2 mb-3 border-bottom">
+<div class="d-flex justify-content-between flex-wrap  align-items-center pt-3 pb-2 mb-3  ">
     <h1 class="h2">仪表盘</h1>
     <div class="col-12  mt-2 mb-5 d-flex flex-wrap flex-lg-nowrap">
 
@@ -117,12 +122,12 @@
 </div>
 
 
-<div class="row">
-    <div class="col">
-        <img id="chart" class="w-100" src="">
+<div class="row  mb-5">
+    <div class="col-12 col-lg-6 ">
+        <img id="chart" class="w-100 card p-4" style="margin: 0 auto" src="<%=chartRestController.chart().getData()%>">
     </div>
-    <div class="col">
-        <img id="chart2"  class="w-100"  src="">
+    <div class="col-12 col-lg-6">
+        <img id="chart2"  class="w-100 card p-4"   style="margin: 0 auto"  src="<%=chartRestController.pie().getData()%>">
     </div>
 </div>
 
@@ -173,39 +178,39 @@
 <script>
     var active = "index";
 
-     $.ajax({
-         method:"get",
-         url:"/chart",
-         dataType:"json",
-         success(r){
-
-             if(r.status){
-                 $("#chart").attr("src",r.data)
-
-             }else{
-                 alert("请求失败")
-             }
-         },
-         error(e){
-             alert("请求失败",e)
-         }
-     })
-
-    $.ajax({
-        method:"get",
-        url:"/pie",
-        dataType:"json",
-        success(r){
-            if(r.status){
-                $("#chart2").attr("src",r.data)
-            }else{
-                alert("请求失败")
-            }
-        },
-        error(e){
-            alert("请求失败",e)
-        }
-    })
+    //  $.ajax({
+    //      method:"get",
+    //      url:"/chart",
+    //      dataType:"json",
+    //      success(r){
+    //
+    //          if(r.status){
+    //              $("#chart").attr("src",r.data)
+    //
+    //          }else{
+    //              alert("请求失败")
+    //          }
+    //      },
+    //      error(e){
+    //          alert("请求失败",e)
+    //      }
+    //  })
+    //
+    // $.ajax({
+    //     method:"get",
+    //     url:"/pie",
+    //     dataType:"json",
+    //     success(r){
+    //         if(r.status){
+    //             $("#chart2").attr("src",r.data)
+    //         }else{
+    //             alert("请求失败")
+    //         }
+    //     },
+    //     error(e){
+    //         alert("请求失败",e)
+    //     }
+    // })
 </script>
 
 
