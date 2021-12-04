@@ -100,8 +100,8 @@ public class DispatcherServlet implements Filter {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            req.setAttribute("code",500);
-            req.getRequestDispatcher("/error/index.jsp").forward(req,resp);
+
+            resp.sendRedirect("/error?code="+500);
 
         }
 

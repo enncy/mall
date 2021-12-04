@@ -172,9 +172,9 @@
                             <div class="col-lg-4 col-12">
                                 <div>订单编号 : <%=order.getUid()%>
                                 </div>
-                                <div>创建时间 : <%=DateFormatter.format(order.getCreateTime(), "yyyy-MM-dd HH:mm:ss")%>
+                                <div>创建时间 : <%=DateFormatter.format(order.getCreateTime() )%>
                                 </div>
-                                <div>最近更新 : <%=DateFormatter.format(order.getUpdateTime(), "yyyy-MM-dd HH:mm:ss")%>
+                                <div>最近更新 : <%=DateFormatter.format(order.getUpdateTime() )%>
                                 </div>
                             </div>
                             <div class="col-lg-4 col-12">

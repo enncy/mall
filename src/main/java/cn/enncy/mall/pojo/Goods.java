@@ -47,6 +47,10 @@ public class Goods extends BaseObject{
     private int stock;
 
 
+    @Info(value = "浏览量",type = InputType.NUMBER)
+    private int views;
+
+
     public long getTagId() {
         return tagId;
     }
@@ -103,6 +107,14 @@ public class Goods extends BaseObject{
         this.stock = stock;
     }
 
+    public int getViews() {
+        return views;
+    }
+
+    public void setViews(int views) {
+        this.views = views;
+    }
+
     @Override
     public String toString() {
         return "Goods{" +
@@ -116,6 +128,7 @@ public class Goods extends BaseObject{
                 ", img='" + img + '\'' +
                 ", selling=" + selling +
                 ", stock=" + stock +
+                ", views=" + views +
                 '}';
     }
 

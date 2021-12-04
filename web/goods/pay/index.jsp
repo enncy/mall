@@ -65,7 +65,7 @@
                     </td>
                     <td><%=order.getTotalPrice()%>
                     </td>
-                    <td><%=DateFormatter.format(order.getCreateTime(), "yyyy-MM-dd HH:mm:ss")%>
+                    <td><%=DateFormatter.format(order.getCreateTime() )%>
                     </td>
                 </tr>
                 </tbody>

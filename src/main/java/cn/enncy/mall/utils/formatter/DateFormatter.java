@@ -19,6 +19,14 @@ public class DateFormatter implements Formatter{
         return DateFormatter.format((Long) value, "yyyy-MM-dd HH:mm:ss");
     }
 
+    public static String format(long time){
+        Date date = new Date();
+        date.setTime(time);
+        LocalDateTime  localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(localDateTime);
+    }
+
     public static String format(long time,String pattern){
         Date date = new Date();
         date.setTime(time);
@@ -27,7 +35,7 @@ public class DateFormatter implements Formatter{
         return DateTimeFormatter.ofPattern(pattern).format(localDateTime);
     }
 
-    public static LocalDateTime format(long time){
+    public static LocalDateTime parse(long time){
         Date date = new Date();
         date.setTime(time);
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();

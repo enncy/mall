@@ -20,7 +20,10 @@ public enum ServiceMapping {
     CART("cart", "购物车", Cart.class,CartService.class, CartServiceImpl.class),
     ORDER("order", "订单", Order.class,OrderService.class, OrderServiceImpl.class),
     ORDER_DETAILS("order_details", "订单详情", OrderDetails.class,OrderDetailsService.class, OrderDetailsServiceImpl.class),
-    TAG("tag", "标签", Tag.class, TagService.class,TagServiceImpl.class);
+    TAG("tag", "标签", Tag.class, TagService.class,TagServiceImpl.class),
+    COMMENT("comment","评论",Comment.class,CommentService.class,CommentServiceImpl.class);
+
+
     public String name;
     public String desc;
     public Class<? extends BaseObject> objectClass;

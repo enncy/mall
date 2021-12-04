@@ -19,6 +19,14 @@ public class GoodsServiceImpl extends  ServiceImpl<Goods,GoodsMapper> implements
         super(GoodsMapper.class);
     }
 
+    @Override
+    public Goods findOneById(long id) {
+        // 增加浏览量
+        Goods goods = super.findOneById(id);
+        goods.setViews(goods.getViews()+1);
+        mapper.update(goods);
+        return goods;
+    }
 
     @Override
     public List<Goods> search(String str, int page, int size) {

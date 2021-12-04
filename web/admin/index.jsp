@@ -15,6 +15,7 @@
 <%@ page import="cn.enncy.spring.mvc.core.ControllerFactory" %>
 <%@ page import="cn.enncy.mall.controller.restful.ChartRestController" %>
 <%@ page import="java.lang.reflect.InvocationTargetException" %>
+<%@ page import="java.util.Optional" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <jsp:include page="common/header.jsp"/>
@@ -108,7 +109,7 @@
                         </div>
                         <div class="float-end  text-end">
                             <b>本周销售额</b>
-                            <p class="fw-bold mb-0 fs-2"><%=new DecimalFormat("#,##0.00").format(salesVolume)%></p>
+                            <p class="fw-bold mb-0 fs-2"><%=new DecimalFormat("#,##0.00").format(Optional.ofNullable(salesVolume).orElse(new BigDecimal(("0.00"))))%></p>
                         </div>
                     </div>
 
@@ -163,8 +164,8 @@
             <td><%=order.getTotalPrice()%></td>
             <td><%=OrderStatus.getDescription(order.getStatus())%></td>
             <td><%=order.getAddressDetail()%></td>
-            <td><%=DateFormatter.format(order.getUpdateTime(),"yyyy-MM-dd HH:mm:ss")%></td>
-            <td><%=DateFormatter.format(order.getCreateTime(),"yyyy-MM-dd HH:mm:ss")%></td>
+            <td><%=DateFormatter.format(order.getUpdateTime() )%></td>
+            <td><%=DateFormatter.format(order.getCreateTime() )%></td>
         </tr>
          <% } %>
         </tbody>
