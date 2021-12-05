@@ -59,11 +59,11 @@ public interface OrderMapper extends  BaseMapper<Order> {
     })
     @Select("select t.name as tag, od.count as nums,  concat('周',dayofweek(from_unixtime( (o.create_time / 1000))) - 1) as day\n" +
             "from `order` as o\n" +
-            "         left join order_details od on o.uid = convert(od.order_uid using utf8mb4) collate utf8mb4_0900_ai_ci\n" +
+            "         left join order_details od on o.uid = od.order_uid\n" +
             "         left join goods g on g.id = od.goods_id\n" +
             "         left join tag t on g.tag_id = t.id\n" +
             "where o.status = 'finished'\n" +
-            "  and ((unix_timestamp(now()) - (o.create_time / 1000)) / (24 * 60 * 60)) < #{day}\n" +
+            "  and  round(((unix_timestamp(now()) - (o.create_time / 1000)) / (24 * 60 * 60)),0) <= #{day}\n" +
             "\n" +
             "group by tag,day;\n")
     List<Map<String,Object>> analysisGoodsSaleOfDay(@Param("day") int day);

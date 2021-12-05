@@ -1340,7 +1340,7 @@ name</ColNames>
     </column>
     <column id="368" parent="297" name="views">
       <Position>11</Position>
-      <Comment>浏览量</Comment>
+      <Comment>浏览次数</Comment>
       <DataType>int|0s</DataType>
       <DefaultExpression>0</DefaultExpression>
     </column>
@@ -1422,7 +1422,6 @@ name</ColNames>
       <Comment>订单编号</Comment>
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
-      <Collation>utf8mb4_general_ci</Collation>
     </column>
     <column id="383" parent="299" name="goods_id">
       <Position>3</Position>
@@ -1435,7 +1434,6 @@ name</ColNames>
       <Comment>商品名</Comment>
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
-      <Collation>utf8mb4_general_ci</Collation>
     </column>
     <column id="385" parent="299" name="price">
       <Position>5</Position>
@@ -1447,7 +1445,6 @@ name</ColNames>
       <Position>6</Position>
       <Comment>商品图片</Comment>
       <DataType>text|0s</DataType>
-      <Collation>utf8mb4_general_ci</Collation>
     </column>
     <column id="387" parent="299" name="count">
       <Position>7</Position>
@@ -1459,13 +1456,11 @@ name</ColNames>
       <Position>8</Position>
       <DataType>mediumtext|0s</DataType>
       <NotNull>1</NotNull>
-      <Collation>utf8mb4_general_ci</Collation>
     </column>
     <column id="389" parent="299" name="create_time">
       <Position>9</Position>
       <DataType>mediumtext|0s</DataType>
       <NotNull>1</NotNull>
-      <Collation>utf8mb4_general_ci</Collation>
     </column>
     <key id="390" parent="299" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>

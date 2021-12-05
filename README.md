@@ -58,17 +58,35 @@ create table address(
 
 ```mysql
 create table goods(
-    id             int auto_increment primary key,
+    id             int auto_increment          primary key,
     price          decimal(10, 2)              not null comment '价格',
     description    text                        not null comment '商品描述',
     img            text                        null comment '图片',
     selling        tinyint        default 0    not null comment '是否上架',
     stock          int            default 0    not null comment '库存',
-    update_time    mediumtext                  not null,
-    create_time    mediumtext                  not null,
     tag_id         int                         not null comment '标签id',
-    discount_price decimal(10, 2) default 0.00 null comment '折扣价'
+    discount_price decimal(10, 2) default 0.00 null comment '折扣价',
+    views          int            default 0    null comment '浏览次数',
+    update_time    mediumtext                  not null,
+    create_time    mediumtext                  not null
 )  comment '商品表';
+```
+
+评论表
+
+```mysql
+create table comment
+(
+    id          int auto_increment
+        primary key,
+    user_id     int        not null comment '用户id',
+    goods_id    int        not null comment '商品id',
+    parent_id   int        null comment '回复id',
+    content     text       not null comment '评论',
+    create_time mediumtext not null,
+    update_time mediumtext not null
+)
+    comment '评论表';
 ```
 
 标签表
@@ -107,9 +125,9 @@ create table `order`(
     user_id        int            not null comment '用户id',
     address_detail varchar(255)   not null comment '地址详情',
     status         varchar(20)    not null comment '状态',
+    total_price    decimal(10, 2) not null comment '总付款',
     update_time    mediumtext     not null comment '更新时间',
     create_time    mediumtext     not null comment '创建时间',
-    total_price    decimal(10, 2) not null comment '总付款',
     constraint order_uid_uindex
         unique (uid)
 ) comment '订单表';
@@ -120,13 +138,13 @@ create table `order`(
 ```mysql
 create table order_details(
     id          int auto_increment  primary key,
-    order_uid   varchar(255) collate utf8mb4_general_ci not null comment '订单编号',
-    goods_id    int                                     not null comment '商品id',
-    description varchar(255) collate utf8mb4_general_ci not null comment '商品名',
-    price       decimal(10, 2)                          not null comment '商品单价',
-    img         text collate utf8mb4_general_ci         null comment '商品图片',
-    count       int                                     not null comment '数量',
-    update_time mediumtext collate utf8mb4_general_ci   not null,
-    create_time mediumtext collate utf8mb4_general_ci   not null
+    order_uid   varchar(255)        not null comment '订单编号',
+    goods_id    int                 not null comment '商品id',
+    description varchar(255)        not null comment '商品名',
+    price       decimal(10, 2)      not null comment '商品单价',
+    img         text                null comment '商品图片',
+    count       int                 not null comment '数量',
+    update_time mediumtext          not null,
+    create_time mediumtext          not null
 )  comment '订单详情表';
 ```
