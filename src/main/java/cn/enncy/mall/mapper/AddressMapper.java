@@ -25,7 +25,7 @@ public interface AddressMapper extends BaseMapper<Address> , Searchable<Address>
      * @param alias  别名
      * @return cn.enncy.mall.pojo.Address
      */
-    @Select("select * from #{"+ TABLE_NAME+"} where alias = #{alias}")
+    @Select("select * from address where alias = #{alias}")
     Address findOneByAlias(@Param("alias") String alias);
 
     /**
@@ -34,11 +34,11 @@ public interface AddressMapper extends BaseMapper<Address> , Searchable<Address>
      * @param userId 用户id
      * @return cn.enncy.mall.pojo.Address
      */
-    @Select("select * from #{"+ TABLE_NAME+"} where user_id = #{user_id}")
+    @Select("select * from address where user_id = #{user_id}")
     List<Address> findByUserId(@Param("user_id") long userId);
 
     @Override
-    @Select("select * from #{"+ TABLE_NAME+"} where alias like '%#{str}%' or receiver like '%#{str}%'  or detail like '%#{str}%'  LIMIT #{skip} ,#{limit}; ")
+    @Select("select * from address where alias like '%#{str}%' or receiver like '%#{str}%'  or detail like '%#{str}%'  LIMIT #{skip} ,#{limit}; ")
     List<Address> search(@Param("str") String str,@Param("skip") int skip, @Param("limit") int limit);
 
 }

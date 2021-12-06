@@ -34,61 +34,49 @@ public class CommonController {
 
     @Get("/login")
     public String login(HttpSession session) throws IOException {
-
         // 如果已经登录，则无需登录
         User user = (User) session.getAttribute("user");
         if (user != null) {
             response.sendRedirect("/user");
         }
         String referer = request.getHeader("Referer");
-        session.setAttribute("referer",referer);
-
-
+        session.setAttribute("referer", referer);
         return "/login/index";
 
     }
 
     @Post("/login")
     public String loginHandler(@Param("account") String account, @Param("password") String password) throws IOException {
-
         String error = "";
         if (StringUtils.isEmpty(account) || StringUtils.isEmpty(password)) {
             error = "不能留空!";
-
         } else {
             UserService userService = ServiceFactory.resolve(UserService.class);
-
             User user = userService.findOneByAccount(account);
-            if(user==null ){
+            if (user == null) {
                 error = "用户不存在！";
-
-            }else if(!user.isActive()){
+            } else if (!user.isActive()) {
                 error = "用户未激活！";
-            }
-            else{
-                if (  user.getPassword().equals(password)) {
+            } else {
+                if (user.getPassword().equals(password)) {
                     request.setAttribute("msg", "登录成功!");
                     // 将用户存入 session
                     session.setAttribute("user", user);
-
                     String origin = (String) session.getAttribute("origin");
                     String referer = (String) session.getAttribute("referer");
-                    System.out.println("origin "+origin);
-                    System.out.println("referer "+referer);
+                    System.out.println("origin " + origin);
+                    System.out.println("referer " + referer);
                     if (StringUtils.notEmpty(origin)) {
                         response.sendRedirect(origin);
-                    }else if(StringUtils.notEmpty(referer)){
+                    } else if (StringUtils.notEmpty(referer)) {
                         response.sendRedirect(referer);
-                    }
-                    else {
+                    } else {
                         return "index";
                     }
                 } else {
                     error = "登录失败，账号或者密码错误!";
-
                 }
             }
-
         }
         request.setAttribute("error", error);
         return "/login/index";
@@ -99,16 +87,15 @@ public class CommonController {
         if (checkToken(account, token)) {
             UserService userService = ServiceFactory.resolve(UserService.class);
             User user = userService.findOneByAccount(account);
-            if(user==null){
+            if (user == null) {
                 request.setAttribute("error", "验证已过期，请重新注册！");
                 return "/register/index";
             }
-            session.setAttribute("user", user);
-
             // 如果未激活，则激活，并且返回首页
-            if ( !user.isActive()) {
+            if (!user.isActive()) {
                 user.setActive(true);
                 userService.update(user);
+                session.setAttribute("user", user);
                 return "/index";
             } else {
                 request.setAttribute("error", "此账号已经被注册！");
@@ -122,27 +109,27 @@ public class CommonController {
     }
 
     @Get("/register")
-    public String checkRegister(){
+    public String checkRegister() {
         return "/register/index";
     }
 
     @Post("/register")
-    public String postRegister(@Body User user, @Param("confirmPassword") String confirmPassword ) {
+    public String postRegister(@Body User user, @Param("confirmPassword") String confirmPassword) {
         String error = "";
         String msg = "";
         if (StringUtils.isEmpty(user.getAccount()) || StringUtils.isEmpty(confirmPassword) || StringUtils.isEmpty(user.getPassword()) || StringUtils.isEmpty(user.getEmail())) {
             error = "不能留空!";
-        } else if (!StringUtils.isWord(user.getAccount())){
+        } else if (!StringUtils.isWord(user.getAccount())) {
             error = "用户名存在特殊字符，请删掉空格或者多余的字符！";
-        }else if (!StringUtils.isWord(user.getPassword())){
+        } else if (!StringUtils.isWord(user.getPassword())) {
             error = "密码存在特殊字符，请删掉空格或者多余的字符！";
-        }else if (user.getAccount().length()>20 || user.getAccount().length()<2){
+        } else if (user.getAccount().length() > 20 || user.getAccount().length() < 2) {
             error = "账号必须大于2小于20个字符!";
-        }else if (user.getPassword().length()>20 || user.getPassword().length()<6){
+        } else if (user.getPassword().length() > 20 || user.getPassword().length() < 6) {
             error = "密码必须大于6小于20个字符!";
         } else if (!confirmPassword.equals(user.getPassword())) {
             error = "2次输入的密码不一致!";
-        } else{
+        } else {
             UserService userService = ServiceFactory.resolve(UserService.class);
             if (userService.findOneByAccount(user.getAccount()) != null) {
                 error = "账号已被占用!";
@@ -162,9 +149,9 @@ public class CommonController {
                     msg = "邮箱已发送，请在邮箱中验证您的账号!";
                 } catch (Exception e) {
                     e.printStackTrace();
-                    if(e.getMessage().contains("Invalid Addresses")){
+                    if (e.getMessage().contains("Invalid Addresses")) {
                         error = "邮箱不存在";
-                    }else{
+                    } else {
                         error = "服务器错误";
                     }
 
@@ -182,12 +169,13 @@ public class CommonController {
     public String foget() {
         return "/forget/index";
     }
-
     @Post("/forget")
     public String fogetPost(@Param("email") String email) {
 
         if (StringUtils.isEmpty(email)) {
             request.setAttribute("error", "邮箱不能为空");
+        } else if (userService.findOneByEmail(email) == null) {
+            request.setAttribute("error", "用户不存在");
         } else {
             // 创建激活 秘钥 和 链接
             String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/forget/reset?email=" + email + "&token=" + Security.stringToMD5(email);
@@ -202,8 +190,6 @@ public class CommonController {
         }
         return "/forget/index";
     }
-
-
     @Get("/forget/reset")
     public String reset(@Param("email") String email, @Param("token") String token) throws IOException {
         if (checkToken(email, token)) {
@@ -214,16 +200,6 @@ public class CommonController {
         }
         return "/forget/reset/index";
     }
-
-    // 验证密匙
-    public boolean checkToken(String str, String token) {
-        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(str)) {
-            return false;
-        } else {
-            return token.equals(Security.stringToMD5(str));
-        }
-    }
-
     @Post("/forget/reset")
     public String resetPost(@Param("email") String email, @Param("token") String token, @Param("password") String password, @Param("confirmPassword") String confirmPassword) throws IOException {
         if (checkToken(email, token)) {
@@ -244,13 +220,21 @@ public class CommonController {
         return "/forget/reset/index";
     }
 
+
+    // 验证密匙
+    public boolean checkToken(String str, String token) {
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(str)) {
+            return false;
+        } else {
+            return token.equals(Security.stringToMD5(str));
+        }
+    }
+
     @Get("/logout")
     public void logout() throws IOException {
         session.removeAttribute("user");
         response.sendRedirect("/");
     }
-
-
 
 
 }

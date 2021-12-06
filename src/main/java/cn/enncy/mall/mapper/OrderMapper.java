@@ -27,14 +27,14 @@ import static cn.enncy.mybatis.core.SqlConstant.TABLE_NAME;
 @Mapper(table = "order",target = Order.class)
 public interface OrderMapper extends  BaseMapper<Order> {
 
-    @Select("select * from #{"+ TABLE_NAME+"} where user_id = #{userId}")
+    @Select("select * from `order` where user_id = #{userId}")
     List<Order> findByUserId(@Param("userId") long userId);
 
 
-    @Select("select * from #{"+ TABLE_NAME+"} where uid = #{uid}")
+    @Select("select * from `order` where uid = #{uid}")
     Order findOneByUid(@Param("uid") String uid);
 
-    @Delete("DELETE FROM #{"+TABLE_NAME+"} WHERE uid=#{uid}  ;")
+    @Delete("DELETE FROM `order` WHERE uid=#{uid}  ;")
     boolean deleteByUid(@Param("uid") String uid);
 
     // 获取销售额，距离 day 天之内的销售额

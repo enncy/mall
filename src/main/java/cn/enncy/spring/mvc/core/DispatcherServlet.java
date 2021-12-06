@@ -41,13 +41,11 @@ import java.util.stream.Collectors;
 public class DispatcherServlet implements Filter {
 
     List<Class<?>> controllers = new ArrayList<>();
-
     AnnotationUtils annotationUtils = new AnnotationUtils();
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         try {
-
             controllers.addAll(annotationUtils.getAnnotationClasses(File.separator, Controller.class));
             controllers.addAll(annotationUtils.getAnnotationClasses(File.separator, RestController.class));
         } catch (URISyntaxException | ClassNotFoundException e) {
@@ -64,8 +62,7 @@ public class DispatcherServlet implements Filter {
      * @param resp
      * @return boolean
      */
-    private void handleRequest(Method method, Object controller, HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-
+    private void handleRequest(Method method, Object controller, HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             List<Object> objects = parseParameters(method, req, resp);
             Object invoke = method.invoke(controller, objects.toArray());
@@ -86,7 +83,6 @@ public class DispatcherServlet implements Filter {
                         throw new Exception("controller method return value is not string : " + method);
                     }
                 } else {
-
                     // 如果是 restful 风格的控制器
                     try {
                         resp.getWriter().write(invoke.toString());
@@ -95,16 +91,11 @@ public class DispatcherServlet implements Filter {
                         resp.sendError(404);
                     }
                 }
-
-
             }
         } catch (Exception e) {
             e.printStackTrace();
-
             resp.sendRedirect("/error?code="+500);
-
         }
-
     }
 
 
@@ -145,7 +136,7 @@ public class DispatcherServlet implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
-        //System.out.println("DispatcherServlet "+Thread.currentThread());
+
         for (Class<?> controller : controllers) {
             String prefix = "";
             if (controller.isAnnotationPresent(Controller.class)) {
@@ -165,10 +156,8 @@ public class DispatcherServlet implements Filter {
 
             // 获取  controller 的 方法
             List<Method> controllerMethods = annotationUtils.getAnnotationMethods(controller, target);
-
             // 遍历 controller 的方法
             for (Method requestMethod : controllerMethods) {
-
                 // 获取 带有 target 注解的方法
                 for (Annotation annotation : requestMethod.getAnnotations()) {
 

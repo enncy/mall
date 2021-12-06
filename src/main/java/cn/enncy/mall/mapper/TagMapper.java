@@ -21,14 +21,14 @@ import static cn.enncy.mybatis.core.SqlConstant.TABLE_NAME;
 public interface TagMapper  extends BaseMapper<Tag> , Searchable<Tag>{
 
 
-    @Select("select * from #{"+ TABLE_NAME +"}  where  name = '#{name}'")
+    @Select("select * from tag  where  name = '#{name}'")
     Tag findOneByName(@Param("name") String name);
 
-    @Select("select * from #{"+ TABLE_NAME +"}  order by `count` desc  LIMIT 0,10 ;")
+    @Select("select * from tag  order by `count` desc  LIMIT 0,10 ;")
     List<Tag> findByCount();
 
 
     @Override
-    @Select("select * from #{"+  TABLE_NAME +"}  where  name like '%#{key}%'   LIMIT #{skip} ,#{limit};")
+    @Select("select * from tag  where  name like '%#{key}%'   LIMIT #{skip} ,#{limit};")
     List<Tag> search(@Param("key") String key,@Param("skip") int skip,@Param("limit") int limit);
 }

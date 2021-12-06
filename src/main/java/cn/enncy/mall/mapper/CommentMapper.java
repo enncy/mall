@@ -19,7 +19,7 @@ import static cn.enncy.mybatis.core.SqlConstant.TABLE_NAME;
 @Mapper(table = "comment",target = Comment.class)
 public interface CommentMapper extends BaseMapper<Comment>{
 
-    @Select("select * from #{"+ TABLE_NAME+"} where goods_id = #{goodsId} ")
+    @Select("select * from comment where goods_id = #{goodsId} ")
     List<Comment> findByGoodsId(@Param("goodsId") long goodsId);
 
 

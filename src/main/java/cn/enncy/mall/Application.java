@@ -25,21 +25,6 @@ public class Application implements ServletContextListener {
     public static  String  REAL_PATH = "";
 
 
-
-    @Override
-    public void contextInitialized(ServletContextEvent servletContextEvent) {
-        Application.REAL_PATH = servletContextEvent.getServletContext().getRealPath("");
-        System.out.println(Application.class.getClassLoader().getResource("/"));
-        Logger.log("tomcat 启动");
-        // 删除未激活的用户
-        startRegisterTask();
-    }
-
-    @Override
-    public void contextDestroyed(ServletContextEvent servletContextEvent) {
-
-    }
-
     public void startRegisterTask() {
         // 定时任务，清理超时的注册验证
         UserService userService = ServiceFactory.resolve(UserServiceImpl.class);
@@ -48,4 +33,16 @@ public class Application implements ServletContextListener {
         // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间
         service.scheduleAtFixedRate(userService::deleteInactiveUser, 3, 3, TimeUnit.MINUTES);
     }
+
+
+    @Override
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
+        Logger.log("tomcat 启动");
+        Application.REAL_PATH = servletContextEvent.getServletContext().getRealPath("");
+        // 删除未激活的用户
+        startRegisterTask();
+    }
+    @Override
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {}
+
 }

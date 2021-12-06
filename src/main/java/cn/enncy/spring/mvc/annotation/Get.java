@@ -1,7 +1,5 @@
 package cn.enncy.spring.mvc.annotation;
 
-import cn.enncy.spring.mvc.constant.HttpMethods;
-
 import java.lang.annotation.*;
 
 /**
@@ -14,7 +12,6 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@RequestMapping(method = HttpMethods.GET)
 public @interface Get {
     String value();
 }

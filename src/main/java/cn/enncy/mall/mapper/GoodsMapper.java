@@ -25,10 +25,10 @@ import static cn.enncy.mybatis.core.SqlConstant.TABLE_NAME;
 public interface GoodsMapper extends BaseMapper<Goods> , Searchable<Goods> {
 
     @Override
-    @Select("select * from #{"+ TABLE_NAME+"} where  selling = 1 and description like '%#{str}%'  LIMIT #{skip} ,#{limit};")
+    @Select("select * from goods where  selling = 1 and description like '%#{str}%'  LIMIT #{skip} ,#{limit};")
     List<Goods> search(@Param("str") String str,@Param("skip") int skip,@Param("limit") int limit);
 
-    @Select("select * from #{"+ TABLE_NAME+"} where selling = 1 and description like '%#{str}%' ")
+    @Select("select * from goods where selling = 1 and description like '%#{str}%' ")
     List<Goods> searchAll(@Param("str") String str);
 
     @Select("select goods.* from goods left join tag on goods.tag_id = tag.id where  selling = 1 and tag.name =  '#{tag}'  LIMIT #{skip} ,#{limit}; ")

@@ -27,7 +27,6 @@ public abstract  class ParamsSqlHandler extends TableSqlHandler {
     public ParamsSqlHandler(Method method, Class<?> target, Mapper mapper, Object[] methodArguments) {
         super(method, target,mapper, methodArguments);
     }
-
     @Override
     public SQL handle(SQL sql) throws MybatisException {
         SQL handle = super.handle(sql);
@@ -36,7 +35,6 @@ public abstract  class ParamsSqlHandler extends TableSqlHandler {
             Parameter parameter = parameters[i];
             // 通过 Body注解  处理
             if (parameter.isAnnotationPresent(Body.class)) {
-
                 handle.setValue(BODY_HANDLER.handle(handle.getValue(), parameter, methodArguments[i]));
             }
             // 通过 Param注解  处理

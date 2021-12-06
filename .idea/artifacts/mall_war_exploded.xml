@@ -6,7 +6,6 @@
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="mall" />
-          <element id="file-copy" path="$PROJECT_DIR$/src/c3p0-config.xml" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-annotations-api:9.0.52" />

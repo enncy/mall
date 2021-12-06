@@ -19,9 +19,7 @@ public class Email {
     private static final String EMAIL_SENDER = "enncymail@163.com";
     private static final String EMAIL_PASSWORD = "MNELKRFHDGGAGKPJ";
 
-
     public static void reset(String receiver, String url) throws Exception {
-
         Email.sendEmail(receiver, "Mall 找回密码", Email.template(
                 "<h1>找回密码</h1>" +
                         "<p>请点击下面的链接来重置您的密码</p>" +
@@ -29,11 +27,8 @@ public class Email {
                         "<a href=" + url + ">" + url + "</a>" +
                         "</div>"
         ));
-
     }
-
     public static void register(String receiver, String url) throws Exception {
-
         Email.sendEmail(receiver, "Mall 电商系统注册", Email.template(
                 "<h1>欢迎注册 Mall 电商系统</h1>" +
                         "<p>请点击下面的邮箱来验证您的账户，3分钟内有效请尽快验证</p>" +
@@ -41,9 +36,7 @@ public class Email {
                         "<a href=" + url + ">" + url + "</a>" +
                         "</div>"
         ));
-
     }
-
     public static String template(String content) {
         return "<div style='text-align: center;\n" +
                 "    max-width: 400px;\n" +
@@ -55,7 +48,6 @@ public class Email {
                 "<span style='color: #6c757d!important;margin-top:48px;'>Mall 电商系统 - 系统邮件，请勿回复</span>" +
                 "</div>";
     }
-
     public static void sendEmail(String receiver, String title, String content) throws Exception {
         Properties prop = new Properties();
         //指定一个默认的邮件服务器的主机名

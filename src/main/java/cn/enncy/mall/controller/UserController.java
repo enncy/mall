@@ -34,9 +34,7 @@ public class UserController {
     UserService userService = ServiceFactory.resolve(UserService.class);
     AddressService addressService = ServiceFactory.resolve(AddressService.class);
     CartService cartService = ServiceFactory.resolve(CartService.class);
-    GoodsService goodsService = ServiceFactory.resolve(GoodsService.class);
     OrderService orderService = ServiceFactory.resolve(OrderService.class);
-
     HttpServletRequest request;
     HttpServletResponse response;
     HttpSession session;

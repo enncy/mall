@@ -24,34 +24,31 @@
 
     <h2 class="h3 mb-3 font-weight-normal">账户注册</h2>
 
-
     <div class="form-floating">
         <input name="account" type="text" id="inputAccount" class="form-control" placeholder="账号" required size="20"
                value="${requestScope.user.account}">
         <label for="inputAccount" >账号</label>
     </div>
-    <div class="form-floating">
 
+    <div class="form-floating">
         <input name="password" type="password" id="inputPassword" class="form-control" placeholder="密码" required
                size="20"
                value="${requestScope.user.password}">
         <label for="inputPassword" >密码</label>
     </div>
-    <div class="form-floating">
 
+    <div class="form-floating">
         <input name="confirmPassword" type="password" id="inputConfirmPassword" class="form-control" placeholder="重复密码"
                required size="20" autocomplete="off"
                value="${requestScope.confirmPassword}">
         <label for="inputConfirmPassword"  >重复密码</label>
     </div>
 
-
     <div class="form-floating">
         <input name="email" type="email" id="inputEmail" class="form-control" placeholder="邮箱" required size="42"
                value="${requestScope.user.email}">
         <label for="inputEmail" >邮箱</label>
     </div>
-
 
     <button class="btn btn-lg btn-primary btn-block mt-3  w-100" type="submit">注册</button>
     <div class="mt-2 text-right"><a href="/login">已有账号？</a></div>

@@ -19,7 +19,7 @@ import static cn.enncy.mybatis.core.SqlConstant.TABLE_NAME;
 
 @Mapper(table = "cart",target = Cart.class)
 public interface CartMapper extends BaseMapper<Cart> {
-    @Select("select * from #{"+ TABLE_NAME+"} where user_id = #{userId} ")
+    @Select("select * from cart where user_id = #{userId} ")
     List<Cart> findByUserId(@Param("userId") long userId);
 
 }
