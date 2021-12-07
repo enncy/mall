@@ -96,6 +96,7 @@ public class Order extends BaseObject{
                 '}';
     }
 
+    // 创建唯一订单号  精确到秒级的日期 + 用户id
     public  static   String createUid(long userId){
         return DateFormatter.format(System.currentTimeMillis(), "yyyyMMddHHmmss") + userId;
     }

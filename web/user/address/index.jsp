@@ -21,34 +21,26 @@
     }
 </style>
 
-<%
 
+<jsp:include page="/common/header.jsp"/>
+<jsp:include page="/common/navigation.jsp"/>
+
+
+<%
     // 遍历地址并显示
     User user = (User) session.getAttribute("user");
     assert user != null;
     long defaultAddressId = user.getDefaultAddressId();
     List<Address> addressList = (List<Address>) request.getAttribute("addresses");
     addressList.sort(Comparator.comparing(address -> address.getId()!=defaultAddressId));
-
 %>
 
-<jsp:include page="/common/header.jsp"/>
-
-
-<jsp:include page="/common/navigation.jsp"/>
-
 <div class=" container p-lg-5 mt-lg-5 mb-lg-5  p-md-2 mt-md-2 mb-md-2 d-flex justify-content-center  flex-lg-nowrap flex-wrap ">
-
-
     <jsp:include page="/user/navigation.jsp"/>
-
     <div class="d-flex flex-wrap card p-4  col-lg-10 col-md-11 col-12">
-
         <% for( Address address : addressList){ %>
-
         <div class="card address-card col-12 w-100 mt-2" style="width: 18rem;">
             <div class="card-body">
-
                 <h5 class="card-title"><%=address.getAlias()%> <span class="fs-6"><%=address.getId()==defaultAddressId?"(默认)":""%></span></h5>
                 <h6 class="card-subtitle mb-2 text-muted"><%=address.getReceiver() +" : "+address.getPhone()%></h6>
                 <div class="card-text d-flex flex-wrap">
@@ -68,11 +60,8 @@
             <div class=" text-center " >点击添加地址</div>
         </div>
 
-
     </div>
-
 </div>
-
 
 <jsp:include page="/common/footer.jsp"/>
 

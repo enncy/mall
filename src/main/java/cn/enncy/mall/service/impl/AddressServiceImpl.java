@@ -22,8 +22,8 @@ public class AddressServiceImpl  extends ServiceImpl<Address,AddressMapper> impl
 
 
     @Override
-    public Address findOneByAlias(String alias) {
-        return mapper.findOneByAlias(alias);
+    public Address findOneByUserAlias(long userId,String alias) {
+        return mapper.findOneByUserAlias(userId,alias);
     }
 
     @Override
@@ -35,12 +35,9 @@ public class AddressServiceImpl  extends ServiceImpl<Address,AddressMapper> impl
     public List<Address>  searchByUserId(long userId, String str, int page, int size){
         return search(str, page, size).stream().filter(address -> address.getUserId() == userId).collect(Collectors.toList());
     }
-
     @Override
     public List<Address> search(String str, int page, int size) {
         size = size == 0 ? 10 : size;
         return mapper.search(str,page*size, size);
     }
-
-
 }

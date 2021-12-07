@@ -7,21 +7,14 @@
 <%@ page import="cn.enncy.mall.constant.Tag" %>
 <%@ page import="cn.enncy.mall.annotaion.Select" %>
 <%@ page import="cn.enncy.mall.annotaion.Option" %>
-<%@ page import="java.util.stream.Collectors" %>
 <%@ page import="java.util.*" %>
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
-
 <%
-
     List<BaseObject> objects = (List<BaseObject>) request.getAttribute("objects");
     ServiceMapping serviceMapping = (ServiceMapping) request.getAttribute("service");
     Map<String, Info> infosMap = BaseObjectUtils.getInfosMap(serviceMapping.objectClass);
     List<Field> allFields = BaseObjectUtils.getAllFields(serviceMapping.objectClass);
-
 %>
-
 <div>
     <div class="card">
         <div class="card-body p-4">
@@ -36,24 +29,19 @@
                                 <span style="font-size: 12px;color: #5e5e5e">(<%=field.getName()%>)</span>
                             </th>
                             <% } %>
-
                         </tr>
                         </thead>
                         <tbody>
-
                         <%
-
                             for (BaseObject object : objects) { %>
                         <tr>
                             <%
                                 Map<String, Object> valuesMap = BaseObjectUtils.getValuesMap(object);
-
                                 for (Field field : allFields) {
                                     Object value = valuesMap.get(field.getName());
                                     Info info = infosMap.get(field.getName());
-                                    Formatter formatter = info.formatter().newInstance();
+                                    Formatter formatter = info.formatter().getConstructor().newInstance();
                                     Object format = formatter.format(value);
-
                             %>
                             <% if (info.tag().equals(Tag.SELECT)) {
                                 String desc = Arrays.stream(field.getAnnotation(Select.class).options()).filter(option -> option.value().equals(value.toString())).map(Option::description).findAny().orElse("无");
@@ -64,12 +52,9 @@
                             <td><%=format%>
                             </td>
                             <% } %>
-
                             <% } %>
-
                         </tr>
                         <% } %>
-
                         </tbody>
                     </table>
                 </div>
@@ -99,13 +84,9 @@
 
                 </div>
             </div>
-
-
             <jsp:include page="/admin/common/pagination.jsp"/>
         </div>
-
     </div>
-
 </div>
 <script>
     var active = '<%=serviceMapping.name%>'

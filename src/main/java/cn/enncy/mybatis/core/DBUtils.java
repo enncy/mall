@@ -1,15 +1,10 @@
 package cn.enncy.mybatis.core;
-import cn.enncy.mall.mapper.TestMapper;
-import cn.enncy.mall.pojo.User;
 import cn.enncy.mybatis.entity.MybatisException;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**

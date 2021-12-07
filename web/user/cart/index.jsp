@@ -93,7 +93,7 @@
                                 <div class="col-4 d-flex align-items-end">
                                     <span class="font-primary me-2">数量:</span>
                                     <label class="col-6">
-                                        <input value="<%=cart.getCount()%>" id="count<%=cart.getId()%>" name="count"
+                                        <input disabled value="<%=cart.getCount()%>" id="count<%=cart.getId()%>" name="count"
                                                onchange="changeCount(this,'<%=cart.getId()%>','<%=goods.getRealPrice() %>')"
                                                min="0"
                                                type="number" class="form-control form-control-sm">
@@ -150,10 +150,6 @@
 <script>
 
     var cartIds = <%=carts.stream().map(Cart::getId).collect(Collectors.toList())%>
-
-
-
-
         function changeCount(el, id, price) {
             var total = (parseFloat(el.value) * parseFloat(price))
             $("#cartTotalPrice" + id + "").text(total.toFixed(2))
@@ -167,17 +163,22 @@
 
     function selectedDiv(id) {
         let el = document.querySelector("#choiceDiv" + id)
+        let countEl = document.querySelector("#count"+id)
 
         if ($(el).hasClass("btn-outline-success")) {
             $(el).removeClass("btn-outline-success")
             $(el).addClass("btn-outline-dark")
             $(el).text("取消")
+            $(countEl).removeAttr("disabled")
             count += 1;
+
         } else {
             $(el).removeClass("btn-outline-dark")
             $(el).addClass("btn-outline-success")
             $(el).text("选择")
+            $(countEl).attr("disabled","")
             count -= 1;
+
         }
 
 

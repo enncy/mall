@@ -21,41 +21,34 @@ public class UserServiceImpl extends ServiceImpl<User, UserMapper> implements Us
     public UserServiceImpl() {
         super(UserMapper.class);
     }
-
     @Override
     public boolean update(User baseObject) {
         User old = mapper.findOneById(baseObject.getId());
-
         // 删除旧图片
         if (StringUtils.notEmpty(old.getAvatar()) && !old.getAvatar().equals(baseObject.getAvatar())) {
             List<String> path = PathUtils.splitPath(Application.REAL_PATH);
             path.addAll(PathUtils.splitPath(old.getAvatar()));
             String absPath = String.join("/", path);
             File file = new File(absPath);
-
             if (file.exists() && file.isFile()) {
                 file.delete();
             }
         }
         return super.update(baseObject);
     }
-
     @Override
     public User findOneByAccount(String account) {
         return mapper.findOneByAccount(account);
     }
-
     @Override
     public User findOneByEmail(String email) {
         return mapper.findOneByEmail(email);
     }
-
     @Override
     public List<User> search(String str, int page, int size) {
         size = size == 0 ? 10 : size;
         return mapper.search(str, page * size, size);
     }
-
     @Override
     public boolean deleteInactiveUser() {
         return mapper.deleteInactiveUser();

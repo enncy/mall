@@ -18,18 +18,22 @@
 <%@ page import="java.lang.reflect.Field" %>
 <%@ page import="cn.enncy.mall.annotaion.Info" %>
 
+<style>
+    .no-avatar{
+        width: 64px;
+        height: 64px;
+        border: 2px dotted #e5e5e5;
+        border-radius: 4px;
+
+    }
+</style>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
-
 <jsp:include page="/common/header.jsp"/>
-
-
 <jsp:include page="/common/navigation.jsp"/>
-
 <%
     User user = (User) session.getAttribute("user");
 %>
-
 <div class="container  p-lg-5 mt-lg-5 mb-lg-5  p-md-2 mt-md-2 mb-md-2 d-flex justify-content-center  flex-lg-nowrap flex-wrap ">
 
     <jsp:include page="navigation.jsp"/>
@@ -38,12 +42,12 @@
 
         <div class="  col-12">
             <div class="d-flex " style="white-space: nowrap">
-                <div class="col-2 " data-bs-toggle="modal" data-bs-target="#upload"
+                <div class="col-2 text-center" data-bs-toggle="modal" data-bs-target="#upload"
                      style="cursor: pointer">
-                    <% if (user.getAvatar() == null) { %>
-                    <svg style="width: 40px;height: 40px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                    <% if (user.getAvatar() == null || user.getAvatar().equals("null")) { %>
+                    <svg   xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                          fill="currentColor"
-                         class="bi bi-person-fill"
+                         class="bi bi-person-fill no-avatar"
                          viewBox="0 0 16 16">
                         <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
                     </svg>
@@ -59,34 +63,25 @@
                     <h6 class="card-subtitle mb-2 text-muted">${sessionScope.user.profile}
                     </h6>
                 </div>
-
             </div>
         </div>
-
         <div class="card mt-5 col-12">
-
             <div class="card-body">
                 <h5 class="card-title">个人信息设置</h5>
             </div>
-
             <div class="p-4">
-
                 <%
+                    // 获取所有属性
                     List<Field> allFields = BaseObjectUtils.getAllFields(user.getClass());
+                    // 获取属性值
                     Map<String, Object> valuesMap = BaseObjectUtils.getValuesMap(user);
-                %>
-
-                <%
-                    // 去掉禁止的属性
+                    // 去掉禁止的属性, 遍历显示信息
                     for (Field field : allFields) {
                         // 属性名
                         String name = field.getName();
                         // 属性值
                         Object value = valuesMap.get(field.getName());
-
                         Info info = field.getAnnotation(Info.class);
-
-
                 %>
 
                 <div class="mb-3 col-12" style="display: <%=info.disabled()?"none":"display"%>">
@@ -128,23 +123,11 @@
                 </div>
             </div>
         </div>
-
-
     </form>
-
 </div>
-
-
 <jsp:include page="/common/footer.jsp"/>
-
 <script>
-    // document.querySelector('[type="file"]').onchange = function (e) {
-    //     console.log(e.target.value)
-    //     document.querySelector('#filename').innerHTML = e.target.value.split('\\').pop()
-    // }
-
     function upload(el) {
-
         let formData = new FormData();
         let file = el.files.item(0)
         console.log("upload", file)

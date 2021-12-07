@@ -6,6 +6,7 @@ import cn.enncy.mall.constant.ServiceMapping;
 import cn.enncy.mall.pojo.*;
 import cn.enncy.mall.service.*;
 import cn.enncy.mall.service.impl.ServiceImpl;
+import cn.enncy.mall.utils.StringUtils;
 import cn.enncy.mybatis.core.ServiceFactory;
 import cn.enncy.spring.mvc.annotation.Controller;
 import cn.enncy.spring.mvc.annotation.Get;
@@ -53,13 +54,23 @@ public class ServiceController {
     }
 
     @Get("/admin/cart")
-    public String cart(@Param("page") int page, @Param("size") int size) {
-        return service(ServiceMapping.CART, cartService.findByPages(page, size), page, size);
+    public String cart(@Param("page") int page, @Param("size") int size, @Param("search") String search) {
+        if (StringUtils.notEmpty(search)) {
+            return service(ServiceMapping.CART, cartService.search(search, page, size), page, size);
+        } else {
+            return service(ServiceMapping.CART, cartService.findByPages(page, size), page, size);
+        }
+
     }
 
     @Get("/admin/order")
-    public String order(@Param("page") int page, @Param("size") int size) {
-        return service(ServiceMapping.ORDER, orderService.findByPages(page, size), page, size);
+    public String order(@Param("page") int page, @Param("size") int size, @Param("search") String search) {
+        if (StringUtils.notEmpty(search)) {
+            return service(ServiceMapping.ORDER, orderService.search(search, page, size), page, size);
+        } else {
+            return service(ServiceMapping.ORDER, orderService.findByPages(page, size), page, size);
+        }
+
     }
 
     @Get("/admin/tag")

@@ -18,8 +18,13 @@ import static cn.enncy.mybatis.core.SqlConstant.TABLE_NAME;
  */
 
 @Mapper(table = "cart",target = Cart.class)
-public interface CartMapper extends BaseMapper<Cart> {
+public interface CartMapper extends BaseMapper<Cart> , Searchable<Cart>{
+
     @Select("select * from cart where user_id = #{userId} ")
     List<Cart> findByUserId(@Param("userId") long userId);
 
+
+    @Override
+    @Select("select * from cart where user_id = #{str} LIMIT #{skip} ,#{limit};")
+    List<Cart> search(@Param("str")  String str, int page, int size);
 }

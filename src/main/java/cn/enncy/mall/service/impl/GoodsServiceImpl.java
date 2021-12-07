@@ -18,7 +18,6 @@ public class GoodsServiceImpl extends  ServiceImpl<Goods,GoodsMapper> implements
     public GoodsServiceImpl() {
         super(GoodsMapper.class);
     }
-
     @Override
     public Goods findOneById(long id) {
         // 增加浏览量
@@ -27,7 +26,6 @@ public class GoodsServiceImpl extends  ServiceImpl<Goods,GoodsMapper> implements
         mapper.update(goods);
         return goods;
     }
-
     @Override
     public List<Goods> search(String str, int page, int size) {
         size =  size == 0 ? 10 : size;
@@ -49,5 +47,4 @@ public class GoodsServiceImpl extends  ServiceImpl<Goods,GoodsMapper> implements
     public int countByTagName(String tag) {
         return mapper.countByTagName(tag);
     }
-
 }

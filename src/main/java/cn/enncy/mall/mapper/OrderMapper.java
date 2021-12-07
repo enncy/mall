@@ -25,7 +25,7 @@ import static cn.enncy.mybatis.core.SqlConstant.TABLE_NAME;
  */
 
 @Mapper(table = "order",target = Order.class)
-public interface OrderMapper extends  BaseMapper<Order> {
+public interface OrderMapper extends  BaseMapper<Order> , Searchable<Order>{
 
     @Select("select * from `order` where user_id = #{userId}")
     List<Order> findByUserId(@Param("userId") long userId);
@@ -45,6 +45,9 @@ public interface OrderMapper extends  BaseMapper<Order> {
     BigDecimal getSalesVolume(@Param("day") int day);
 
 
+    @Override
+    @Select("select * from `order` where user_id = #{str}  LIMIT #{skip} ,#{limit};")
+    List<Order> search(@Param("str")  String str, int page, int size);
 
     /**
      *  统计 n 天之内，某标签下的商品销售情况

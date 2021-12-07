@@ -115,7 +115,6 @@ public class GoodsController {
         }
 
     }
-
     @Get("/goods/comment/delete")
     public void commentDelete(@Param("id") int id,@Param("userId") int userId,@Param("goodsId") int goodsId) throws IOException {
         User user = (User) session.getAttribute("user");
@@ -221,9 +220,6 @@ public class GoodsController {
                 error = "服务器错误";
             }
         }
-
-
-
         request.setAttribute("error", error);
         return "/result/index";
     }
@@ -232,7 +228,6 @@ public class GoodsController {
     @Get("/goods/pay")
     public String getPay(@Param("uid") String uid) throws IOException {
         User user = (User) session.getAttribute("user");
-
         if (user == null) {
             response.sendRedirect("/login");
         }else{
@@ -241,14 +236,12 @@ public class GoodsController {
             request.setAttribute("order", order);
             request.setAttribute("orderDetailsList", orderDetailsList);
         }
-
         return "/goods/pay/index";
     }
 
     @Post("/goods/pay")
     public String postPay(@Param("uid") String uid) {
         User user = (User) session.getAttribute("user");
-
         if (user == null) {
             return "/login/index";
         }
@@ -278,7 +271,7 @@ public class GoodsController {
     }
 
 
-    @Post("/goods/add")
+    @Post("/goods/add/cart")
     public String add(@Param("id") int id, @Param("count") int count, @Param("buy") String buy) throws IOException, ServletException {
         User user = (User) session.getAttribute("user");
         if (user == null) {
@@ -297,9 +290,9 @@ public class GoodsController {
                         cart.setCount(cart.getCount() + count);
                         cartService.update(cart);
                         response.sendRedirect("/user/cart?id=" + cart.getId());
+                        return "/user/cart/index";
                     }
                 }
-
                 // 添加购物车
                 Cart cart = new Cart();
                 cart.setGoodsId(goods.getId());
@@ -308,10 +301,7 @@ public class GoodsController {
                 cartService.insert(cart);
                 response.sendRedirect("/user/cart?id=" + cart.getId());
             }
-
         }
-
         return "/user/cart/index";
-
     }
 }

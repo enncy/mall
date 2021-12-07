@@ -53,6 +53,7 @@
                 <tr>
                     <th>订单编号</th>
                     <th>用户账号</th>
+                    <th>状态</th>
                     <th>应付款</th>
                     <th>创建时间</th>
                 </tr>
@@ -62,6 +63,8 @@
                     <td><%=order.getUid()%>
                     </td>
                     <td><%=user.getAccount()%>
+                    </td>
+                    <td><%=OrderStatus.getDescription(order.getStatus())%>
                     </td>
                     <td><%=order.getTotalPrice()%>
                     </td>
@@ -201,7 +204,7 @@
 <script>
     function search(id, showList) {
         $.ajax({
-            url: '/search/address?key=' + $("#searchInput" + id).val(),
+            url: '/search/user/address?key=' + $("#searchInput" + id).val(),
             dataType: 'json',
             method: 'get',
 

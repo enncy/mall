@@ -39,7 +39,8 @@ create table user(
 地址表
 
 ```mysql
-create table address(
+create table address
+(
     id          int auto_increment primary key,
     user_id     int          not null comment '用户id',
     phone       varchar(20)  not null comment '电话号码',
@@ -49,8 +50,8 @@ create table address(
     zip_code    varchar(20)  not null comment '邮编地址',
     create_time mediumtext   not null comment '创建时间',
     update_time mediumtext   not null comment '更新时间',
-    constraint address_alias_uindex
-        unique (alias)
+    constraint address_alias_id_uindex
+        unique (alias, id)
 ) comment '地址';
 ```
 

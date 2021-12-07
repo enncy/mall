@@ -22,7 +22,4 @@ public interface CommentMapper extends BaseMapper<Comment>{
     @Select("select * from comment where goods_id = #{goodsId} ")
     List<Comment> findByGoodsId(@Param("goodsId") long goodsId);
 
-
-
-
 }

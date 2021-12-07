@@ -18,9 +18,7 @@
         <div class="d-flex ms-3 ">
             <a class="btn btn-primary " href="/admin/common/operate/user">添加用户</a>
         </div>
-
     </form>
-
     <jsp:include page="/admin/common/service/index.jsp"/>
 </div>
 

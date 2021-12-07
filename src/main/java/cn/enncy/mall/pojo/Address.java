@@ -101,7 +101,7 @@ public class Address extends BaseObject {
                 '}';
     }
 
-
+    // 创建默认地址详情
     public String createOrderAddressDetails(){
         return this.getDetail().replaceAll("\\n"," ") +" - "+ this.getPhone();
     }

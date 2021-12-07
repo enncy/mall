@@ -131,11 +131,11 @@ public class Goods extends BaseObject{
                 ", views=" + views +
                 '}';
     }
-
+    // 获取单价
     public BigDecimal getRealPrice(){
         return this.getDiscountPrice().intValue() == 0 ? this.getPrice() : this.getDiscountPrice();
     }
-
+    // 获取简介
     public String getSimpleDescription(){
         return this.getDescription().substring(0, 20) + "...";
     }

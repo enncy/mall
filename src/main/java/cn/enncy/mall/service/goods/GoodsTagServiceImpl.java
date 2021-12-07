@@ -14,7 +14,7 @@ import cn.enncy.mybatis.core.ServiceFactory;
  *
  * @author enncy
  */
-public class GoodsTagService  extends GoodsServiceImpl {
+public class GoodsTagServiceImpl extends GoodsServiceImpl {
 
 
     TagService tagService = ServiceFactory.resolve(TagService.class);

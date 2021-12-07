@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * //TODO
@@ -33,71 +34,71 @@ public class OperateController {
 
 
     @Get("/admin/common/operate/user")
-    public String operateUser(@Param("targetId") long targetId) throws IOException, InstantiationException, IllegalAccessException {
+    public String operateUser(@Param("targetId") long targetId) throws Exception {
         return operate(targetId, ServiceMapping.USER);
     }
 
     @Get("/admin/common/operate/address")
-    public String operateAddress(@Param("targetId") long targetId) throws IOException, InstantiationException, IllegalAccessException {
+    public String operateAddress(@Param("targetId") long targetId) throws Exception {
         return operate(targetId, ServiceMapping.ADDRESS);
     }
 
     @Get("/admin/common/operate/cart")
-    public String operateCart(@Param("targetId") long targetId) throws IOException, InstantiationException, IllegalAccessException {
+    public String operateCart(@Param("targetId") long targetId) throws Exception {
         return operate(targetId, ServiceMapping.CART);
     }
 
     @Get("/admin/common/operate/goods")
-    public String operateGoods(@Param("targetId") long targetId) throws IOException, InstantiationException, IllegalAccessException {
+    public String operateGoods(@Param("targetId") long targetId) throws Exception {
         return operate(targetId, ServiceMapping.GOODS);
     }
 
     @Get("/admin/common/operate/order")
-    public String operateOrder(@Param("targetId") long targetId) throws IOException, InstantiationException, IllegalAccessException {
+    public String operateOrder(@Param("targetId") long targetId) throws Exception {
         return operate(targetId, ServiceMapping.ORDER);
     }
+
     @Get("/admin/common/operate/tag")
-    public String operateTag(@Param("targetId") long targetId) throws IOException, InstantiationException, IllegalAccessException {
+    public String operateTag(@Param("targetId") long targetId) throws Exception {
         return operate(targetId, ServiceMapping.TAG);
     }
 
 
     @Post("/admin/common/operate/user")
-    public void operateUserPost(@Param("targetId") long targetId, @Body User user) throws IOException, InstantiationException, IllegalAccessException {
+    public void operateUserPost(@Param("targetId") long targetId, @Body User user) throws Exception {
         operatePost(targetId, user, ServiceMapping.USER);
     }
 
     @Post("/admin/common/operate/address")
-    public void operateAddressPost(@Param("targetId") long targetId, @Body Address address) throws IOException, InstantiationException, IllegalAccessException {
+    public void operateAddressPost(@Param("targetId") long targetId, @Body Address address) throws Exception {
         operatePost(targetId, address, ServiceMapping.ADDRESS);
     }
 
     @Post("/admin/common/operate/cart")
-    public void operateCartPost(@Param("targetId") long targetId, @Body Cart cart) throws IOException, InstantiationException, IllegalAccessException {
+    public void operateCartPost(@Param("targetId") long targetId, @Body Cart cart) throws Exception {
         operatePost(targetId, cart, ServiceMapping.CART);
     }
 
     @Post("/admin/common/operate/goods")
-    public void operateGoodsPost(@Param("targetId") long targetId, @Body Goods goods) throws IOException, InstantiationException, IllegalAccessException {
-        operatePost(targetId, goods, ServiceMapping.GOODS);
+    public void operateGoodsPost(@Param("targetId") long targetId, @Body Goods goods) throws Exception {
+        operatePost(targetId, goods, ServiceMapping.GOODS_TAG);
     }
 
     @Post("/admin/common/operate/order")
-    public void operateOrderPost(@Param("targetId") long targetId, @Body Order order) throws IOException, InstantiationException, IllegalAccessException {
+    public void operateOrderPost(@Param("targetId") long targetId, @Body Order order) throws Exception {
         operatePost(targetId, order, ServiceMapping.ORDER);
     }
 
     @Post("/admin/common/operate/tag")
-    public void operateTagPost(@Param("targetId") long targetId, @Body Tag tag) throws IOException, InstantiationException, IllegalAccessException {
+    public void operateTagPost(@Param("targetId") long targetId, @Body Tag tag) throws Exception {
         operatePost(targetId, tag, ServiceMapping.TAG);
     }
 
 
-
     // 公共操作方法，如果 targetId 为 0 ，则为添加操作，否则为更新操作
-    public String operate(long targetId, ServiceMapping serviceMapping) throws IOException, IllegalAccessException, InstantiationException {
+    public String operate(long targetId, ServiceMapping serviceMapping) throws IOException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         if (targetId == 0) {
-            request.setAttribute("object", serviceMapping.objectClass.newInstance());
+            request.setAttribute("object", serviceMapping.objectClass.getConstructor().newInstance());
         } else {
             BaseService<?> resolve = ServiceFactory.resolve(serviceMapping.serviceClass);
             request.setAttribute("object", resolve.findOneById(targetId));
@@ -108,7 +109,7 @@ public class OperateController {
 
     // 公共操作提交方法，如果 targetId 为 0 ，则为添加操作，否则为更新操作
     public void operatePost(long targetId, BaseObject object, ServiceMapping serviceMapping) throws IOException, IllegalAccessException, InstantiationException {
-        ServiceImpl<BaseObject, ?> service = (ServiceImpl<BaseObject, ?>) ServiceFactory.resolve(serviceMapping.serviceClass);
+        BaseService<BaseObject> service = (BaseService<BaseObject>) ServiceFactory.resolve(serviceMapping.serviceImplClass);
         if (targetId == 0) {
             service.insert(object);
         } else {

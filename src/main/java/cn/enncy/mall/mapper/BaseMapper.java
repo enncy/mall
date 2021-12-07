@@ -4,7 +4,6 @@ import cn.enncy.mybatis.annotation.method.*;
 import cn.enncy.mybatis.annotation.param.Body;
 import cn.enncy.mybatis.annotation.param.Param;
 import cn.enncy.mybatis.annotation.type.Result;
-import cn.enncy.mybatis.core.result.SingleResultHandler;
 
 import java.util.List;
 

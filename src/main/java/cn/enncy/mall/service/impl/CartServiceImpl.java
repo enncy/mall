@@ -13,9 +13,9 @@ import java.util.List;
  *
  * @author enncy
  */
-public class CartServiceImpl  extends ServiceImpl<Cart,CartMapper> implements CartService {
+public class CartServiceImpl extends ServiceImpl<Cart, CartMapper> implements CartService {
 
-    public CartServiceImpl( ) {
+    public CartServiceImpl() {
         super(CartMapper.class);
     }
 
@@ -24,6 +24,9 @@ public class CartServiceImpl  extends ServiceImpl<Cart,CartMapper> implements Ca
         return mapper.findByUserId(userId);
     }
 
-
+    @Override
+    public List<Cart> search(String str, int page, int size) {
+        return mapper.search(str, page, size);
+    }
 
 }

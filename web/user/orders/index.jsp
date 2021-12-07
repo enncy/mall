@@ -255,7 +255,7 @@
                         <div class="ms-2  d-flex justify-content-end w-100">
                             <a class="btn btn-outline-dark btn-sm me-2"
                                href="/user/orders/cancel?id=<%=order.getId()%>">取消订单</a>
-                            <a class="btn btn-sm btn-danger" href="/user/orders/pay?uid=<%=order.getUid()%>"> 去付款 </a>
+                            <a class="btn btn-sm btn-danger" href="/goods/pay?uid=<%=order.getUid()%>"> 去付款 </a>
                         </div>
                         <% } else if (status.equals(OrderStatus.RECEIVING.value)) { %>
 
@@ -292,7 +292,7 @@
 <script>
     function search(id, showList) {
         $.ajax({
-            url: '/search/address?key=' + $("#searchInput" + id).val(),
+            url: '/search/user/address?key=' + $("#searchInput" + id).val(),
             dataType: 'json',
             method: 'get',
 

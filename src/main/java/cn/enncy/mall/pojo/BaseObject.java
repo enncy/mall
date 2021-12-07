@@ -57,5 +57,4 @@ public class BaseObject {
                 ", updateTime=" + updateTime +
                 '}';
     }
-
 }

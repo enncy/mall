@@ -28,10 +28,11 @@
 
 <%
     BaseObject object = (BaseObject) request.getAttribute("object");
-
+    // 业务映射
     ServiceMapping serviceMapping = (ServiceMapping) request.getAttribute("service");
     Map<String, Info> infosMap = BaseObjectUtils.getInfosMap(serviceMapping.objectClass);
     List<Field> allFields = BaseObjectUtils.getAllFields(serviceMapping.objectClass);
+    // 是否为更新操作
     boolean isUpdate = object.getId() != 0;
 %>
 
@@ -58,7 +59,7 @@
                         // 属性详情
                         Info info = infosMap.get(field.getName());
                         // 格式化器
-                        Formatter formatter = info.formatter().newInstance();
+                        Formatter formatter = info.formatter().getConstructor().newInstance();
                         // 格式化值
                         Object format = formatter.format(value);
                         // 属性所需标签
@@ -165,23 +166,14 @@
                 <div class=" w-100">
                     <input class="btn btn-primary col-2 float-end" value="<%=object.getId()==0?"添加":"修改"%>"
                            type="submit">
-                    <%--<input class="btn btn-secondary col-1 float-end  me-2"  value="重置" typeof="reset">--%>
-
                 </div>
-
-
             </form>
         </div>
     </div>
-
-
 </div>
 
-
 <jsp:include page="/admin/common/footer.jsp"/>
-
 <script>
-
     function search(fieldName, serviceName,showList) {
         $.ajax({
             url: '/search/' + serviceName + '?key=' + $("#searchInput").val(),

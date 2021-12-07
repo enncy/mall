@@ -68,6 +68,10 @@ public class ResultBody {
         return new ResultBody(false, "获取失败", null);
     }
 
+    public static ResultBody error(String msg) {
+        return new ResultBody(false, msg, null);
+    }
+
     public static ResultBody success() {
         return new ResultBody(true, "获取成功", null);
     }

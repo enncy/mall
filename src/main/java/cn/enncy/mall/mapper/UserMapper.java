@@ -51,5 +51,4 @@ public interface UserMapper extends BaseMapper<User> , Searchable<User> {
      */
     @Delete("delete from user where active=0   and   unix_timestamp(now()) - (create_time/1000) > 3 * 60;")
     boolean deleteInactiveUser();
-
 }

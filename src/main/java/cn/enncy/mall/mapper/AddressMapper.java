@@ -25,8 +25,8 @@ public interface AddressMapper extends BaseMapper<Address> , Searchable<Address>
      * @param alias  别名
      * @return cn.enncy.mall.pojo.Address
      */
-    @Select("select * from address where alias = #{alias}")
-    Address findOneByAlias(@Param("alias") String alias);
+    @Select("select * from address where user_id = #{user_id} and alias = '#{alias}'")
+    Address findOneByUserAlias(@Param("user_id") long userId,@Param("alias") String alias);
 
     /**
      *  根据用户id查找地址

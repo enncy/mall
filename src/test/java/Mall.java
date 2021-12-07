@@ -1,8 +1,5 @@
-import cn.enncy.mall.mapper.TestMapper;
 import cn.enncy.mall.mapper.UserMapper;
 import cn.enncy.mall.pojo.User;
-import cn.enncy.mall.service.UserService;
-import cn.enncy.mall.service.impl.UserServiceImpl;
 import cn.enncy.mall.utils.Logger;
 import cn.enncy.mybatis.annotation.type.Mapper;
 import cn.enncy.mybatis.core.SqlSession;
@@ -107,13 +104,4 @@ public class Mall<T,E>  {
         System.out.println(mapper);
     }
 
-
-    @Test
-    public void mapper(){
-        TestMapper mapper = SqlSession.getMapper(TestMapper.class);
-        List<User> users = mapper.findByAll();
-        for (User user : users) {
-            Logger.log(user.toString());
-        }
-    }
 }

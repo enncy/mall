@@ -3,6 +3,7 @@ package cn.enncy.mall.service;
 
 import cn.enncy.mall.mapper.CartMapper;
 import cn.enncy.mall.pojo.Cart;
+import cn.enncy.mall.pojo.Order;
 import cn.enncy.mall.service.impl.ServiceImpl;
 
 import java.util.List;
@@ -15,4 +16,6 @@ import java.util.List;
  */
 public interface CartService extends  BaseService<Cart>{
     List<Cart> findByUserId(long userId);
+
+    List<Cart> search(String str, int page, int size);
 }

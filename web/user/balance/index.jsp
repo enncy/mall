@@ -3,16 +3,10 @@
 <%@ page import="java.math.BigDecimal" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-
 <jsp:include page="/common/header.jsp"/>
-
-
 <jsp:include page="/common/navigation.jsp"/>
-
 <%
-
     User user = (User) session.getAttribute("user");
-
 %>
 
 <div class="container  p-lg-5 mt-lg-5 mb-lg-5  p-md-2 mt-md-2 mb-md-2 d-flex justify-content-center  flex-lg-nowrap flex-wrap ">
@@ -34,7 +28,6 @@
                 <%=user.getBalance().toString().equals("0") ? "0" : new DecimalFormat("#,##0.00").format(user.getBalance().setScale(2, BigDecimal.ROUND_HALF_UP))%>
                 <span class="ms-4 fs-4"> CNY</span>
             </div>
-
         </div>
         <form method="POST" action="/user/balance/in">
             <div class="fw-bold mt-4 mb-4">
@@ -48,8 +41,6 @@
             <input class="btn btn-outline-secondary" value="1000" type="submit"  name="money">
             <input class="btn btn-outline-secondary" value="10000" type="submit"  name="money">
         </form>
-
-
         <form method="POST"  action="/user/balance/out">
             <div class="fw-bold mt-4 mb-4">
                 余额提现
@@ -57,7 +48,6 @@
             <div class="input-group mb-3">
                 <input name="balance" type="number" value="0" min="0" step="0.01" class="form-control" >
                 <input class="btn btn-outline-secondary" value="提现" type="submit">
-
             </div>
             <input class="btn btn-outline-secondary" value="全部" type="submit" name="operate">
             <input class="btn btn-outline-secondary" value="1/2" type="submit" name="operate">

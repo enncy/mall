@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public interface AddressService extends BaseService<Address> {
 
 
-    Address findOneByAlias(String alias);
+    Address findOneByUserAlias(long userId,String alias);
 
     List<Address> findByUserId(long userId);
 

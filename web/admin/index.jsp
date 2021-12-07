@@ -24,19 +24,21 @@
 
 
 <%
-
     UserService userService = ServiceFactory.resolve(UserService.class);
     GoodsService goodsService = ServiceFactory.resolve(GoodsService.class);
     OrderService orderService = ServiceFactory.resolve(OrderService.class);
-
+    // 图表控制器
     ChartRestController chartRestController = ControllerFactory.resolve(ChartRestController.class, request, response);
-
+    // 获取这周的销售额
     Calendar calendar = Calendar.getInstance();
     int day = calendar.get(Calendar.DAY_OF_WEEK);
-    int userCount = userService.count();
-    int goodsCount = goodsService.count();
-    int orderCount = orderService.count();
     BigDecimal salesVolume = orderService.getSalesVolume(day - 1);
+    // 用户数量
+    int userCount = userService.count();
+    // 商品数量
+    int goodsCount = goodsService.count();
+    // 订单数量
+    int orderCount = orderService.count();
 
 %>
 
@@ -112,8 +114,6 @@
                             <p class="fw-bold mb-0 fs-2"><%=new DecimalFormat("#,##0.00").format(Optional.ofNullable(salesVolume).orElse(new BigDecimal(("0.00"))))%></p>
                         </div>
                     </div>
-
-
                 </div>
 
 
@@ -172,46 +172,9 @@
     </table>
 </div>
 
-
 <jsp:include page="common/footer.jsp"/>
-
-
 <script>
     var active = "index";
-
-    //  $.ajax({
-    //      method:"get",
-    //      url:"/chart",
-    //      dataType:"json",
-    //      success(r){
-    //
-    //          if(r.status){
-    //              $("#chart").attr("src",r.data)
-    //
-    //          }else{
-    //              alert("请求失败")
-    //          }
-    //      },
-    //      error(e){
-    //          alert("请求失败",e)
-    //      }
-    //  })
-    //
-    // $.ajax({
-    //     method:"get",
-    //     url:"/pie",
-    //     dataType:"json",
-    //     success(r){
-    //         if(r.status){
-    //             $("#chart2").attr("src",r.data)
-    //         }else{
-    //             alert("请求失败")
-    //         }
-    //     },
-    //     error(e){
-    //         alert("请求失败",e)
-    //     }
-    // })
 </script>
 
 

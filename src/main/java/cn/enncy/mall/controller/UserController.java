@@ -87,8 +87,6 @@ public class UserController {
         if (money != null) {
             balance = money;
         }
-
-
         if (balance.compareTo(BigDecimal.valueOf(0)) > 0) {
             if (user != null) {
                 BigDecimal origin = user.getBalance();
@@ -102,21 +100,15 @@ public class UserController {
         request.setAttribute("redirect", "/user/balance");
         return "/result/index";
     }
-
     @Post("/user/balance/out")
     public String balanceOutPost(@Param("balance") BigDecimal balance, @Param("money") BigDecimal money, @Param("operate") String operate) {
         User user = (User) session.getAttribute("user");
-
         if (StringUtils.notEmpty(operate)) {
             balance = "全部".equals(operate) ? user.getBalance() : user.getBalance().divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP);
-
         } else if (money != null) {
             balance = money;
         }
-
         if (balance.compareTo(BigDecimal.valueOf(0)) > 0) {
-
-
             if (user != null) {
                 BigDecimal origin = user.getBalance();
                 if (origin.compareTo(balance) < 0) {
@@ -152,7 +144,7 @@ public class UserController {
         address.setUserId(user.getId());
         address.setDetail(address.getDetail().replaceAll("\\n", " "));
         if (address.getId() == 0) {
-            if (addressService.findOneByAlias(address.getAlias()) == null) {
+            if (addressService.findOneByUserAlias(user.getId(),address.getAlias()) == null) {
                 addressService.insert(address);
             } else {
                 request.setAttribute("error", "此备注已经被占用！");
@@ -166,16 +158,6 @@ public class UserController {
         return "/user/address/update/index";
     }
 
-    @Get("/user/cart/delete")
-    public void cartDelete(@Param("id") int id) throws IOException {
-        if (id != 0) {
-            cartService.deleteById(id);
-            request.setAttribute("msg", "删除成功!");
-        } else {
-            request.setAttribute("error", "id不能为空!");
-        }
-        response.sendRedirect("/user/cart");
-    }
 
 
     @Get("/user/address/delete")
@@ -200,6 +182,18 @@ public class UserController {
             request.setAttribute("error", "id不能为空!");
         }
         response.sendRedirect("/user/address");
+    }
+
+
+    @Get("/user/cart/delete")
+    public void cartDelete(@Param("id") int id) throws IOException {
+        if (id != 0) {
+            cartService.deleteById(id);
+            request.setAttribute("msg", "删除成功!");
+        } else {
+            request.setAttribute("error", "id不能为空!");
+        }
+        response.sendRedirect("/user/cart");
     }
 
     @Get("/user/orders/cancel")

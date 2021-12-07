@@ -1,30 +1,12 @@
-<%@ page import="com.mysql.cj.util.StringUtils" %>
-<%@ page import="cn.enncy.mall.pojo.Address" %>
-<%@ page import="cn.enncy.mall.utils.RequestUtils" %>
 
-<%@ page import="cn.enncy.mall.pojo.User" %>
-<%@ page import="java.util.Optional" %>
-<%@ page import="cn.enncy.mall.service.AddressService" %>
-<%@ page import="cn.enncy.mybatis.core.ServiceFactory" %>
-<%@ page import="cn.enncy.mall.utils.Logger" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-
-<%
-
-
-%>
-
 <jsp:include page="/common/header.jsp"/>
-
-
 <jsp:include page="/common/navigation.jsp"/>
 
 <div class="container p-lg-5 mt-lg-5 mb-lg-5  p-md-2 mt-md-2 mb-md-2 d-flex justify-content-center  flex-lg-nowrap flex-wrap ">
 
-
     <jsp:include page="/user/navigation.jsp"/>
-
     <div class="d-flex flex-wrap  card p-4  col-lg-10 col-md-11 col-12">
 
         <div>
@@ -61,7 +43,6 @@
                           rows="3">${requestScope.address.detail}</textarea>
             </div>
 
-
             <div class="w-100 col-12">
                 <button type="submit"
                         class="btn w-25 btn-primary float-end">${requestScope.address.id==0 ? "添加": "修改"}
@@ -71,9 +52,7 @@
         </form>
     </div>
 
-
 </div>
-
 
 <jsp:include page="/common/footer.jsp"/>
 

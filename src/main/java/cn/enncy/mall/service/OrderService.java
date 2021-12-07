@@ -2,10 +2,7 @@ package cn.enncy.mall.service;
 
 
 import cn.enncy.mall.mapper.OrderMapper;
-import cn.enncy.mall.pojo.Cart;
-import cn.enncy.mall.pojo.Goods;
-import cn.enncy.mall.pojo.Order;
-import cn.enncy.mall.pojo.OrderDetails;
+import cn.enncy.mall.pojo.*;
 import cn.enncy.mybatis.annotation.method.Transaction;
 import cn.enncy.mybatis.annotation.param.Param;
 import cn.enncy.mybatis.core.ServiceFactory;
@@ -24,6 +21,8 @@ public interface OrderService extends BaseService<Order> {
 
     List<Order> findByUserId(long userId);
 
+
+    List<Order> search(String str, int page, int size);
 
     Order findOneByUid(String uid);
 

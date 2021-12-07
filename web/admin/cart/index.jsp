@@ -8,9 +8,14 @@
 
 <div>
     <form method="GET" class="d-flex">
-
+        <div class="input-group col-lg-4 p-0 w-25 ">
+            <input type="text" name="search" value="${param.search}" class="form-control" placeholder="用户id搜索">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit">搜索</button>
+            </div>
+        </div>
         <div class="d-flex ms-3 ">
-            <a class="btn btn-primary " href="/admin/common/operate/cart">添加购物车</a>
+            <a class="btn btn-primary " href="/admin/common/operate/cart">添加用户</a>
         </div>
 
     </form>
