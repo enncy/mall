@@ -3,7 +3,7 @@
 > mall 电商系统 ， jsp + servlet + mysql 作为主要技术的 java 项目， 内含手写的 mybatis 和 springmvc 框架，仅供参考，小白勿入。
 
 ## 在线网站参考
-如果 404 代表不对外开放
+如果 404 代表不对外开放     
 [mall.enncy.cn](mall.enncy.cn) 
 
 ## 技术选型
