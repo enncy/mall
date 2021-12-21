@@ -1,12 +1,3 @@
----
-
-title: 《综合实训三》
-author: 李林
-date: （2020  — 2021  学年  第  1 学期）
-subject: "设计报告"
-keywords: [Jorek, APS, VTune]
-
----
 
 
 
